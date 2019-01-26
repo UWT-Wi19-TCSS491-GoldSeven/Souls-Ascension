@@ -145,12 +145,14 @@ GameEngine.prototype.addEntity = function (entity) {
 }
 
 GameEngine.prototype.draw = function () {
-    this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     this.ctx.save();
+    this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+    this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+    this.ctx.restore();
+
     for (var i = 0; i < this.entities.length; i++) {
         this.entities[i].draw(this.ctx);
     }
-    this.ctx.restore();
 }
 
 GameEngine.prototype.update = function () {
