@@ -150,10 +150,10 @@ CenterThingy.prototype.draw = function(ctx) {
 // The entity's origin is determined by its BoundingBox object.
 function Character(game) {                                                                                            //loop  reversed
     this.standAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"),     0,   0, 32, 32, 0.08, 5, true, false);
-    this.walkRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"), 0,  32, 33, 32, 1.04, 1, false, false);
-    this.walkLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"),  0,  64, 33, 32, 1.04, 1, false, false);
-    this.walkUpAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"),    0,  96, 32, 32, 1.04, 1, false, false);
-    this.walkDownAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"),  0, 128, 32, 32, 1.04, 1, false, false);
+    this.walkRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"), 0,  32, 33, 32, 1.04, 1, true, false);
+    this.walkLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"),  0,  64, 33, 32, 1.04, 1, true, false);
+    this.walkUpAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"),    0,  96, 32, 32, 1.04, 1, true, false);
+    this.walkDownAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"),  0, 128, 32, 32, 1.04, 1, true, false);
     this.attackAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"),    0, 160, 32, 32, 0.04, 5, false, false);
     this.animation = this.standAnimation; // initial animation.
     this.isAttacking = false;
