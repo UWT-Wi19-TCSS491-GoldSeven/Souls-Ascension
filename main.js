@@ -187,8 +187,10 @@ function Character(game) {                                                      
 	this.attackDownAnimation = new Animation(ASSET_MANAGER.getAsset("./img/characterDownAttack.png"),    0, 0, 42, 42, 0.04, 3, false, false);
 	this.attackLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/characterLeftAttack.png"),    0, 0, 42, 42, 0.04, 3, false, false);
 	this.attackRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/characterRightAttack.png"),    0, 0, 42, 42, 0.04, 3, false, false);
+	this.whirlwindAttackAnimation = new Animation(ASSET_MANAGER.getAsset("./img/characterWhirlWindAttackAnimation.png"),    0, 0, 42, 42, 0.04, 4, false, false);
     this.animation = this.standAnimation; // initial animation.
     this.isAttacking = false;
+	this.isWhirlwinding = false;
     this.isMovingLeft = false;
     this.isMovingRight = false;
     this.isMovingUp = false;
@@ -219,6 +221,7 @@ Character.prototype.update = function() {
     this.isMovingDownLeft = false;
     this.isMovingDownRight = false;
 
+	if (this.game.one) { this.isWhirlwinding = true }
     if (this.game.click) { this.isAttacking = true }
     if (this.game.up && this.game.left) this.isMovingUpLeft = true;
     if (this.game.up && this.game.right) this.isMovingUpRight = true;
@@ -277,6 +280,12 @@ Character.prototype.update = function() {
             this.isAttacking = false;
 		}
     }
+	if (this.isWhirlwinding) {
+		if (this.whirlwindAttackAnimation.isDone()) {
+			this.whirlwindAttackAnimation.elapsedTime = 0
+            this.isWhirlwinding = false;
+		}
+	}
 
     Entity.prototype.update.call(this);
 }
@@ -292,6 +301,8 @@ Character.prototype.draw = function(ctx) {
 		} else {
 			this.animation = this.attackDownAnimation;
 		}
+    } else if (this.isWhirlwinding) {
+        this.animation = this.whirlwindAttackAnimation;
     } else if (this.isMovingUpLeft) {
         this.animation = this.walkUpLeftAnimation;
     } else if (this.isMovingUpRight) {
@@ -338,7 +349,7 @@ ASSET_MANAGER.queueDownload("./img/characterRightAttack.png");
 ASSET_MANAGER.queueDownload("./img/characterLeftAttack.png");
 ASSET_MANAGER.queueDownload("./img/characterUpAttack.png");
 ASSET_MANAGER.queueDownload("./img/characterDownAttack.png");
-
+ASSET_MANAGER.queueDownload("./img/characterWhirlWindAttackAnimation.png");
 ASSET_MANAGER.downloadAll(function() {
     console.log("starting up da sheild");
     var canvas = document.getElementById("gameWorld");
