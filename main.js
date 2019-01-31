@@ -97,7 +97,7 @@ var slimeDungeonLevelOne = new Array(
 	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,8, 1 ,9 ,0 ,8 ,1 ,14,11,22,19,19,23,6 ,9 ,0 ,0 ,0 ,8 ,1 ,1 ,1 ,1 ,1 ,1 ,9 ,0 ,5 ,22,19,23,6 ,1 ,9 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,8 ,1 ,1 ,9 ,0 ,8 ,7 ,22,19,19,23,6 ,14,1 ,1 ,7 ,22,23,6 ,1 ,9 ,0 ,0 ,0 ,8 ,1 ,1 ,1 ,9 ,0 ,
 	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,8 ,1 ,1 ,1 ,1 ,1 ,9 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,8 ,1 ,2 ,1 ,9 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,8 ,1 ,1 ,1 ,1 ,1 ,9 ,0 ,0 ,8 ,1 ,1 ,9 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0
 	);
-var currentScale = 32;
+var currentScale = 48;
 var currentWTiles = 88; // number of tiles with wise on the map
 function Background(game, spritesheet) {
     this.x = 0;
@@ -174,16 +174,19 @@ CenterThingy.prototype.draw = function(ctx) {
 
 // The entity's origin is determined by its BoundingBox object.
 function Character(game) {                                                                                            //loop  reversed
-    this.standAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"),     0,   0, 32, 32, 0.08, 5, true, false);
-    this.walkRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"), 0,  32, 33, 32, 1.04, 1, true, false);
+    this.standAnimation = new Animation(ASSET_MANAGER.getAsset("./img/characterIdleAnimation.png"), 0, 0, 42, 42, 0.08, 4, true, false);
+    this.walkRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/characterRightAnimation.png"), 0,  0, 42, 42, 0.15, 6, true, false);
     this.walkUpLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"), 32,  32, 33, 32, 1.04, 1, true, false);
-    this.walkLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"),  0,  64, 33, 32, 1.04, 1, true, false);
+    this.walkLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/characterLeftAnimation.png"),  0,  0, 42, 42, 0.15, 6, true, false);
     this.walkUpRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"),  32,  64, 33, 32, 1.04, 1, true, false);
-    this.walkUpAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"),    0,  96, 32, 32, 1.04, 1, true, false);
+    this.walkUpAnimation = new Animation(ASSET_MANAGER.getAsset("./img/characterBackwardRun.png"),    0,  0, 42, 42, 0.15, 5, true, false);
     this.walkDownLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"),    32,  96, 32, 32, 1.04, 1, true, false);
-    this.walkDownAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"),  0, 128, 32, 32, 1.04, 1, true, false);
+    this.walkDownAnimation = new Animation(ASSET_MANAGER.getAsset("./img/CharacterForwardRun.png"),  0, 0, 42, 42, 0.15, 5, true, false);
     this.walkDownRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"),  32, 128, 32, 32, 1.04, 1, true, false);
-    this.attackAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"),    0, 160, 32, 32, 0.04, 5, false, false);
+    this.attackUpAnimation = new Animation(ASSET_MANAGER.getAsset("./img/characterUpAttack.png"),    0, 0, 42, 42, 0.04, 3, false, false);
+	this.attackDownAnimation = new Animation(ASSET_MANAGER.getAsset("./img/characterDownAttack.png"),    0, 0, 42, 42, 0.04, 3, false, false);
+	this.attackLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/characterLeftAttack.png"),    0, 0, 42, 42, 0.04, 3, false, false);
+	this.attackRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/characterRightAttack.png"),    0, 0, 42, 42, 0.04, 3, false, false);
     this.animation = this.standAnimation; // initial animation.
     this.isAttacking = false;
     this.isMovingLeft = false;
@@ -195,7 +198,7 @@ function Character(game) {                                                      
     this.isMovingDownLeft = false;
     this.isMovingDownRight = false;
     this.radius = 100;
-    this.travelSpeed = 8;
+    this.travelSpeed = 2;
     this.boxes = game.debug;         // For debugging, game.debug = true;
     this.scale = 1; // set to 1 if the sprite dimensions are the exact size that should be rendered.
     //console.log(this); // Debugging.
@@ -257,10 +260,22 @@ Character.prototype.update = function() {
     this.boundingBox.y = this.y;
 
     if (this.isAttacking) {
-        if (this.attackAnimation.isDone()) {
-            this.attackAnimation.elapsedTime = 0
+        if (this.attackRightAnimation.isDone()) {
+            this.attackRightAnimation.elapsedTime = 0
             this.isAttacking = false;
         }
+		if (this.attackLeftAnimation.isDone()) {
+			this.attackLeftAnimation.elapsedTime = 0
+            this.isAttacking = false;
+		}
+		if (this.attackUpAnimation.isDone()) {
+			this.attackUpAnimation.elapsedTime = 0
+            this.isAttacking = false;
+		}
+		if (this.attackDownAnimation.isDone()) {
+			this.attackDownAnimation.elapsedTime = 0
+            this.isAttacking = false;
+		}
     }
 
     Entity.prototype.update.call(this);
@@ -268,7 +283,15 @@ Character.prototype.update = function() {
 
 Character.prototype.draw = function(ctx) {
     if (this.isAttacking) {
-        this.animation = this.attackAnimation;
+        if (this.isAttacking && this.isMovingUp) {
+			this.animation = this.attackUpAnimation;
+		} else if (this.isAttacking && this.isMovingLeft) {
+			this.animation = this.attackLeftAnimation;
+		} else if (this.isAttacking && this.isMovingRight) {
+			this.animation = this.attackRightAnimation;
+		} else {
+			this.animation = this.attackDownAnimation;
+		}
     } else if (this.isMovingUpLeft) {
         this.animation = this.walkUpLeftAnimation;
     } else if (this.isMovingUpRight) {
@@ -306,6 +329,15 @@ var ASSET_MANAGER = new AssetManager();
 ASSET_MANAGER.queueDownload('./img/spritesheet.png');
 ASSET_MANAGER.queueDownload("./img/DungeonBackgroundSpriteSheet.png");
 ASSET_MANAGER.queueDownload("./img/spritesheet.png");
+ASSET_MANAGER.queueDownload("./img/characterIdleAnimation.png");
+ASSET_MANAGER.queueDownload("./img/CharacterForwardRun.png");
+ASSET_MANAGER.queueDownload("./img/characterBackwardRun.png");
+ASSET_MANAGER.queueDownload("./img/characterRightAnimation.png");
+ASSET_MANAGER.queueDownload("./img/characterLeftAnimation.png");
+ASSET_MANAGER.queueDownload("./img/characterRightAttack.png");
+ASSET_MANAGER.queueDownload("./img/characterLeftAttack.png");
+ASSET_MANAGER.queueDownload("./img/characterUpAttack.png");
+ASSET_MANAGER.queueDownload("./img/characterDownAttack.png");
 
 ASSET_MANAGER.downloadAll(function() {
     console.log("starting up da sheild");
