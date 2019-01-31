@@ -110,11 +110,11 @@ CenterThingy.prototype.draw = function(ctx) {
 function Samurai(game) {                                                                                               //loop   reversed
     this.alertAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SamuraiHeavy_Alert.png"), 0, 0, 512, 512, 0.04, 9, true, false);
     this.standAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SamuraiHeavy_Stand.png"), 0, 0, 512, 512, 0.04, 10, true, false);
-    this.walkAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SamuraiHeavy_Walk.png"), 0, 0, 512, 512, 0.04, 10, false, false);
-    this.runAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SamuraiHeavy_Run.png"), 0, 0, 512, 512, 0.02, 10, false, false);
-    this.attackAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SamuraiHeavy_Attack.png"), 0, 0, 512, 512, 0.04, 10, false, false);
-    this.hitAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SamuraiHeavy_Hit.png"), 0, 0, 512, 512, 0.04, 10, false, false);
-    this.dieAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SamuraiHeavy_Die.png"), 0, 0, 512, 512, 0.04, 10, false, false);
+    this.walkAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SamuraiHeavy_Walk.png"), 0, 0, 512, 512, 0.04, 10, true, false);
+    this.runAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SamuraiHeavy_Run.png"), 0, 0, 512, 512, 0.02, 10, true, false);
+    this.attackAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SamuraiHeavy_Attack.png"), 0, 0, 512, 512, 0.04, 10, true, false);
+    this.hitAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SamuraiHeavy_Hit.png"), 0, 0, 512, 512, 0.04, 10, true, false);
+    this.dieAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SamuraiHeavy_Die.png"), 0, 0, 512, 512, 0.04, 10, true, false);
     this.animation = this.standAnimation; // initial animation.
     this.isAttacking = false;
     this.isMovingLeft = false;
@@ -134,8 +134,6 @@ Samurai.prototype = new Entity();
 Samurai.prototype.constructor = Samurai;
 
 Samurai.prototype.update = function() {
-    this.game.ctx.clearRect(0, 0, this.game.ctx.canvas.width, this.game.ctx.canvas.height);;
-    this.game.ctx.save();
     if (this.game.click) { this.isAttacking = true }
     if (this.game.left)  { this.isMovingLeft = true }
     if (this.game.right) { this.isMovingRight = true }
@@ -155,12 +153,10 @@ Samurai.prototype.update = function() {
     if(this.isMovingUp) {
         this.game.origin.y -= this.travelSpeed;
         this.game.ctx.translate(0,this.travelSpeed); // Moves the canvas/camera.
-        this.game.ctx.save();
         this.y -= this.travelSpeed; // Moves the entity.
     } else if (this.isMovingDown) {
         this.game.origin.y += this.travelSpeed;
         this.game.ctx.translate(0,-this.travelSpeed); // Moves the canvas/camera.
-        this.game.ctx.save();
         this.y += this.travelSpeed; // Moves the entity.
     }
 
@@ -168,17 +164,13 @@ Samurai.prototype.update = function() {
         var speed = this.travelSpeed;
         this.game.origin.x -= speed;
         this.game.ctx.translate(speed,0); // Moves the canvas/camera.
-        this.game.ctx.save();
         this.x -= this.travelSpeed; // Moves the entity.
     } else if (this.isMovingRight) {
         var speed = this.travelSpeed;
         this.game.origin.x += speed;
         this.game.ctx.translate(-speed,0); // Moves the canvas/camera.
-        this.game.ctx.save();
         this.x += this.travelSpeed; // Moves the entity.
     }
-    //console.log("Origin " + this.game.origin.x + "," + this.game.origin.y); // Debugging.
-    //console.log("Entity " + this.x + "," + this.y); // Debugging.
     
     // The boundingBox follows the entity.
     this.boundingBox.x = this.x;
@@ -190,6 +182,17 @@ Samurai.prototype.update = function() {
             this.isAttacking = false;
         }
     }
+
+    if (this.isMovingLeft || this.isMovingRight || this.isMovingUp || this.isMovingDown) {
+        if (this.runAnimation.isDone()) {
+            this.runAnimation.elapsedTime = 0;
+            this.isMovingLeft = false;
+            this.isMovingRight = false;
+            this.isMovingUp = false;
+            this.isMovingDown = false;
+        }
+    }
+
     Entity.prototype.update.call(this);
 }
 
@@ -202,7 +205,6 @@ Samurai.prototype.draw = function(ctx) {
          this.animation = this.standAnimation;
     }
     this.animation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
-    //console.log("Entity is (" + this.x + "," + this.y +")"); // Debugging.
     if(this.boxes) {
         ctx.strokeStyle = "green";
         ctx.strokeRect(this.boundingBox.x, this.boundingBox.y, this.boundingBox.width, this.boundingBox.height); //this.animation.width, this.animation.height);

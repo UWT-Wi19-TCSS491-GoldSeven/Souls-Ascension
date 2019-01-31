@@ -76,7 +76,6 @@ GameEngine.prototype.startInput = function () {
     }
 
     this.ctx.canvas.addEventListener("keydown", function(e) {
-        e.preventDefault();
         switch(e.keyCode) {
             case 32: // ' '
                 that.space = true;
@@ -102,40 +101,15 @@ GameEngine.prototype.startInput = function () {
                 that.downing = e.repeat;
                 break;
             default:
-                console.error("Key Down Event - Char: " + e.code + " Code: " + e.keyCode + " Reapeat: " + e.repeat);
+                //console.error("Key Down Event - Char: " + e.code + " Code: " + e.keyCode + " Reapeat: " + e.repeat);
                 break;
         }
         //if (String.fromCharCode(e.which) === ' ') that.space = true;
     }, false);
 
-    this.ctx.canvas.addEventListener('keyup', function(e) {
-        switch(e.keyCode) {
-            case 37: // arrow left
-            case 65: // a
-                that.left = false;
-                that.lefting = false;
-                break;
-            case 39: // arrow right
-            case 68: // d
-                that.right = false;
-                that.righting = false;
-                break;
-            case 38: // arrow up
-            case 87: // w
-                that.up = false;
-                that.upping = false;
-                break;
-            case 40: // arrow down
-            case 83: // s
-                that.down = false;
-                that.downing = false;
-                break;
-        }
-    }, false);
-
     this.ctx.canvas.addEventListener("click", function(e) {
         that.click = getXandY(e);
-        //console.log("Clicked at " + e.clientX + "," + e.clientY); // The coordinates on the browser screen.
+        if (that.debug) console.log("Clicked at " + e.clientX + "," + e.clientY); // The coordinates on the browser screen.
     }, false);
 
     console.log('Input started');
@@ -147,11 +121,11 @@ GameEngine.prototype.addEntity = function (entity) {
 }
 
 GameEngine.prototype.draw = function () {
+    this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     this.ctx.save();
     this.ctx.setTransform(1, 0, 0, 1, 0, 0);
     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     this.ctx.restore();
-
     for (var i = 0; i < this.entities.length; i++) {
         this.entities[i].draw(this.ctx);
     }
