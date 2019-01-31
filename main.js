@@ -151,9 +151,13 @@ CenterThingy.prototype.draw = function(ctx) {
 function Character(game) {                                                                                            //loop  reversed
     this.standAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"),     0,   0, 32, 32, 0.08, 5, true, false);
     this.walkRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"), 0,  32, 33, 32, 1.04, 1, true, false);
+    this.walkUpLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"), 32,  32, 33, 32, 1.04, 1, true, false);
     this.walkLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"),  0,  64, 33, 32, 1.04, 1, true, false);
+    this.walkUpRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"),  32,  64, 33, 32, 1.04, 1, true, false);
     this.walkUpAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"),    0,  96, 32, 32, 1.04, 1, true, false);
+    this.walkDownLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"),    32,  96, 32, 32, 1.04, 1, true, false);
     this.walkDownAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"),  0, 128, 32, 32, 1.04, 1, true, false);
+    this.walkDownRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"),  32, 128, 32, 32, 1.04, 1, true, false);
     this.attackAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"),    0, 160, 32, 32, 0.04, 5, false, false);
     this.animation = this.standAnimation; // initial animation.
     this.isAttacking = false;
@@ -161,6 +165,10 @@ function Character(game) {                                                      
     this.isMovingRight = false;
     this.isMovingUp = false;
     this.isMovingDown = false;
+    this.isMovingUpLeft = false;
+    this.isMovingUpRight = false;
+    this.isMovingDownLeft = false;
+    this.isMovingDownRight = false;
     this.radius = 100;
     this.travelSpeed = 8;
     this.boxes = game.debug;         // For debugging, game.debug = true;
@@ -174,17 +182,24 @@ Character.prototype = new Entity();
 Character.prototype.constructor = Character;
 
 Character.prototype.update = function() {
+    this.isMovingUp = false;
+    this.isMovingLeft = false;
+    this.isMovingDown = false;
+    this.isMovingRight = false;
+    this.isMovingUpLeft = false;
+    this.isMovingUpRight = false;
+    this.isMovingDownLeft = false;
+    this.isMovingDownRight = false;
+
     if (this.game.click) { this.isAttacking = true }
+    if (this.game.up && this.game.left) this.isMovingUpLeft = true;
+    if (this.game.up && this.game.right) this.isMovingUpRight = true;
+    if (this.game.down && this.game.left) this.isMovingDownLeft = true;
+    if (this.game.down && this.game.right) this.isMovingDownRight = true;
     if (this.game.left)  { this.isMovingLeft = true }
     if (this.game.right) { this.isMovingRight = true }
     if (this.game.up)    { this.isMovingUp = true }
     if (this.game.down)  { this.isMovingDown = true }
-
-    // This is how/where the entity moves with keyboard buttons according to the event listeners.
-    this.isMovingLeft = this.game.left || this.game.lefting;
-    this.isMovingRight = this.game.right || this.game.righting;
-    this.isMovingUp = this.game.up || this.game.upping;
-    this.isMovingDown = this.game.down || this.game.downing;
 
     if(this.game.debug && (this.isMovingLeft || this.isMovingRight || this.isMovingUp || this.isMovingDown)) {
         console.log(this);
@@ -223,26 +238,20 @@ Character.prototype.update = function() {
         }
     }
 
-    if (this.isMovingLeft && this.walkLeftAnimation.isDone()) {
-        this.walkLeftAnimation.elapsedTime = this.walkLeftAnimation.elapsedTime;
-        // this.isMovingLeft = false;
-    } else if(this.isMovingRight && this.walkRightAnimation.isDone()) {
-        this.walkRightAnimation.elapsedTime = 0;
-        // this.isMovingRight = false;
-    } else  if(this.isMovingUp && this.walkUpAnimation.isDone()) {
-        this.walkUpAnimation.elapsedTime = 0;
-        // this.isMovingUp = false;
-    } else if(this.isMovingDown && this.walkDownAnimation.isDone()) {
-        this.walkDownAnimation.elapsedTime = 0;
-        // this.isMovingDown = false;
-    }
-
     Entity.prototype.update.call(this);
 }
 
 Character.prototype.draw = function(ctx) {
     if (this.isAttacking) {
         this.animation = this.attackAnimation;
+    } else if (this.isMovingUpLeft) {
+        this.animation = this.walkUpLeftAnimation;
+    } else if (this.isMovingUpRight) {
+        this.animation = this.walkUpRightAnimation;
+    } else if (this.isMovingDownLeft) {
+        this.animation = this.walkDownLeftAnimation;
+    } else if (this.isMovingDownRight) {
+        this.animation = this.walkDownRightAnimation;
     } else if (this.isMovingUp) {
         this.animation = this.walkUpAnimation;
     } else if (this.isMovingDown) {
