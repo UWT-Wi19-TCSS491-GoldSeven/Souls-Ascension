@@ -28,7 +28,7 @@ Timer.prototype.tick = function () {
     return gameDelta;
 }
 
-function GameEngine() {
+function GameEngine(width, height) {
     this.entities = [];
     this.showOutlines = false;
     this.ctx = null;
@@ -38,6 +38,8 @@ function GameEngine() {
     this.surfaceWidth = null;
     this.surfaceHeight = null;
     this.origin = {x: 0, y: 0};
+    this.debug = true; // If true, console output and entity boxes will appear.
+    this.screenSize = {width: width, height: height};
 }
 
 GameEngine.prototype.init = function (ctx) {
@@ -74,7 +76,6 @@ GameEngine.prototype.startInput = function () {
     }
 
     this.ctx.canvas.addEventListener("keydown", function(e) {
-        e.preventDefault();
         switch(e.keyCode) {
             case 32: // ' '
                 that.space = true;
@@ -100,40 +101,15 @@ GameEngine.prototype.startInput = function () {
                 that.downing = e.repeat;
                 break;
             default:
-                console.error("Key Down Event - Char: " + e.code + " Code: " + e.keyCode + " Reapeat: " + e.repeat);
+                //console.error("Key Down Event - Char: " + e.code + " Code: " + e.keyCode + " Reapeat: " + e.repeat);
                 break;
         }
         //if (String.fromCharCode(e.which) === ' ') that.space = true;
     }, false);
 
-    this.ctx.canvas.addEventListener('keyup', function(e) {
-        switch(e.keyCode) {
-            case 37: // arrow left
-            case 65: // a
-                that.left = false;
-                that.lefting = false;
-                break;
-            case 39: // arrow right
-            case 68: // d
-                that.right = false;
-                that.righting = false;
-                break;
-            case 38: // arrow up
-            case 87: // w
-                that.up = false;
-                that.upping = false;
-                break;
-            case 40: // arrow down
-            case 83: // s
-                that.down = false;
-                that.downing = false;
-                break;
-        }
-    }, false);
-
     this.ctx.canvas.addEventListener("click", function(e) {
         that.click = getXandY(e);
-        //console.log("Clicked at " + e.clientX + "," + e.clientY); // The coordinates on the browser screen.
+        if (that.debug) console.log("Clicked at " + e.clientX + "," + e.clientY); // The coordinates on the browser screen.
     }, false);
 
     console.log('Input started');
@@ -145,11 +121,11 @@ GameEngine.prototype.addEntity = function (entity) {
 }
 
 GameEngine.prototype.draw = function () {
+    this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     this.ctx.save();
     this.ctx.setTransform(1, 0, 0, 1, 0, 0);
     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     this.ctx.restore();
-
     for (var i = 0; i < this.entities.length; i++) {
         this.entities[i].draw(this.ctx);
     }
@@ -198,9 +174,58 @@ function Entity(game, x, y) {
     this.x = x;
     this.y = y;
     this.removeFromWorld = false;
+    this.boundingBox = new BoundingBox(this.x, this.y, 99, 99); // 99 is default width and height.
 }
 
+// The imaginary box around the entity.
+function BoundingBox(theX, theY, width, height, xOffset, yOffset) {
+    this._xOffset = xOffset || 0;
+    this._yOffset = yOffset || 0;
+    this._x;
+    this._y;
+    this._width = width;
+    this._height = height;
+    this.left = theX;
+    this.top = theY;
+    this.right = this.left + width;
+    this.bottom = this.top + height;
+    this._origin = {x: this.left + this.width/2, y: this.top + this.height/2};
+}
+
+BoundingBox.prototype = {
+    set x(value) {
+        this._x = value + this._xOffset;
+        this._origin.x = this._x - (this.width/2);
+    },
+    get x() { return this._x },
+    set y(value) {
+        this._y = value + this._yOffset;
+        this._origin.y = this._y - (this.height/2);
+    },
+    get y() { return this._y },
+    get origin() { return this._origin },
+    set offsetX(value) { this._xOffset = value },
+    set offsetY(value) { this._yOffset = value },
+    set width(value) { this._width = value },
+    get width() { return this._width },
+    set height(value) { this._height = value },
+    get height() { return this._height },
+}
+
+// Not yet used.
+BoundingBox.prototype.collide = function (oth) {
+    if (    this.right > oth.left 
+        &&   this.left < oth.right 
+        &&    this.top < oth.bottom 
+        && this.bottom > oth.top) 
+        return true;
+    return false;
+}
+
+
+// Do not delete this, else all entities will not draw!
 Entity.prototype.update = function () {
+
 }
 
 Entity.prototype.draw = function (ctx) {
