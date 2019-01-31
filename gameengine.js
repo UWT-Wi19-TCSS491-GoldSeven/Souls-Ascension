@@ -219,41 +219,23 @@ function BoundingBox(theX, theY, width, height, xOffset, yOffset) {
 }
 
 BoundingBox.prototype = {
-    set width(value) {
-        this._width = value;
-    },
-    get width() {
-        return this._width;
-    },
-    set height(value) {
-        this._height = value;
-    },
-    get height() {
-        return this._height;
-    },
     set x(value) {
         this._x = value + this._xOffset;
         this._origin.x = this._x - (this.width/2);
     },
-    get x() {
-        return this._x;
-    },
+    get x() { return this._x },
     set y(value) {
         this._y = value + this._yOffset;
         this._origin.y = this._y - (this.height/2);
     },
-    get y() {
-        return this._y;
-    },
-    get origin() {
-        return this._origin;
-    },
-    set offsetX(value) {
-        this._xOffset = value;
-    },
-    set offsetY(value) {
-        this._yOffset = value;
-    }
+    get y() { return this._y },
+    get origin() { return this._origin },
+    set offsetX(value) { this._xOffset = value },
+    set offsetY(value) { this._yOffset = value },
+    set width(value) { this._width = value },
+    get width() { return this._width },
+    set height(value) { this._height = value },
+    get height() { return this._height },
 }
 
 // Not yet used.
@@ -266,15 +248,6 @@ BoundingBox.prototype.collide = function (oth) {
     return false;
 }
 
-/*BoundingBox.prototype.update = function (x, y) {
-    this.x = x + this.xOffset;
-    this.y = y + this.yOffset;
-}
-
-BoundingBox.prototype.setOffset = function (xOffset, yOffset) {
-    this._xOffset = xOffset;
-    this._yOffset = yOffset;
-}*/
 
 // Do not delete this, else all entities will not draw!
 Entity.prototype.update = function () {

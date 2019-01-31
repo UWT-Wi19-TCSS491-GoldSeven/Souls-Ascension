@@ -124,12 +124,13 @@ function Samurai(game) {                                                        
     this.radius = 100;
     this.travelSpeed = 8;
     this.boxes = game.debug;         // For debugging, game.debug = true;
-    this.scale = 0.5;
+    this.scale = 0.5; // set to 1 if the sprite dimensions are the exact size that should be rendered.
     //console.log(this); // Debugging.
     Entity.call(this, game, 211, 299); // Spawn the entity's upper left corner at these coordinates of the world.
 }
 
 Samurai.prototype = new Entity();
+
 Samurai.prototype.constructor = Samurai;
 
 Samurai.prototype.update = function() {
@@ -153,28 +154,28 @@ Samurai.prototype.update = function() {
 
     if(this.isMovingUp) {
         this.game.origin.y -= this.travelSpeed;
-        this.game.ctx.translate(0,this.travelSpeed);  // Screen-in-world movement.
+        this.game.ctx.translate(0,this.travelSpeed); // Moves the canvas/camera.
         this.game.ctx.save();
         this.y -= this.travelSpeed; // Moves the entity.
     } else if (this.isMovingDown) {
         this.game.origin.y += this.travelSpeed;
-        this.game.ctx.translate(0,-this.travelSpeed);
+        this.game.ctx.translate(0,-this.travelSpeed); // Moves the canvas/camera.
         this.game.ctx.save();
-        this.y += this.travelSpeed;
+        this.y += this.travelSpeed; // Moves the entity.
     }
 
     if(this.isMovingLeft) {
         var speed = this.travelSpeed;
         this.game.origin.x -= speed;
-        this.game.ctx.translate(speed,0);
+        this.game.ctx.translate(speed,0); // Moves the canvas/camera.
         this.game.ctx.save();
         this.x -= this.travelSpeed; // Moves the entity.
     } else if (this.isMovingRight) {
         var speed = this.travelSpeed;
         this.game.origin.x += speed;
-        this.game.ctx.translate(-speed,0);
+        this.game.ctx.translate(-speed,0); // Moves the canvas/camera.
         this.game.ctx.save();
-        this.x += this.travelSpeed;
+        this.x += this.travelSpeed; // Moves the entity.
     }
     //console.log("Origin " + this.game.origin.x + "," + this.game.origin.y); // Debugging.
     //console.log("Entity " + this.x + "," + this.y); // Debugging.
@@ -234,19 +235,17 @@ ASSET_MANAGER.downloadAll(function() {
     var bg = new Background(gameEngine); // Debugging point of reference until we have an actual map.
     var samurai = new Samurai(gameEngine);
     var centerthingy = new CenterThingy(gameEngine);
+
     // Initial configuration of entity.
     samurai.boundingBox.offsetX = 130;
     samurai.boundingBox.offsetY = 36;
     samurai.boundingBox.width = 117;   // Left.
     samurai.boundingBox.height = 128;  // Down.
-    //var newX = samurai.x - samurai.boundingBox.origin.x;
-    //var newY = samurai.y - samurai.boundingBox.origin.y;
-    //samurai.x = 211; // center
-    //samurai.y = 299; // center
 
     gameEngine.addEntity(bg);
     gameEngine.addEntity(samurai);
     gameEngine.addEntity(blockthingy);
+
     if (gameEngine.debug) gameEngine.addEntity(centerthingy);
 
     gameEngine.init(ctx);
