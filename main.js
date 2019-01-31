@@ -237,7 +237,7 @@ const mapWidth =  currentWTiles * currentScale;
 const mapHeight = (slimeDungeonLevelOne.length / currentWTiles) * currentScale;
 var MAP_SIZE = currentScale;
 var SQUARE = currentWTiles;
-var N_ITERATIONS = 3;
+var N_ITERATIONS = 4;
 var DISCARD_BY_RATIO = true;
 var H_RATIO = 0.45;
 var W_RATIO = 0.45;
@@ -258,7 +258,7 @@ function fillBSPTree(target) {
              //and the wall into property container
             for (var j = 0; j < leafs.length; j++) leafs[j].pushWall(x, y);
         }
-        
+
         if (count >= currentWTiles) // change the value based on how many tiles you will draw. (88 atm)
         {
             y += currentScale;
@@ -273,11 +273,37 @@ var con = leafs[2];
 alert(`Remove alert -- container x: ${con.x}-${con.w}-- container y: ${con.y} -- ${con.h} -- container length: ${leafs.length}Test BSP TRee -- Remove alert `);
 //if (con.walls.length >= 3)
 //alert(`Wall - center point : ${con.walls[2].x}----${con.walls.length}`);
-for (var m = 0; m < leafs.length; m++) {
-    alert(`Total walls in container ${m} is ${leafs[m].walls.length}`);
-}
+//for (var m = 0; m < leafs.length; m++) {
+//    alert(`Total walls in container ${m} is ${leafs[m].walls.length}`);
+//}
 
 /*------------------------------------BSP TREE---------------------------*/
+/*------------------------------------Collision--------------------------- */
+var isColli = false;
+function collisionDetect(characterX, characterY) {
+    var targetX, targetY;
+    var j; // area to check collision
+    for (j = 0; j < leafs.length; j++) {
+        if (leafs[j].x <= characterX && characterX <= leafs[j].x + leafs[j].w
+            && leafs[j].y <= characterY && characterY <= leafs[j].y + leafs[j].h) {
+            break;
+        }
+    }
+    //console.log('Area:' + j);
+    //console.log('Walls:' + leafs[j].walls[1].x);
+    for (var i = 0; i < leafs[j].walls.length; i++) {
+        targetX = leafs[j].walls[i].x;
+        targetY = leafs[j].walls[i].y;
+        if (characterX < targetX + currentScale &&
+            characterX + currentScale > targetX &&
+            characterY < targetY + currentScale &&
+            characterY + currentScale > targetY) {
+            isColli = true;
+            break;
+        }
+    }   
+}
+/*------------------------------------Collision End--------------------------- */
 Background.prototype.draw = function () {
 	var spriteX = 0;
 	var spriteY = 0;
@@ -371,29 +397,37 @@ Character.prototype.update = function() {
     if (this.game.down && this.game.right) this.isMovingDownRight = true;
     if (this.game.left)  { this.isMovingLeft = true }
     if (this.game.right) { this.isMovingRight = true }
-    if (this.game.up)    { this.isMovingUp = true }
+    if (this.game.up) {
+        collisionDetect(this.x, this.y - this.travelSpeed);
+        if (isColli) { isColli = false; return; }
+        else this.isMovingUp = true
+    }
     if (this.game.down)  { this.isMovingDown = true }
 
     if(this.game.debug && (this.isMovingLeft || this.isMovingRight || this.isMovingUp || this.isMovingDown)) {
         console.log(this);
     }
 
-    if(this.isMovingUp) {
+    if (this.isMovingUp) {
+        
         this.game.origin.y -= this.travelSpeed;
         this.game.ctx.translate(0,this.travelSpeed); // Moves the canvas/camera.
         this.y -= this.travelSpeed; // Moves the entity.
     } else if (this.isMovingDown) {
+        //collisionDetect(this.x, this.y + this.travelSpeed);
         this.game.origin.y += this.travelSpeed;
         this.game.ctx.translate(0,-this.travelSpeed); // Moves the canvas/camera.
         this.y += this.travelSpeed; // Moves the entity.
     }
 
-    if(this.isMovingLeft) {
+    if (this.isMovingLeft) {
+        //collisionDetect(this.x - this.travelSpeed, this.y);
         var speed = this.travelSpeed;
         this.game.origin.x -= speed;
         this.game.ctx.translate(speed,0); // Moves the canvas/camera.
         this.x -= this.travelSpeed; // Moves the entity.
     } else if (this.isMovingRight) {
+        //collisionDetect(this.x + this.travelSpeed, this.y);
         var speed = this.travelSpeed;
         this.game.origin.x += speed;
         this.game.ctx.translate(-speed,0); // Moves the canvas/camera.
