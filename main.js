@@ -224,17 +224,17 @@ Character.prototype.update = function() {
     }
 
     if (this.isMovingLeft && this.walkLeftAnimation.isDone()) {
-        this.walkLeftAnimation.elapsedTime = 0;
-        this.isMovingLeft = false;
+        this.walkLeftAnimation.elapsedTime = this.walkLeftAnimation.elapsedTime;
+        // this.isMovingLeft = false;
     } else if(this.isMovingRight && this.walkRightAnimation.isDone()) {
         this.walkRightAnimation.elapsedTime = 0;
-        this.isMovingRight = false;
+        // this.isMovingRight = false;
     } else  if(this.isMovingUp && this.walkUpAnimation.isDone()) {
         this.walkUpAnimation.elapsedTime = 0;
-        this.isMovingUp = false;
+        // this.isMovingUp = false;
     } else if(this.isMovingDown && this.walkDownAnimation.isDone()) {
         this.walkDownAnimation.elapsedTime = 0;
-        this.isMovingDown = false;
+        // this.isMovingDown = false;
     }
 
     Entity.prototype.update.call(this);

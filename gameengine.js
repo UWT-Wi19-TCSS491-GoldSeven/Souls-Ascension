@@ -106,6 +106,33 @@ GameEngine.prototype.startInput = function () {
         //if (String.fromCharCode(e.which) === ' ') that.space = true;
     }, false);
 
+    this.ctx.canvas.addEventListener("keyup", function(e) {
+        switch (e.keyCode) {
+            case 32: // ' '
+                that.space = false;
+                break;
+            case 37: // arrow left
+            case 65: // a
+                that.left = that.lefting = false;
+                break;
+            case 39: // arrow right
+            case 68: // d
+                that.right = that.righting = false;
+                break;
+            case 38: // arrow up
+            case 87: // w
+                that.up = that.upping = false;
+                break;
+            case 40: // arrow down
+            case 83: // s
+                that.down = that.downing = false;
+                break;
+            default:
+                //console.error("Key Down Event - Char: " + e.code + " Code: " + e.keyCode + " Reapeat: " + e.repeat);
+                break;
+        }
+    }, false);
+
     this.ctx.canvas.addEventListener("click", function(e) {
         that.click = getXandY(e);
         if (that.debug) console.log("Clicked at " + e.clientX + "," + e.clientY); // The coordinates on the browser screen.
@@ -154,18 +181,6 @@ GameEngine.prototype.loop = function () {
     this.draw();
     this.space = null;
     this.click = null;
-
-    // Just pressed a button breifly.
-    this.up = null;
-    this.down = null;
-    this.left = null;
-    this.right = null;
-
-    // Holding down a button for >1 second.
-    this.upping = null;
-    this.downing = null;
-    this.lefting = null;
-    this.righting = null;
 }
 
 function Entity(game, x, y) {
