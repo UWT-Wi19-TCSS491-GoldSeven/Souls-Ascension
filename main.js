@@ -51,11 +51,39 @@ Animation.prototype.currentFrame = function() {
 Animation.prototype.isDone = function() {
     return (this.elapsedTime >= this.totalTime);
 }
-
-function Background(game) {
-    Entity.call(this, game, 0, 400);
-    this.radius = 200;
-}
+//----------------------------------------------------------------------------------------------------------------------------------------
+/* 
+ * Slime Dungeon Level 1 (88x33) each number is a 32x32 pixel space
+ * 0 = no block (should layer background image so these are not just a solid color)
+ * 1-4 = alternating horizontal wall tiles, 5 = Vertical wall tile, 6 = Top Left L shaped corner, 7 = Top Right L shaped corner,
+ * 8 = Bottom Left L shaped corner, 9 = Bottom Right L shaped corner, 10 = North T shaped wall, 11 = East T shaped wall,
+ * 12 = West T shaped wall, 13 = South T shaped wall, 14 = + shaped wall, 15 = Horizontal wall with door,
+ * 16 = North floor, 17 = East floor, 18 = West floor, 19 = South floor, 20 = Top Left L floor, 21 = Top Right L floor,
+ * 22 = Bottom Left L floor, 23 = Bottom Right L floor, 24 = Center floor.
+ */
+var slimeDungeonLevelOne = new Array(
+	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,6 ,1 ,2 ,1 ,7 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,6 ,1 ,2 ,1 ,7 ,0 ,0 ,0 ,0 ,6 ,3 ,4 ,7 ,0 ,0 ,0 ,0 ,6 ,1 ,1 ,2 ,1 ,4 ,1 ,7 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,
+	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,5 ,20,16,21,12,1 ,2 ,1 ,2 ,1 ,7 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,6 ,2 ,20,16,21,3 ,7 ,0 ,6 ,2 ,1 ,20,21,2 ,1 ,7 ,0 ,6 ,3 ,20,16,16,16,16,21,12,1 ,2 ,2 ,2 ,2 ,1 ,7 ,0 ,0 ,0 ,0 ,0 ,0 ,
+	0 ,0 ,0 ,0 ,6 ,1 ,2 ,1 ,1 ,2 ,2 ,1 ,3 ,4 ,1 ,1 ,1 ,2 ,2 ,1 ,1 ,1 ,3 ,1 ,1 ,2 ,1 ,11,18,24,17,5 ,20,16,16,16,21,1 ,7 ,0 ,0 ,0 ,6 ,1 ,2 ,1 ,10,10,4 ,1 ,20,24,24,24,21,2 ,10,1 ,20,16,24,24,16,21,1 ,2 ,11,20,24,24,19,19,19,23,5 ,20,16,16,16,16,21,1 ,3 ,1 ,4 ,7 ,0 ,0 ,
+	0 ,0 ,0 ,0 ,5 ,20,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,21,5 ,22,19,23,5 ,22,19,19,24,24,20,3 ,1 ,2 ,1 ,4 ,20,16,21,3 ,4 ,20,16,24,24,24,24,24,21,1 ,20,24,24,24,24,24,24,16,21,5 ,22,24,17,6 ,1 ,2 ,1 ,3 ,18,24,19,19,19,24,16,16,16,21,5 ,0 ,0 ,
+	0 ,0 ,0 ,0 ,5 ,18,24,24,24,24,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,24,17,1 ,3 ,15,4 ,1 ,1 ,1 ,7 ,18,24,24,16,16,16,16,16,24,24,24,16,16,24,19,24,24,24,24,24,24,16,24,24,24,24,24,24,24,24,17,2 ,7 ,18,17,5 ,20,16,16,16,24,23,6 ,10,7 ,18,24,24,24,17,5 ,0 ,0 ,
+	0 ,0 ,0 ,0 ,5 ,18,24,24,24,17,1 ,2 ,1 ,10,1 ,2 ,1 ,2 ,3 ,4 ,1 ,1 ,2 ,1 ,7 ,18,24,16,16,16,16,16,16,21,5 ,18,24,24,24,24,19,19,19,19,19,19,19,24,17,5 ,22,24,24,24,24,19,19,19,19,24,24,24,24,24,24,24,21,5 ,18,17,5 ,18,24,19,19,23,6 ,1 ,1 ,5 ,22,19,19,19,23,5 ,0 ,0 ,
+	0 ,0 ,0 ,0 ,5 ,18,24,24,24,24,16,16,21,5 ,20,16,16,16,16,16,16,16,16,21,5 ,18,24,24,24,24,24,24,24,23,5 ,18,24,24,24,17,6 ,10,10,10,1 ,1 ,7 ,18,17,8 ,7 ,18,24,24,17,1 ,10,10,7 
+	
+	);
+var currentScale = 32;
+var currentWTiles = 88; // number of tiles with wise on the map
+function Background(game, spritesheet) {
+    this.x = 0;
+    this.y = 0;
+	this.sw = 32;
+    this.sh = 32;
+	this.dw = currentScale;
+    this.dh = currentScale;
+    this.spritesheet = spritesheet;
+    this.game = game;
+    this.ctx = game.ctx;
+};
 
 // The brown background is only for a point of reference. OK to delete.
 Background.prototype = new Entity();
@@ -80,13 +108,34 @@ BlockThingy.prototype = new Entity();
 
 BlockThingy.prototype.constructor = Background;
 
-BlockThingy.prototype.update = function() {}
 
-BlockThingy.prototype.draw = function(ctx) {
-    ctx.fillStyle = "red";
-    ctx.fillRect(0, 0, 20, 800);
-    Entity.prototype.draw.call(this);
-}
+Background.prototype.draw = function () {
+	var spriteX = 0;
+	var spriteY = 0;
+	var count = 0;
+	var x = this.x;
+	var y = this.y;
+	
+	// Loop to generate each tile
+    for (var i = 0; i < slimeDungeonLevelOne.length -2; i++) {
+		spriteX = (slimeDungeonLevelOne[i] - 1) * 32; // 32 is the number of pixels per sprite
+        console.log(this.ctx);
+		this.ctx.drawImage(this.spritesheet, spriteX, spriteY, this.sw, this.sh, x, y, this.dw, this.dh);
+		count++;
+		if (count >= currentWTiles) // change the value based on how many tiles you will draw. (88 atm)
+		{
+			x = this.x;
+			y += currentScale; 
+			count = 0;
+		}
+		else 
+		{
+			x += currentScale; 
+		}
+	};
+};
+
+//--------------------------------------------------------------------------------------------------
 
 function CenterThingy(game) {
     Entity.call(this, game, 390, 390);
@@ -219,6 +268,7 @@ Samurai.prototype.draw = function(ctx) {
 
 var ASSET_MANAGER = new AssetManager();
 
+ASSET_MANAGER.queueDownload("./img/DungeonBackgroundSpriteSheet.png");
 ASSET_MANAGER.queueDownload("./img/SamuraiHeavy_Alert.png");
 ASSET_MANAGER.queueDownload("./img/SamuraiHeavy_Attack.png");
 ASSET_MANAGER.queueDownload("./img/SamuraiHeavy_Die.png");
@@ -229,12 +279,12 @@ ASSET_MANAGER.queueDownload("./img/SamuraiHeavy_Walk.png");
 
 ASSET_MANAGER.downloadAll(function() {
     console.log("starting up da sheild");
-    var canvas = document.getElementById('gameWorld');
-    var ctx = canvas.getContext('2d');
+    var canvas = document.getElementById("gameWorld");
+    var ctx = canvas.getContext("2d");
 
-    var gameEngine = new GameEngine(ctx.canvas.width, ctx.canvas.height);
+    var gameEngine = new GameEngine(ctx, ctx.canvas.width, ctx.canvas.height);
     var blockthingy = new BlockThingy(gameEngine); // Debugging point of reference until we have an actual map.
-    var bg = new Background(gameEngine); // Debugging point of reference until we have an actual map.
+    var bg = new Background(gameEngine, ASSET_MANAGER.getAsset("./img/DungeonBackgroundSpriteSheet.png"));
     var samurai = new Samurai(gameEngine);
     var centerthingy = new CenterThingy(gameEngine);
 
@@ -244,9 +294,8 @@ ASSET_MANAGER.downloadAll(function() {
     samurai.boundingBox.width = 117;   // Left.
     samurai.boundingBox.height = 128;  // Down.
 
-    gameEngine.addEntity(bg);
+	gameEngine.addEntity(bg);
     gameEngine.addEntity(samurai);
-    gameEngine.addEntity(blockthingy);
 
     if (gameEngine.debug) gameEngine.addEntity(centerthingy);
 
