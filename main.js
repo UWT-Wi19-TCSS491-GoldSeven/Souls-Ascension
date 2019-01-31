@@ -149,12 +149,12 @@ CenterThingy.prototype.draw = function(ctx) {
 
 // The entity's origin is determined by its BoundingBox object.
 function Character(game) {                                                                                            //loop  reversed
-    this.standAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"),     0,   0, 32, 32, 0.04, 5, true, false);
-    this.walkRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"), 0,  33, 32, 32, 0.04, 1, true, false);
-    this.walkLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"),  0,  65, 32, 32, 0.04, 1, true, false);
-    this.walkUpAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"),    0,  97, 32, 32, 0.04, 1, true, false);
-    this.walkDownAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"),  0, 129, 32, 32, 0.04, 1, true, false);
-    this.attackAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"),    0, 161, 32, 32, 0.04, 1, true, false);
+    this.standAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"),     0,   0, 32, 32, 0.08, 5, true, false);
+    this.walkRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"), 0,  33, 32, 32, 1.04, 1, false, false);
+    this.walkLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"),  0,  65, 32, 32, 1.04, 1, false, false);
+    this.walkUpAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"),    0,  97, 32, 32, 1.04, 1, false, false);
+    this.walkDownAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"),  0, 129, 32, 32, 1.04, 1, false, false);
+    this.attackAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"),    0, 161, 32, 32, 0.04, 5, false, false);
     this.animation = this.standAnimation; // initial animation.
     this.isAttacking = false;
     this.isMovingLeft = false;
@@ -218,22 +218,22 @@ Character.prototype.update = function() {
 
     if (this.isAttacking) {
         if (this.attackAnimation.isDone()) {
-            this.attackAnimation.elapsedTime = 0; //0
+            this.attackAnimation.elapsedTime = 0
             this.isAttacking = false;
         }
     }
 
     if (this.isMovingLeft && this.walkLeftAnimation.isDone()) {
-        this.walkLeftAnimation.elapsedTime = 0; // 0
+        this.walkLeftAnimation.elapsedTime = 0;
         this.isMovingLeft = false;
     } else if(this.isMovingRight && this.walkRightAnimation.isDone()) {
-        this.walkRightAnimation.elapsedTime = 0; // 0
+        this.walkRightAnimation.elapsedTime = 0;
         this.isMovingRight = false;
     } else  if(this.isMovingUp && this.walkUpAnimation.isDone()) {
-        this.walkUpAnimation.elapsedTime = 0; // 0
+        this.walkUpAnimation.elapsedTime = 0;
         this.isMovingUp = false;
     } else if(this.isMovingDown && this.walkDownAnimation.isDone()) {
-        this.walkDownAnimation.elapsedTime = 0; // 0
+        this.walkDownAnimation.elapsedTime = 0;
         this.isMovingDown = false;
     }
 
@@ -270,6 +270,7 @@ Character.prototype.draw = function(ctx) {
 var ASSET_MANAGER = new AssetManager();
 
 ASSET_MANAGER.queueDownload("./img/DungeonBackgroundSpriteSheet.png");
+ASSET_MANAGER.queueDownload("./img/spritesheet.png");
 
 ASSET_MANAGER.downloadAll(function() {
     console.log("starting up da sheild");
@@ -279,7 +280,7 @@ ASSET_MANAGER.downloadAll(function() {
     var gameEngine = new GameEngine(ctx, ctx.canvas.width, ctx.canvas.height);
     var blockthingy = new BlockThingy(gameEngine); // Debugging point of reference until we have an actual map.
     var bg = new Background(gameEngine, ASSET_MANAGER.getAsset("./img/DungeonBackgroundSpriteSheet.png"));
-    var samurai = new Samurai(gameEngine);
+    var character = new Character(gameEngine);
     var centerthingy = new CenterThingy(gameEngine);
 
     // Initial configuration of entity.
@@ -289,7 +290,7 @@ ASSET_MANAGER.downloadAll(function() {
     character.boundingBox.height = 32;  // Down.
 
 	gameEngine.addEntity(bg);
-    gameEngine.addEntity(samurai);
+    gameEngine.addEntity(character);
 
     if (gameEngine.debug) gameEngine.addEntity(centerthingy);
 

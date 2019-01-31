@@ -38,7 +38,7 @@ function GameEngine(ctx, width, height) {
     this.surfaceWidth = null;
     this.surfaceHeight = null;
     this.origin = {x: 0, y: 0};
-    this.debug = true; // If true, console output and entity boxes will appear.
+    this.debug = false; // If true, console output and entity boxes will appear.
     this.screenSize = {width: width, height: height};
 }
 
