@@ -157,8 +157,8 @@ Tree.prototype.getLevel = function (level, queue) {
     return queue
 }
 var Point = function (x, y) {
-    this.x = x
-    this.y = y
+    this.x = x;
+    this.y = y; 
 }
 //a container prototype.
 var Container = function (x, y, w, h) {
@@ -166,10 +166,17 @@ var Container = function (x, y, w, h) {
     this.y = y
     this.w = w
     this.h = h
+    this.walls = [];
     this.center = new Point(
         this.x + (this.w / 2),
         this.y + (this.h / 2)
     )
+}
+Container.prototype.pushWall = function (theX, theY) {
+    if (this.x <= theX && theX <= this.x + this.w && this.y <= theY && theY <= this.y + this.h) {
+        this.walls.push(new Point(theX, theY));
+       // alert(theX + '<-X-Y->' + theY);
+    }
 }
 // build this tree
 function split_container(container, iter) {
@@ -196,6 +203,14 @@ function random_split(container) {
             container.x + r1.w, container.y,      // r2.x, r2.y
             container.w - r1.w, container.h       // r2.w, r2.h
         )
+
+        if (DISCARD_BY_RATIO) {
+            var r1_w_ratio = r1.w / r1.h
+            var r2_w_ratio = r2.w / r2.h
+            if (r1_w_ratio < W_RATIO || r2_w_ratio < W_RATIO) {
+                return random_split(container)
+            }
+        }
     } else {
         // Horizontal
         r1 = new Container(
@@ -206,20 +221,61 @@ function random_split(container) {
             container.x, container.y + r1.h,      // r2.x, r2.y
             container.w, container.h - r1.h       // r2.w, r2.h
         )
+
+        if (DISCARD_BY_RATIO) {
+            var r1_h_ratio = r1.h / r1.w
+            var r2_h_ratio = r2.h / r2.w
+            if (r1_h_ratio < H_RATIO || r2_h_ratio < H_RATIO) {
+                return random_split(container)
+            }
+        }
     }
     return [r1, r2]
 }
+
 const mapWidth =  currentWTiles * currentScale;
 const mapHeight = (slimeDungeonLevelOne.length / currentWTiles) * currentScale;
 var MAP_SIZE = currentScale;
 var SQUARE = currentWTiles;
-var N_ITERATIONS = 4;
-var main_container = new Container(0, 0, mapWidth, mapHeight)
+var N_ITERATIONS = 3;
+var DISCARD_BY_RATIO = true;
+var H_RATIO = 0.45;
+var W_RATIO = 0.45;
+var main_container = new Container(0, 0, mapWidth, mapHeight);
 var container_tree = split_container(main_container, N_ITERATIONS)
 
 var leafs = container_tree.getLeafs();
+
+
+function fillBSPTree(target) {
+    
+    var x = 0;
+    var y = 0;
+    var count = 0;
+    for (var i = 0; i < target.length; i++) {
+        if (13 - target[i] <= 13) { //wall code
+            x = count * currentScale;
+             //and the wall into property container
+            for (var j = 0; j < leafs.length; j++) leafs[j].pushWall(x, y);
+        }
+        
+        if (count >= currentWTiles) // change the value based on how many tiles you will draw. (88 atm)
+        {
+            y += currentScale;
+            x = 0;
+            count = 0;
+        } else count++;
+        //alert('Count:' + count);
+    };
+}
+fillBSPTree(slimeDungeonLevelOne);
 var con = leafs[2];
-alert(`Remove alert -- container x: ${con.x}--- container y: ${con.y} Test BSP TRee -- Remove alert`);
+alert(`Remove alert -- container x: ${con.x}-${con.w}-- container y: ${con.y} -- ${con.h} -- container length: ${leafs.length}Test BSP TRee -- Remove alert `);
+//if (con.walls.length >= 3)
+//alert(`Wall - center point : ${con.walls[2].x}----${con.walls.length}`);
+for (var m = 0; m < leafs.length; m++) {
+    alert(`Total walls in container ${m} is ${leafs[m].walls.length}`);
+}
 
 /*------------------------------------BSP TREE---------------------------*/
 Background.prototype.draw = function () {
