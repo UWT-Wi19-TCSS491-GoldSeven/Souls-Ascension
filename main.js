@@ -13,7 +13,7 @@ function Animation(spriteSheet, startX, startY, frameWidth, frameHeight, frameDu
 }
 
 Animation.prototype.drawFrame = function(tick, ctx, x, y, scaleBy) {
-    var scaleBy = scaleBy || 0.5 //The size of the sprite. 1 = 100%
+    var scaleBy = scaleBy || 0.5; //The size of the sprite. 1 = 100%
     this.elapsedTime += tick;
     if (this.loop) {
         if (this.isDone()) {
@@ -57,7 +57,9 @@ function Background(game) {
     this.radius = 200;
 }
 
+// The brown background is only for a point of reference. OK to delete.
 Background.prototype = new Entity();
+
 Background.prototype.constructor = Background;
 
 Background.prototype.update = function() {}
@@ -73,7 +75,9 @@ function BlockThingy(game) {
     this.radius = 200;
 }
 
+// The BockThingy is only for testing a point of reference.  OK to delete.
 BlockThingy.prototype = new Entity();
+
 BlockThingy.prototype.constructor = Background;
 
 BlockThingy.prototype.update = function() {}
@@ -84,6 +88,25 @@ BlockThingy.prototype.draw = function(ctx) {
     Entity.prototype.draw.call(this);
 }
 
+function CenterThingy(game) {
+    Entity.call(this, game, 390, 390);
+    this.radius = 200;
+}
+
+// The BockThingy is only for testing a point of reference.  OK to delete.
+CenterThingy.prototype = new Entity();
+
+CenterThingy.prototype.constructor = Background;
+
+CenterThingy.prototype.update = function() {}
+
+CenterThingy.prototype.draw = function(ctx) {
+    ctx.fillStyle = "blue";
+    ctx.fillRect(390, 390, 20, 20);
+    Entity.prototype.draw.call(this);
+}
+
+// The entity's origin is determined by its BoundingBox object.
 function Samurai(game) {                                                                                               //loop   reversed
     this.alertAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SamuraiHeavy_Alert.png"), 0, 0, 512, 512, 0.04, 9, true, false);
     this.standAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SamuraiHeavy_Stand.png"), 0, 0, 512, 512, 0.04, 10, true, false);
@@ -92,19 +115,18 @@ function Samurai(game) {                                                        
     this.attackAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SamuraiHeavy_Attack.png"), 0, 0, 512, 512, 0.04, 10, false, false);
     this.hitAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SamuraiHeavy_Hit.png"), 0, 0, 512, 512, 0.04, 10, false, false);
     this.dieAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SamuraiHeavy_Die.png"), 0, 0, 512, 512, 0.04, 10, false, false);
-    this.animation = this.standAnimation; // default animation with no user interaction.
-    this.jumpAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SamuraiHeavy_Run.png"), 0, 0, 512, 512, 0.06, 10, false, false);
-
-    this.isJumping = false;
+    this.animation = this.standAnimation; // initial animation.
     this.isAttacking = false;
     this.isMovingLeft = false;
     this.isMovingRight = false;
     this.isMovingUp = false;
     this.isMovingDown = false;
     this.radius = 100;
-    this.ground = 400;
     this.travelSpeed = 8;
-    Entity.call(this, game, 0, 400);
+    this.boxes = game.debug;         // For debugging, game.debug = true;
+    this.scale = 0.5;
+    //console.log(this); // Debugging.
+    Entity.call(this, game, 211, 299); // Spawn the entity's upper left corner at these coordinates of the world.
 }
 
 Samurai.prototype = new Entity();
@@ -112,80 +134,54 @@ Samurai.prototype.constructor = Samurai;
 
 Samurai.prototype.update = function() {
     this.game.ctx.clearRect(0, 0, this.game.ctx.canvas.width, this.game.ctx.canvas.height);;
-    if (this.game.space) { this.isJumping = true }
+    this.game.ctx.save();
     if (this.game.click) { this.isAttacking = true }
     if (this.game.left)  { this.isMovingLeft = true }
     if (this.game.right) { this.isMovingRight = true }
     if (this.game.up)    { this.isMovingUp = true }
     if (this.game.down)  { this.isMovingDown = true }
 
-    // This is how the entity jumps.
-    if (this.isJumping) {
-        if (this.jumpAnimation.isDone()) {
-            this.jumpAnimation.elapsedTime = 0;
-            this.isJumping = false;
-        }
-        var jumpDistance = this.jumpAnimation.elapsedTime / this.jumpAnimation.totalTime;
-        var totalHeight = 200;
+    // This is how/where the entity moves with keyboard buttons according to the event listeners.
+    this.isMovingLeft = this.game.left || this.game.lefting;
+    this.isMovingRight = this.game.right || this.game.righting;
+    this.isMovingUp = this.game.up || this.game.upping;
+    this.isMovingDown = this.game.down || this.game.downing;
 
-        if (jumpDistance > 0.5)
-            jumpDistance = 1 - jumpDistance;
-
-        //var height = jumpDistance * 2 * totalHeight; // Don't use this.
-        var height = totalHeight * (-4 * (jumpDistance * jumpDistance - jumpDistance)); // A nice parabolic jump.
-        this.y = this.ground - height;
-        if(this.isMovingLeft) {
-            this.x -= 4;
-        } else if (this.isMovingRight) {
-            this.x += 4;
-        } 
-    } else {
-        // This is how/where the entity moves with keyboard buttons according to the event listeners.
-        this.isMovingLeft = this.game.left || this.game.lefting;
-        this.isMovingRight = this.game.right || this.game.righting;
-        this.isMovingUp = this.game.up || this.game.upping;
-        this.isMovingDown = this.game.down || this.game.downing;
-
-        if(this.isMovingUp) {
-            if (this.y+30 <= this.game.origin.y) {
-                this.game.origin.y -= this.travelSpeed;
-                this.game.ctx.translate(0,this.travelSpeed);  // Screen-in-world movement.
-                this.game.ctx.save();
-            }
-            this.y -= this.travelSpeed;
-            this.ground -= this.travelSpeed; // A new landing position.
-        } else if (this.isMovingDown) {
-            if (this.y+175 >= this.game.origin.y+this.game.ctx.canvas.height) { // Screen-in-world movement.
-                this.game.origin.y += this.travelSpeed;
-                this.game.ctx.translate(0,-this.travelSpeed);
-                this.game.ctx.save();
-            } 
-            this.y += this.travelSpeed;
-            this.ground += this.travelSpeed; // A new landing position.
-        }
-
-        if(this.isMovingLeft) {
-            if(this.x+120 <= this.game.origin.x) { // Screen-in-world movement.
-                var speed = this.travelSpeed;
-                if (this.isJumping) { speed /= 2 }
-                this.game.origin.x -= speed;
-                this.game.ctx.translate(speed,0);
-                this.game.ctx.save();
-            }
-            this.x -= this.travelSpeed;
-        } else if (this.isMovingRight) {
-            if (this.x+200 >= this.game.origin.x+this.game.ctx.canvas.width-50) { // Screen-in-world movement.
-                var speed = this.travelSpeed;
-                if (this.isJumping) { speed /= 2 }
-                this.game.origin.x += speed;
-                this.game.ctx.translate(-speed,0);
-                this.game.ctx.save();
-            }
-            this.x += this.travelSpeed;
-        }
-        //console.log("Origin " + this.game.origin.x + "," + this.game.origin.y); // Debugging.
-        //console.log("Entity " + this.x + "," + this.y); // Debugging.
+    if(this.game.debug && (this.isMovingLeft || this.isMovingRight || this.isMovingUp || this.isMovingDown)) {
+        console.log(this);
     }
+
+    if(this.isMovingUp) {
+        this.game.origin.y -= this.travelSpeed;
+        this.game.ctx.translate(0,this.travelSpeed);  // Screen-in-world movement.
+        this.game.ctx.save();
+        this.y -= this.travelSpeed; // Moves the entity.
+    } else if (this.isMovingDown) {
+        this.game.origin.y += this.travelSpeed;
+        this.game.ctx.translate(0,-this.travelSpeed);
+        this.game.ctx.save();
+        this.y += this.travelSpeed;
+    }
+
+    if(this.isMovingLeft) {
+        var speed = this.travelSpeed;
+        this.game.origin.x -= speed;
+        this.game.ctx.translate(speed,0);
+        this.game.ctx.save();
+        this.x -= this.travelSpeed; // Moves the entity.
+    } else if (this.isMovingRight) {
+        var speed = this.travelSpeed;
+        this.game.origin.x += speed;
+        this.game.ctx.translate(-speed,0);
+        this.game.ctx.save();
+        this.x += this.travelSpeed;
+    }
+    //console.log("Origin " + this.game.origin.x + "," + this.game.origin.y); // Debugging.
+    //console.log("Entity " + this.x + "," + this.y); // Debugging.
+    
+    // The boundingBox follows the entity.
+    this.boundingBox.x = this.x;
+    this.boundingBox.y = this.y;
 
     if (this.isAttacking) {
         if (this.attackAnimation.isDone()) {
@@ -197,20 +193,22 @@ Samurai.prototype.update = function() {
 }
 
 Samurai.prototype.draw = function(ctx) {
-    if (this.isJumping && this.isAttacking) {
-        this.attackAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
-    } else if (this.isJumping) {
-        this.jumpAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
+    if (this.isMovingUp || this.isMovingDown || this.isMovingLeft || this.isMovingRight) {
+        this.animation = this.runAnimation;
     } else if (this.isAttacking) {
-        this.attackAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
-    } else if (this.isMovingUp || this.isMovingDown || this.isMovingLeft || this.isMovingRight) {
-        this.runAnimation.drawFrame(this.game.clockTick, this.game.ctx, this.x, this.y); // BUG not displaying correctly.
+        this.animation = this.attackAnimation;
     } else {
-         this.animation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
+         this.animation = this.standAnimation;
     }
-    //ctx.rect(this.x, this.y, this.x+(512/2), this.y-(512/2));
-    //ctx.stroke();
+    this.animation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
     //console.log("Entity is (" + this.x + "," + this.y +")"); // Debugging.
+    if(this.boxes) {
+        ctx.strokeStyle = "green";
+        ctx.strokeRect(this.boundingBox.x, this.boundingBox.y, this.boundingBox.width, this.boundingBox.height); //this.animation.width, this.animation.height);
+        ctx.strokeStyle = "orange";
+        ctx.strokeRect(this.x, this.y, this.animation.frameWidth*this.scale, this.animation.frameHeight*this.scale); //
+        //console.log('BoundingBox: ' + this.boundingBox.x + ',' + this.boundingBox.y); // Debugging.
+    }
     Entity.prototype.draw.call(this);
 }
 
@@ -231,14 +229,25 @@ ASSET_MANAGER.downloadAll(function() {
     var canvas = document.getElementById('gameWorld');
     var ctx = canvas.getContext('2d');
 
-    var gameEngine = new GameEngine();
-    var blockthingy = new BlockThingy(gameEngine); // Testing.
-    var bg = new Background(gameEngine);
+    var gameEngine = new GameEngine(ctx.canvas.width, ctx.canvas.height);
+    var blockthingy = new BlockThingy(gameEngine); // Debugging point of reference until we have an actual map.
+    var bg = new Background(gameEngine); // Debugging point of reference until we have an actual map.
     var samurai = new Samurai(gameEngine);
+    var centerthingy = new CenterThingy(gameEngine);
+    // Initial configuration of entity.
+    samurai.boundingBox.offsetX = 130;
+    samurai.boundingBox.offsetY = 36;
+    samurai.boundingBox.width = 117;   // Left.
+    samurai.boundingBox.height = 128;  // Down.
+    //var newX = samurai.x - samurai.boundingBox.origin.x;
+    //var newY = samurai.y - samurai.boundingBox.origin.y;
+    //samurai.x = 211; // center
+    //samurai.y = 299; // center
 
     gameEngine.addEntity(bg);
     gameEngine.addEntity(samurai);
     gameEngine.addEntity(blockthingy);
+    if (gameEngine.debug) gameEngine.addEntity(centerthingy);
 
     gameEngine.init(ctx);
     gameEngine.start();

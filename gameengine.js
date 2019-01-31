@@ -28,7 +28,7 @@ Timer.prototype.tick = function () {
     return gameDelta;
 }
 
-function GameEngine() {
+function GameEngine(width, height) {
     this.entities = [];
     this.showOutlines = false;
     this.ctx = null;
@@ -38,6 +38,8 @@ function GameEngine() {
     this.surfaceWidth = null;
     this.surfaceHeight = null;
     this.origin = {x: 0, y: 0};
+    this.debug = true; // If true, console output and entity boxes will appear.
+    this.screenSize = {width: width, height: height};
 }
 
 GameEngine.prototype.init = function (ctx) {
@@ -198,9 +200,85 @@ function Entity(game, x, y) {
     this.x = x;
     this.y = y;
     this.removeFromWorld = false;
+    this.boundingBox = new BoundingBox(this.x, this.y, 99, 99); // 99 is default width and height.
 }
 
+// The imaginary box around the entity.
+function BoundingBox(theX, theY, width, height, xOffset, yOffset) {
+    this._xOffset = xOffset || 0;
+    this._yOffset = yOffset || 0;
+    this._x;
+    this._y;
+    this._width = width;
+    this._height = height;
+    this.left = theX;
+    this.top = theY;
+    this.right = this.left + width;
+    this.bottom = this.top + height;
+    this._origin = {x: this.left + this.width/2, y: this.top + this.height/2};
+}
+
+BoundingBox.prototype = {
+    set width(value) {
+        this._width = value;
+    },
+    get width() {
+        return this._width;
+    },
+    set height(value) {
+        this._height = value;
+    },
+    get height() {
+        return this._height;
+    },
+    set x(value) {
+        this._x = value + this._xOffset;
+        this._origin.x = this._x - (this.width/2);
+    },
+    get x() {
+        return this._x;
+    },
+    set y(value) {
+        this._y = value + this._yOffset;
+        this._origin.y = this._y - (this.height/2);
+    },
+    get y() {
+        return this._y;
+    },
+    get origin() {
+        return this._origin;
+    },
+    set offsetX(value) {
+        this._xOffset = value;
+    },
+    set offsetY(value) {
+        this._yOffset = value;
+    }
+}
+
+// Not yet used.
+BoundingBox.prototype.collide = function (oth) {
+    if (    this.right > oth.left 
+        &&   this.left < oth.right 
+        &&    this.top < oth.bottom 
+        && this.bottom > oth.top) 
+        return true;
+    return false;
+}
+
+/*BoundingBox.prototype.update = function (x, y) {
+    this.x = x + this.xOffset;
+    this.y = y + this.yOffset;
+}
+
+BoundingBox.prototype.setOffset = function (xOffset, yOffset) {
+    this._xOffset = xOffset;
+    this._yOffset = yOffset;
+}*/
+
+// Do not delete this, else all entities will not draw!
 Entity.prototype.update = function () {
+
 }
 
 Entity.prototype.draw = function (ctx) {
