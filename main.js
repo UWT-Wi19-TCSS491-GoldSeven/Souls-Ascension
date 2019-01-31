@@ -128,8 +128,100 @@ function BlockThingy(game) {
 }
 BlockThingy.prototype = new Entity();
 BlockThingy.prototype.constructor = Background;
+/*------------------------------------BSP TREE---------------------------*/
 
+var Tree = function (leaf) {
+    this.leaf = leaf
+    this.lchild = undefined
+    this.rchild = undefined
+}
 
+Tree.prototype.getLeafs = function () {
+    if (this.lchild === undefined && this.rchild === undefined)
+        return [this.leaf]
+    else
+        return [].concat(this.lchild.getLeafs(), this.rchild.getLeafs())
+}
+
+Tree.prototype.getLevel = function (level, queue) {
+    if (queue === undefined)
+        queue = []
+    if (level == 1) {
+        queue.push(this)
+    } else {
+        if (this.lchild !== undefined)
+            this.lchild.getLevel(level - 1, queue)
+        if (this.rchild !== undefined)
+            this.rchild.getLevel(level - 1, queue)
+    }
+    return queue
+}
+var Point = function (x, y) {
+    this.x = x
+    this.y = y
+}
+//a container prototype.
+var Container = function (x, y, w, h) {
+    this.x = x
+    this.y = y
+    this.w = w
+    this.h = h
+    this.center = new Point(
+        this.x + (this.w / 2),
+        this.y + (this.h / 2)
+    )
+}
+// build this tree
+function split_container(container, iter) {
+    var root = new Tree(container)
+    if (iter != 0) {
+        var sr = random_split(container)
+        root.lchild = split_container(sr[0], iter - 1)
+        root.rchild = split_container(sr[1], iter - 1)
+    }
+    return root
+}
+function random(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) + min)
+}
+function random_split(container) {
+    var r1, r2
+    if (random(0, 1) == 0) {
+        // Vertical
+        r1 = new Container(
+            container.x, container.y,             // r1.x, r1.y
+            random(1, container.w), container.h   // r1.w, r1.h
+        )
+        r2 = new Container(
+            container.x + r1.w, container.y,      // r2.x, r2.y
+            container.w - r1.w, container.h       // r2.w, r2.h
+        )
+    } else {
+        // Horizontal
+        r1 = new Container(
+            container.x, container.y,             // r1.x, r1.y
+            container.w, random(1, container.h)   // r1.w, r1.h
+        )
+        r2 = new Container(
+            container.x, container.y + r1.h,      // r2.x, r2.y
+            container.w, container.h - r1.h       // r2.w, r2.h
+        )
+    }
+    return [r1, r2]
+}
+const mapWidth =  currentWTiles * currentScale;
+const mapHeight = (slimeDungeonLevelOne.length / currentWTiles) * currentScale;
+var MAP_SIZE = currentScale;
+var SQUARE = currentWTiles;
+var N_ITERATIONS = 4;
+var main_container = new Container(0, 0, mapWidth, mapHeight)
+var container_tree = split_container(main_container, N_ITERATIONS)
+
+var leafs = container_tree.getLeafs();
+var con = leafs[2];
+alert(`Remove alert -- container x: ${con.x}--- container y: ${con.y} Test BSP TRee -- Remove alert`);
+
+/*------------------------------------BSP TREE---------------------------*/
 Background.prototype.draw = function () {
 	var spriteX = 0;
 	var spriteY = 0;
