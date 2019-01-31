@@ -13,7 +13,7 @@ function Animation(spriteSheet, startX, startY, frameWidth, frameHeight, frameDu
 }
 
 Animation.prototype.drawFrame = function(tick, ctx, x, y, scaleBy) {
-    var scaleBy = scaleBy || 0.5; //The size of the sprite. 1 = 100%
+    var scaleBy = scaleBy || 1; //The size of the sprite. 1 = 100%
     this.elapsedTime += tick;
     if (this.loop) {
         if (this.isDone()) {
@@ -56,65 +56,53 @@ function Background(game) {
     Entity.call(this, game, 0, 400);
     this.radius = 200;
 }
-
 // The brown background is only for a point of reference. OK to delete.
 Background.prototype = new Entity();
-
 Background.prototype.constructor = Background;
-
 Background.prototype.update = function() {}
-
 Background.prototype.draw = function(ctx) {
     ctx.fillStyle = "SaddleBrown";
     ctx.fillRect(0, 500, 800, 300);
     Entity.prototype.draw.call(this);
 }
 
+// The BockThingy is only for testing a point of reference.  OK to delete.
 function BlockThingy(game) {
     Entity.call(this, game, 400, 0);
     this.radius = 200;
 }
-
-// The BockThingy is only for testing a point of reference.  OK to delete.
 BlockThingy.prototype = new Entity();
-
 BlockThingy.prototype.constructor = Background;
-
 BlockThingy.prototype.update = function() {}
-
 BlockThingy.prototype.draw = function(ctx) {
     ctx.fillStyle = "red";
     ctx.fillRect(0, 0, 20, 800);
     Entity.prototype.draw.call(this);
 }
 
+// The BockThingy is only for testing a point of reference.  OK to delete.
 function CenterThingy(game) {
+    // Displays the center of the canvas/camera.
     Entity.call(this, game, 390, 390);
     this.radius = 200;
 }
-
-// The BockThingy is only for testing a point of reference.  OK to delete.
 CenterThingy.prototype = new Entity();
-
 CenterThingy.prototype.constructor = Background;
-
 CenterThingy.prototype.update = function() {}
-
 CenterThingy.prototype.draw = function(ctx) {
     ctx.fillStyle = "blue";
-    ctx.fillRect(390, 390, 20, 20);
+    ctx.fillRect(395, 395, 10, 10);
     Entity.prototype.draw.call(this);
 }
 
 // The entity's origin is determined by its BoundingBox object.
-function Samurai(game) {                                                                                               //loop   reversed
-    this.alertAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SamuraiHeavy_Alert.png"), 0, 0, 512, 512, 0.04, 9, true, false);
-    this.standAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SamuraiHeavy_Stand.png"), 0, 0, 512, 512, 0.04, 10, true, false);
-    this.walkAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SamuraiHeavy_Walk.png"), 0, 0, 512, 512, 0.04, 10, true, false);
-    this.runAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SamuraiHeavy_Run.png"), 0, 0, 512, 512, 0.02, 10, true, false);
-    this.attackAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SamuraiHeavy_Attack.png"), 0, 0, 512, 512, 0.04, 10, true, false);
-    this.hitAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SamuraiHeavy_Hit.png"), 0, 0, 512, 512, 0.04, 10, true, false);
-    this.dieAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SamuraiHeavy_Die.png"), 0, 0, 512, 512, 0.04, 10, true, false);
+function Character(game) {                                                                                            //loop  reversed
+    this.standAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"),     0,   0, 32, 32, 0.04, 5, true, false);
+    this.walkRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"), 0,  33, 32, 32, 0.04, 1, true, false);
+    this.walkLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"),  0,  65, 32, 32, 0.04, 1, true, false);
+    this.walkUpAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"),    0,  97, 32, 32, 0.04, 1, true, false);
+    this.walkDownAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"),  0, 129, 32, 32, 0.04, 1, true, false);
+    this.attackAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"),    0, 161, 32, 32, 0.04, 1, true, false);
     this.animation = this.standAnimation; // initial animation.
     this.isAttacking = false;
     this.isMovingLeft = false;
@@ -124,16 +112,16 @@ function Samurai(game) {                                                        
     this.radius = 100;
     this.travelSpeed = 8;
     this.boxes = game.debug;         // For debugging, game.debug = true;
-    this.scale = 0.5; // set to 1 if the sprite dimensions are the exact size that should be rendered.
+    this.scale = 1; // set to 1 if the sprite dimensions are the exact size that should be rendered.
     //console.log(this); // Debugging.
-    Entity.call(this, game, 211, 299); // Spawn the entity's upper left corner at these coordinates of the world.
+    Entity.call(this, game, 384, 384); // Spawn the entity's upper left corner at these coordinates of the world.
 }
 
-Samurai.prototype = new Entity();
+Character.prototype = new Entity();
 
-Samurai.prototype.constructor = Samurai;
+Character.prototype.constructor = Character;
 
-Samurai.prototype.update = function() {
+Character.prototype.update = function() {
     if (this.game.click) { this.isAttacking = true }
     if (this.game.left)  { this.isMovingLeft = true }
     if (this.game.right) { this.isMovingRight = true }
@@ -178,27 +166,37 @@ Samurai.prototype.update = function() {
 
     if (this.isAttacking) {
         if (this.attackAnimation.isDone()) {
-            this.attackAnimation.elapsedTime = 0;
+            this.attackAnimation.elapsedTime = 0; //0
             this.isAttacking = false;
         }
     }
 
-    if (this.isMovingLeft || this.isMovingRight || this.isMovingUp || this.isMovingDown) {
-        if (this.runAnimation.isDone()) {
-            this.runAnimation.elapsedTime = 0;
-            this.isMovingLeft = false;
-            this.isMovingRight = false;
-            this.isMovingUp = false;
-            this.isMovingDown = false;
-        }
+    if (this.isMovingLeft && this.walkLeftAnimation.isDone()) {
+        this.walkLeftAnimation.elapsedTime = 0; // 0
+        this.isMovingLeft = false;
+    } else if(this.isMovingRight && this.walkRightAnimation.isDone()) {
+        this.walkRightAnimation.elapsedTime = 0; // 0
+        this.isMovingRight = false;
+    } else  if(this.isMovingUp && this.walkUpAnimation.isDone()) {
+        this.walkUpAnimation.elapsedTime = 0; // 0
+        this.isMovingUp = false;
+    } else if(this.isMovingDown && this.walkDownAnimation.isDone()) {
+        this.walkDownAnimation.elapsedTime = 0; // 0
+        this.isMovingDown = false;
     }
 
     Entity.prototype.update.call(this);
 }
 
-Samurai.prototype.draw = function(ctx) {
-    if (this.isMovingUp || this.isMovingDown || this.isMovingLeft || this.isMovingRight) {
-        this.animation = this.runAnimation;
+Character.prototype.draw = function(ctx) {
+    if (this.isMovingUp) {
+        this.animation = this.walkUpAnimation;
+    } else if (this.isMovingDown) {
+        this.animation = this.walkDownAnimation;
+    } else if (this.isMovingLeft) {
+        this.animation = this.walkLeftAnimation;
+    } else if (this.isMovingRight) {
+        this.animation = this.walkRightAnimation;
     } else if (this.isAttacking) {
         this.animation = this.attackAnimation;
     } else {
@@ -207,9 +205,9 @@ Samurai.prototype.draw = function(ctx) {
     this.animation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
     if(this.boxes) {
         ctx.strokeStyle = "green";
-        ctx.strokeRect(this.boundingBox.x, this.boundingBox.y, this.boundingBox.width, this.boundingBox.height); //this.animation.width, this.animation.height);
-        ctx.strokeStyle = "orange";
-        ctx.strokeRect(this.x, this.y, this.animation.frameWidth*this.scale, this.animation.frameHeight*this.scale); //
+        ctx.strokeRect(this.boundingBox.x, this.boundingBox.y, this.boundingBox.width, this.boundingBox.height);
+        //ctx.strokeStyle = "orange";
+        //ctx.strokeRect(this.x, this.y, this.animation.frameWidth*this.scale, this.animation.frameHeight*this.scale); //
         //console.log('BoundingBox: ' + this.boundingBox.x + ',' + this.boundingBox.y); // Debugging.
     }
     Entity.prototype.draw.call(this);
@@ -219,13 +217,8 @@ Samurai.prototype.draw = function(ctx) {
 
 var ASSET_MANAGER = new AssetManager();
 
-ASSET_MANAGER.queueDownload("./img/SamuraiHeavy_Alert.png");
-ASSET_MANAGER.queueDownload("./img/SamuraiHeavy_Attack.png");
-ASSET_MANAGER.queueDownload("./img/SamuraiHeavy_Die.png");
-ASSET_MANAGER.queueDownload("./img/SamuraiHeavy_Hit.png");
-ASSET_MANAGER.queueDownload("./img/SamuraiHeavy_Run.png");
-ASSET_MANAGER.queueDownload("./img/SamuraiHeavy_Stand.png");
-ASSET_MANAGER.queueDownload("./img/SamuraiHeavy_Walk.png");
+// Put your spritesheet(s) here.
+ ASSET_MANAGER.queueDownload("./img/spritesheet.png");
 
 ASSET_MANAGER.downloadAll(function() {
     console.log("starting up da sheild");
@@ -235,17 +228,17 @@ ASSET_MANAGER.downloadAll(function() {
     var gameEngine = new GameEngine(ctx.canvas.width, ctx.canvas.height);
     var blockthingy = new BlockThingy(gameEngine); // Debugging point of reference until we have an actual map.
     var bg = new Background(gameEngine); // Debugging point of reference until we have an actual map.
-    var samurai = new Samurai(gameEngine);
-    var centerthingy = new CenterThingy(gameEngine);
+    var character = new Character(gameEngine);
+    var centerthingy = new CenterThingy(gameEngine); // Keep this.
 
     // Initial configuration of entity.
-    samurai.boundingBox.offsetX = 130;
-    samurai.boundingBox.offsetY = 36;
-    samurai.boundingBox.width = 117;   // Left.
-    samurai.boundingBox.height = 128;  // Down.
+    character.boundingBox.offsetX = 0;
+    character.boundingBox.offsetY = 0;
+    character.boundingBox.width = 32;   // Left.
+    character.boundingBox.height = 32;  // Down.
 
     gameEngine.addEntity(bg);
-    gameEngine.addEntity(samurai);
+    gameEngine.addEntity(character);
     gameEngine.addEntity(blockthingy);
 
     if (gameEngine.debug) gameEngine.addEntity(centerthingy);
