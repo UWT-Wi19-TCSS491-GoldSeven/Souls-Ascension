@@ -100,6 +100,7 @@ Background.prototype.draw = function () {
 	// Loop to generate each tile
     for (var i = 0; i < slimeDungeonLevelOne.length -2; i++) {
 		spriteX = (slimeDungeonLevelOne[i] - 1) * 32; // 32 is the number of pixels per sprite
+        console.log(this.ctx);
 		this.ctx.drawImage(this.spritesheet, spriteX, spriteY, this.sw, this.sh, x, y, this.dw, this.dh);
 		count++;
 		if (count >= currentWTiles) // change the value based on how many tiles you will draw. (88 atm)
@@ -265,13 +266,13 @@ ASSET_MANAGER.downloadAll(function() {
     var canvas = document.getElementById('gameWorld');
     var ctx = canvas.getContext('2d');
 
-    var gameEngine = new GameEngine();
+    var gameEngine = new GameEngine(ctx);
     var bg = new Background(gameEngine, ASSET_MANAGER.getAsset("./img/DungeonBackgroundSpriteSheet.png"));
     var samurai = new Samurai(gameEngine);
 
 	gameEngine.addEntity(bg);
     gameEngine.addEntity(samurai);
 
-    gameEngine.init(ctx);
+    gameEngine.init();
     gameEngine.start();
 });

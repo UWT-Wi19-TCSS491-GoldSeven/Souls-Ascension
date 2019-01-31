@@ -28,10 +28,10 @@ Timer.prototype.tick = function () {
     return gameDelta;
 }
 
-function GameEngine() {
+function GameEngine(ctx) {
     this.entities = [];
     this.showOutlines = false;
-    this.ctx = null;
+    this.ctx = ctx;
     this.click = null;
     this.mouse = null;
     this.wheel = null;
@@ -40,8 +40,7 @@ function GameEngine() {
     this.origin = {x: 0, y: 0};
 }
 
-GameEngine.prototype.init = function (ctx) {
-    this.ctx = ctx;
+GameEngine.prototype.init = function () {
     this.surfaceWidth = this.ctx.canvas.width;
     this.surfaceHeight = this.ctx.canvas.height;
     this.startInput();
