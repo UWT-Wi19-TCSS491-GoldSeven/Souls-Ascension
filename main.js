@@ -241,7 +241,9 @@ Character.prototype.update = function() {
 }
 
 Character.prototype.draw = function(ctx) {
-    if (this.isMovingUp) {
+    if (this.isAttacking) {
+        this.animation = this.attackAnimation;
+    } else if (this.isMovingUp) {
         this.animation = this.walkUpAnimation;
     } else if (this.isMovingDown) {
         this.animation = this.walkDownAnimation;
@@ -249,8 +251,6 @@ Character.prototype.draw = function(ctx) {
         this.animation = this.walkLeftAnimation;
     } else if (this.isMovingRight) {
         this.animation = this.walkRightAnimation;
-    } else if (this.isAttacking) {
-        this.animation = this.attackAnimation;
     } else {
          this.animation = this.standAnimation;
     }
