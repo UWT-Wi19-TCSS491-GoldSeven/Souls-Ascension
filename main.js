@@ -1,4 +1,5 @@
 function Animation(spriteSheet, startX, startY, frameWidth, frameHeight, frameDuration, frames, loop, reverse) {
+    console.log(spriteSheet);
     this.spriteSheet = spriteSheet;
     this.startX = startX;
     this.startY = startY;
@@ -114,7 +115,6 @@ Background.prototype.draw = function () {
 	// Loop to generate each tile
     for (var i = 0; i < slimeDungeonLevelOne.length -2; i++) {
 		spriteX = (slimeDungeonLevelOne[i] - 1) * 32; // 32 is the number of pixels per sprite
-        console.log(this.ctx);
 		this.ctx.drawImage(this.spritesheet, spriteX, spriteY, this.sw, this.sh, x, y, this.dw, this.dh);
 		count++;
 		if (count >= currentWTiles) // change the value based on how many tiles you will draw. (88 atm)
@@ -269,6 +269,7 @@ Character.prototype.draw = function(ctx) {
 
 var ASSET_MANAGER = new AssetManager();
 
+ASSET_MANAGER.queueDownload('./img/spritesheet.png');
 ASSET_MANAGER.queueDownload("./img/DungeonBackgroundSpriteSheet.png");
 ASSET_MANAGER.queueDownload("./img/spritesheet.png");
 
