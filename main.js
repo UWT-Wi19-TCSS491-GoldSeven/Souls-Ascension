@@ -117,7 +117,7 @@ Background.prototype.constructor = Background;
 Background.prototype.update = function() {}
 Background.prototype.draw = function(ctx) {
     ctx.fillStyle = "SaddleBrown";
-    ctx.fillRect(0, 500, 800, 300);
+    ctx.fillRect(0, 0, 800, 300);
     Entity.prototype.draw.call(this);
 }
 
@@ -173,10 +173,15 @@ var Container = function (x, y, w, h) {
     )
 }
 Container.prototype.pushWall = function (theX, theY) {
-    if (this.x <= theX && theX <= this.x + this.w && this.y <= theY && theY <= this.y + this.h) {
-        this.walls.push(new Point(theX, theY));
-       // alert(theX + '<-X-Y->' + theY);
+    if (this.x <= theX && theX < this.x + this.w && this.y <= theY && theY < this.y + this.h) {
+        this.walls.push(new Point(theX, theY));        
     }
+}
+Container.prototype.paint = function (c) {
+    c.strokeStyle = "#0F0"
+    c.lineWidth = 2
+    c.strokeRect(this.x * SQUARE, this.y * SQUARE,
+        this.w * SQUARE, this.h * SQUARE)
 }
 // build this tree
 function split_container(container, iter) {
@@ -233,50 +238,43 @@ function random_split(container) {
     return [r1, r2]
 }
 
-const mapWidth =  currentWTiles * currentScale;
+const mapWidth = currentWTiles * currentScale + currentScale ;
 const mapHeight = (slimeDungeonLevelOne.length / currentWTiles) * currentScale;
 var MAP_SIZE = currentScale;
 var SQUARE = currentWTiles;
-var N_ITERATIONS = 4;
+var N_ITERATIONS = 7;
 var DISCARD_BY_RATIO = true;
 var H_RATIO = 0.45;
 var W_RATIO = 0.45;
 var main_container = new Container(0, 0, mapWidth, mapHeight);
-var container_tree = split_container(main_container, N_ITERATIONS)
+var container_tree = split_container(main_container, N_ITERATIONS);
 
 var leafs = container_tree.getLeafs();
 
 
-function fillBSPTree(target) {
+function fillBSPTree(target) {//, background) {
     
     var x = 0;
     var y = 0;
     var count = 0;
-    for (var i = 0; i < target.length; i++) {
-        if (13 - target[i] <= 13) { //wall code
+    for (var i = 0; i <= target.length; i++) {
+        if (count >= currentWTiles) // change the value based on how many tiles you will draw. (88 atm)
+        {
+            x = 0;
+            y += currentScale;
+            count = 0;
+        }
+        if (13 >= target[i] && target[i] >= 0) { //wall code
             x = count * currentScale;
              //and the wall into property container
             for (var j = 0; j < leafs.length; j++) leafs[j].pushWall(x, y);
         }
 
-        if (count >= currentWTiles) // change the value based on how many tiles you will draw. (88 atm)
-        {
-            y += currentScale;
-            x = 0;
-            count = 0;
-        } else count++;
-        //alert('Count:' + count);
+        count++;
     };
 }
+var isfilledBSP = false;
 fillBSPTree(slimeDungeonLevelOne);
-var con = leafs[2];
-alert(`Remove alert -- container x: ${con.x}-${con.w}-- container y: ${con.y} -- ${con.h} -- container length: ${leafs.length}Test BSP TRee -- Remove alert `);
-//if (con.walls.length >= 3)
-//alert(`Wall - center point : ${con.walls[2].x}----${con.walls.length}`);
-//for (var m = 0; m < leafs.length; m++) {
-//    alert(`Total walls in container ${m} is ${leafs[m].walls.length}`);
-//}
-
 /*------------------------------------BSP TREE---------------------------*/
 /*------------------------------------Collision--------------------------- */
 var isColli = false;
@@ -289,21 +287,22 @@ function collisionDetect(characterX, characterY) {
             break;
         }
     }
-    console.log('x-Area:' + leafs[j].x + '---' + (leafs[j].x + leafs[j].w) + 'y-Area: ' + leafs[j].y + '---' + (leafs[j].y + leafs[j].h));
-    console.log('Character position X:' + characterX + '-- Y ' + characterY);
+    //console.log('Block Area: ' + j + 'Total target: ' + leafs[j].walls.length);
+    //console.log('x-Area:' + leafs[j].x + '---' + (leafs[j].x + leafs[j].w) + 'y-Area: ' + leafs[j].y + '---' + (leafs[j].y + leafs[j].h));
+    //console.log('Character position X:' + characterX + '-- Y ' + characterY);
     for (var i = 0; i < leafs[j].walls.length; i++) {
         targetX = leafs[j].walls[i].x;
         targetY = leafs[j].walls[i].y;
-
-        if (((characterY + currentScale) < (targetY)) ||
-            (characterY > (targetY + currentScale)) ||
-            ((characterX + currentScale) < targetX) ||
-            (characterX > (targetX + currentScale))) {
+        if (characterX < targetX + currentScale &&
+            characterX + currentScale > targetX &&
+            characterY < targetY + currentScale &&
+            characterY > targetY) {
             isColli = true;
             console.log('Collision position: X:' + targetX + 'Y: ' + targetY);
-            break;
+            return true;
         }
-    }   
+    }  
+    return false;
 }
 /*------------------------------------Collision End--------------------------- */
 Background.prototype.draw = function () {
@@ -328,7 +327,8 @@ Background.prototype.draw = function () {
 		{
 			x += currentScale;
 		}
-	};
+    };
+    //if (!isfilledBSP) { fillBSPTree(slimeDungeonLevelOne, this); isfilledBSP = true;}
 };
 
 //--------------------------------------------------------------------------------------------------
@@ -364,7 +364,7 @@ function SorcererVillain(game) {
     this.stopAttackRange = 300;
     this.startFollowRange = 150;
     this.stopFollowRange = 350;
-    Entity.call(this, game, 450, 450); // where it starts
+    Entity.call(this, game, 750, 550); // where it starts
 
 }
 
@@ -433,6 +433,10 @@ SorcererVillain.prototype.specialAttack = function (xDiff, yDiff, distance, xOri
 
 SorcererVillain.prototype.draw = function () {
     this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    if (!this.boxes) {
+        ctx.strokeStyle = "green";
+        ctx.strokeRect(this.x, this.y, 100, 100);
+    }
     Entity.prototype.draw.call(this);
 }
 
@@ -495,7 +499,7 @@ function Character(game) {                                                      
     this.boxes = game.debug;         // For debugging, game.debug = true;
     this.scale = 1; // set to 1 if the sprite dimensions are the exact size that should be rendered.
     //console.log(this); // Debugging.
-    Entity.call(this, game, 384, 384); // Spawn the entity's upper left corner at these coordinates of the world.
+    Entity.call(this, game, 400, 450); // Spawn the entity's upper left corner at these coordinates of the world.
 }
 
 Character.prototype = new Entity();
@@ -518,24 +522,14 @@ Character.prototype.update = function () {
     if (this.game.up && this.game.right) this.isMovingUpRight = true;
     if (this.game.down && this.game.left) this.isMovingDownLeft = true;
     if (this.game.down && this.game.right) this.isMovingDownRight = true;
-    if (this.game.left) { this.isMovingLeft = true }
-    if (this.game.right) { this.isMovingRight = true }
-    if (this.game.up) {
-        
-        collisionDetect(this.x, this.y - this.travelSpeed);
-        console.log(isColli);
-        isColli = false;
-        /*
-        if (!isColli) {
-            this.isMovingUp = true
-
-        } else {
-            this.isMovingUp = false;
-            isColli = false;
-        }*/
-        this.isMovingUp = true;
+    if (this.game.left && !collisionDetect(this.x + 10 - this.travelSpeed, this.y)) { this.isMovingLeft = true }// 
+    if (this.game.right && !collisionDetect(this.x + 10 + this.travelSpeed, this.y )) { this.isMovingRight = true }
+    if (this.game.up && !collisionDetect(this.x + 10, currentScale + this.y - this.travelSpeed)) {
+        this.isMovingUp = true;     
     }
-    if (this.game.down) { this.isMovingDown = true }
+    if (this.game.down && !collisionDetect(this.x + 10, currentScale + this.y + this.travelSpeed)) {
+        this.isMovingDown = true;
+    }
 
     if (this.game.debug && (this.isMovingLeft || this.isMovingRight || this.isMovingUp || this.isMovingDown)) {
         console.log(this);
@@ -628,12 +622,19 @@ Character.prototype.draw = function(ctx) {
          this.animation = this.standAnimation;
     }
     this.animation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
-    if(this.boxes) {
+    if(!this.boxes) {
         ctx.strokeStyle = "green";
-        ctx.strokeRect(this.boundingBox.x, this.boundingBox.y, this.boundingBox.width, this.boundingBox.height);
+        ctx.strokeRect(this.boundingBox.x + 10, this.boundingBox.y, this.boundingBox.width, this.boundingBox.height);
         //ctx.strokeStyle = "orange";
         //ctx.strokeRect(this.x, this.y, this.animation.frameWidth*this.scale, this.animation.frameHeight*this.scale); //
         //console.log('BoundingBox: ' + this.boundingBox.x + ',' + this.boundingBox.y); // Debugging.
+        for (var i = 0; i < leafs.length; i++) {
+            ctx.strokeStyle = "red";
+            ctx.strokeRect(leafs[i].x, leafs[i].y, leafs[i].w, leafs[i].h);
+            ctx.strokeStyle = "green";
+            for (var j = 0; j < leafs[i].walls.length; j++)
+            ctx.strokeRect(leafs[i].walls[j].x, leafs[i].walls[j].y, 48, 48);
+        }
     }
     Entity.prototype.draw.call(this);
 }
@@ -642,7 +643,7 @@ let gameEngine;
 let character;
 let sorcererVillain;
 let canvas;
-let ctx;
+var ctx;
 
 // the "main" code begins here
 
@@ -677,8 +678,8 @@ ASSET_MANAGER.downloadAll(function() {
     // Initial configuration of entity.
     character.boundingBox.offsetX = 0;
     character.boundingBox.offsetY = 0;
-    character.boundingBox.width = 32;   // Left.
-    character.boundingBox.height = 32;  // Down.
+    character.boundingBox.width = 22;   // Left.
+    character.boundingBox.height = 40;  // Down.
 
 	gameEngine.addEntity(bg);
     gameEngine.addEntity(character);
@@ -688,4 +689,6 @@ ASSET_MANAGER.downloadAll(function() {
 
     gameEngine.init();
     gameEngine.start();
+
+    
 });
