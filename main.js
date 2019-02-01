@@ -172,6 +172,31 @@ CenterThingy.prototype.draw = function(ctx) {
     Entity.prototype.draw.call(this);
 }
 
+function SorcererVillain(game) {
+    this.standingAttackAnimation = new Animation(ASSET_MANAGER.getAsset("./img/sorcererVillain.png"), 0, 0, 100, 100, 0.1, 10, true, false);
+    this.animation = this.standingAttackAnimation;
+	this.speed = 0;
+	this.scale = 1;
+    this.ctx = game.ctx;
+    Entity.call(this, game, 450, 450); // where it starts
+
+}
+
+SorcererVillain.prototype = new Entity();
+SorcererVillain.prototype.constructor = SorcererVillain;
+
+SorcererVillain.prototype.update = function () {
+//    this.x += this.game.clockTick * this.speed;
+//    if (this.x > 200) this.x = 100;
+//    Entity.prototype.update.call(this);
+	Entity.prototype.update.call(this);
+}
+
+SorcererVillain.prototype.draw = function () {
+    this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    Entity.prototype.draw.call(this);
+}
+
 // The entity's origin is determined by its BoundingBox object.
 function Character(game) {                                                                                            //loop  reversed
     this.standAnimation = new Animation(ASSET_MANAGER.getAsset("./img/characterIdleAnimation.png"), 0, 0, 42, 42, 0.08, 4, true, false);
@@ -350,6 +375,7 @@ ASSET_MANAGER.queueDownload("./img/characterLeftAttack.png");
 ASSET_MANAGER.queueDownload("./img/characterUpAttack.png");
 ASSET_MANAGER.queueDownload("./img/characterDownAttack.png");
 ASSET_MANAGER.queueDownload("./img/characterWhirlWindAttackAnimation.png");
+ASSET_MANAGER.queueDownload("./img/sorcererVillain.png");
 ASSET_MANAGER.downloadAll(function() {
     console.log("starting up da sheild");
     var canvas = document.getElementById("gameWorld");
@@ -359,6 +385,7 @@ ASSET_MANAGER.downloadAll(function() {
     var blockthingy = new BlockThingy(gameEngine); // Debugging point of reference until we have an actual map.
     var bg = new Background(gameEngine, ASSET_MANAGER.getAsset("./img/DungeonBackgroundSpriteSheet.png"));
     var character = new Character(gameEngine);
+	var sorcererVillain = new SorcererVillain(gameEngine);
     var centerthingy = new CenterThingy(gameEngine);
 
     // Initial configuration of entity.
@@ -369,9 +396,10 @@ ASSET_MANAGER.downloadAll(function() {
 
 	gameEngine.addEntity(bg);
     gameEngine.addEntity(character);
+	gameEngine.addEntity(sorcererVillain);
 
     if (gameEngine.debug) gameEngine.addEntity(centerthingy);
 
-    gameEngine.init(ctx);
+    gameEngine.init();
     gameEngine.start();
 });

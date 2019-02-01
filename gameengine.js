@@ -36,16 +36,15 @@ function GameEngine(ctx, width, height) {
     this.mouse = null;
     this.wheel = null;
 	this.one = null;
-    this.surfaceWidth = null;
-    this.surfaceHeight = null;
+    this.surfaceWidth = width;
+    this.surfaceHeight = height;
     this.origin = {x: 0, y: 0};
     this.debug = false; // If true, console output and entity boxes will appear.
     this.screenSize = {width: width, height: height};
 }
 
 GameEngine.prototype.init = function () {
-    this.surfaceWidth = this.ctx.canvas.width;
-    this.surfaceHeight = this.ctx.canvas.height;
+    
     this.startInput();
     this.timer = new Timer();
     console.log('game initialized');
