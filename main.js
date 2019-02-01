@@ -289,16 +289,18 @@ function collisionDetect(characterX, characterY) {
             break;
         }
     }
-    //console.log('Area:' + j);
-    //console.log('Walls:' + leafs[j].walls[1].x);
+    console.log('x-Area:' + leafs[j].x + '---' + (leafs[j].x + leafs[j].w) + 'y-Area: ' + leafs[j].y + '---' + (leafs[j].y + leafs[j].h));
+    console.log('Character position X:' + characterX + '-- Y ' + characterY);
     for (var i = 0; i < leafs[j].walls.length; i++) {
         targetX = leafs[j].walls[i].x;
         targetY = leafs[j].walls[i].y;
-        if (characterX < targetX + currentScale &&
-            characterX + currentScale > targetX &&
-            characterY < targetY + currentScale &&
-            characterY + currentScale > targetY) {
+
+        if (((characterY + currentScale) < (targetY)) ||
+            (characterY > (targetY + currentScale)) ||
+            ((characterX + currentScale) < targetX) ||
+            (characterX > (targetX + currentScale))) {
             isColli = true;
+            console.log('Collision position: X:' + targetX + 'Y: ' + targetY);
             break;
         }
     }   
@@ -380,7 +382,7 @@ Character.prototype = new Entity();
 
 Character.prototype.constructor = Character;
 
-Character.prototype.update = function() {
+Character.prototype.update = function () {
     this.isMovingUp = false;
     this.isMovingLeft = false;
     this.isMovingDown = false;
@@ -395,45 +397,51 @@ Character.prototype.update = function() {
     if (this.game.up && this.game.right) this.isMovingUpRight = true;
     if (this.game.down && this.game.left) this.isMovingDownLeft = true;
     if (this.game.down && this.game.right) this.isMovingDownRight = true;
-    if (this.game.left)  { this.isMovingLeft = true }
+    if (this.game.left) { this.isMovingLeft = true }
     if (this.game.right) { this.isMovingRight = true }
     if (this.game.up) {
+        
         collisionDetect(this.x, this.y - this.travelSpeed);
-        if (isColli) { isColli = false; return; }
-        else this.isMovingUp = true
-    }
-    if (this.game.down)  { this.isMovingDown = true }
+        console.log(isColli);
+        isColli = false;
+        /*
+        if (!isColli) {
+            this.isMovingUp = true
 
-    if(this.game.debug && (this.isMovingLeft || this.isMovingRight || this.isMovingUp || this.isMovingDown)) {
+        } else {
+            this.isMovingUp = false;
+            isColli = false;
+        }*/
+        this.isMovingUp = true;
+    }
+    if (this.game.down) { this.isMovingDown = true }
+
+    if (this.game.debug && (this.isMovingLeft || this.isMovingRight || this.isMovingUp || this.isMovingDown)) {
         console.log(this);
     }
 
     if (this.isMovingUp) {
-        
         this.game.origin.y -= this.travelSpeed;
-        this.game.ctx.translate(0,this.travelSpeed); // Moves the canvas/camera.
+        this.game.ctx.translate(0, this.travelSpeed); // Moves the canvas/camera.
         this.y -= this.travelSpeed; // Moves the entity.
     } else if (this.isMovingDown) {
-        //collisionDetect(this.x, this.y + this.travelSpeed);
         this.game.origin.y += this.travelSpeed;
-        this.game.ctx.translate(0,-this.travelSpeed); // Moves the canvas/camera.
+        this.game.ctx.translate(0, -this.travelSpeed); // Moves the canvas/camera.
         this.y += this.travelSpeed; // Moves the entity.
     }
 
     if (this.isMovingLeft) {
-        //collisionDetect(this.x - this.travelSpeed, this.y);
         var speed = this.travelSpeed;
         this.game.origin.x -= speed;
-        this.game.ctx.translate(speed,0); // Moves the canvas/camera.
+        this.game.ctx.translate(speed, 0); // Moves the canvas/camera.
         this.x -= this.travelSpeed; // Moves the entity.
     } else if (this.isMovingRight) {
-        //collisionDetect(this.x + this.travelSpeed, this.y);
         var speed = this.travelSpeed;
         this.game.origin.x += speed;
-        this.game.ctx.translate(-speed,0); // Moves the canvas/camera.
+        this.game.ctx.translate(-speed, 0); // Moves the canvas/camera.
         this.x += this.travelSpeed; // Moves the entity.
     }
-    
+
     // The boundingBox follows the entity.
     this.boundingBox.x = this.x;
     this.boundingBox.y = this.y;
