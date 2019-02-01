@@ -53,7 +53,7 @@ Animation.prototype.isDone = function() {
     return (this.elapsedTime >= this.totalTime);
 }
 //----------------------------------------------------------------------------------------------------------------------------------------
-/* 
+/*
  * Slime Dungeon Level 1 (88x33) each number is a 32x32 pixel space
  * 0 = no block (should layer background image so these are not just a solid color)
  * 1-4 = alternating horizontal wall tiles, 5 = Vertical wall tile, 6 = Top Left L shaped corner, 7 = Top Right L shaped corner,
@@ -136,7 +136,7 @@ Background.prototype.draw = function () {
 	var count = 0;
 	var x = this.x;
 	var y = this.y;
-	
+
 	// Loop to generate each tile
     for (var i = 0; i < slimeDungeonLevelOne.length; i++) {
 		spriteX = (slimeDungeonLevelOne[i] - 1) * 32; // 32 is the number of pixels per sprite
@@ -145,12 +145,12 @@ Background.prototype.draw = function () {
 		if (count >= currentWTiles) // change the value based on how many tiles you will draw. (88 atm)
 		{
 			x = this.x;
-			y += currentScale; 
+			y += currentScale;
 			count = 0;
 		}
-		else 
+		else
 		{
-			x += currentScale; 
+			x += currentScale;
 		}
 	};
 };
@@ -178,6 +178,8 @@ function SorcererVillain(game) {
 	this.speed = 0;
 	this.scale = 1;
     this.ctx = game.ctx;
+    this.cooldown = 0;
+    this.special = 4;
     Entity.call(this, game, 450, 450); // where it starts
 
 }
@@ -186,15 +188,62 @@ SorcererVillain.prototype = new Entity();
 SorcererVillain.prototype.constructor = SorcererVillain;
 
 SorcererVillain.prototype.update = function () {
-//    this.x += this.game.clockTick * this.speed;
-//    if (this.x > 200) this.x = 100;
-//    Entity.prototype.update.call(this);
+    if (this.cooldown > 0) this.cooldown -= gameEngine.clockTick;
+    if (this.special > 0) this.cooldown -= gameEngine.clockTick;
+
+    let xDiff = this.x - character.x, yDiff = this.y - character.y;
+    let distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+    if (distance <= 200) {
+        if (this.special <= 0) {
+            // TODO
+            //this.special = 4;
+        } else if (this.cooldown <= 0) {
+            let projectile = new Projectile(gameEngine,
+                this.x + this.animation.frameWidth / 2,
+                this.y + this.animation.frameHeight / 2,
+                -xDiff / 20,
+                -yDiff / 20);
+            gameEngine.addEntity(projectile);
+            this.cooldown = 0.5
+        }
+    } else if (distance < 300) {
+        this.x -= xDiff * gameEngine.clockTick / 4;
+        this.y -= yDiff * gameEngine.clockTick / 4;
+    }
+
 	Entity.prototype.update.call(this);
 }
 
 SorcererVillain.prototype.draw = function () {
     this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
     Entity.prototype.draw.call(this);
+}
+
+function Projectile(game, x, y, xs, ys) {
+    this.xs = xs;
+    this.ys = ys;
+    this.scale = 1;
+    this.life = 2;
+    Entity.call(this, game, x, y);
+}
+
+Projectile.prototype = new Entity();
+Projectile.prototype.constructor = Projectile;
+
+Projectile.prototype.update = function () {
+    this.x += this.xs;
+    this.y += this.ys;
+    this.life -= gameEngine.clockTick;
+    if (this.life <= 0) this.removeFromWorld = true;
+}
+
+Projectile.prototype.draw = function () {
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, 3, 0, 2 * Math.PI);
+    ctx.fillStyle = 'red';
+    ctx.fill();
+    ctx.restore();
 }
 
 // The entity's origin is determined by its BoundingBox object.
@@ -282,7 +331,7 @@ Character.prototype.update = function() {
         this.game.ctx.translate(-speed,0); // Moves the canvas/camera.
         this.x += this.travelSpeed; // Moves the entity.
     }
-    
+
     // The boundingBox follows the entity.
     this.boundingBox.x = this.x;
     this.boundingBox.y = this.y;
@@ -358,6 +407,12 @@ Character.prototype.draw = function(ctx) {
     Entity.prototype.draw.call(this);
 }
 
+let gameEngine;
+let character;
+let sorcererVillain;
+let canvas;
+let ctx;
+
 // the "main" code begins here
 
 var ASSET_MANAGER = new AssetManager();
@@ -378,14 +433,14 @@ ASSET_MANAGER.queueDownload("./img/characterWhirlWindAttackAnimation.png");
 ASSET_MANAGER.queueDownload("./img/sorcererVillain.png");
 ASSET_MANAGER.downloadAll(function() {
     console.log("starting up da sheild");
-    var canvas = document.getElementById("gameWorld");
-    var ctx = canvas.getContext("2d");
+    canvas = document.getElementById("gameWorld");
+    ctx = canvas.getContext("2d");
 
-    var gameEngine = new GameEngine(ctx, ctx.canvas.width, ctx.canvas.height);
+    gameEngine = new GameEngine(ctx, ctx.canvas.width, ctx.canvas.height);
     var blockthingy = new BlockThingy(gameEngine); // Debugging point of reference until we have an actual map.
     var bg = new Background(gameEngine, ASSET_MANAGER.getAsset("./img/DungeonBackgroundSpriteSheet.png"));
-    var character = new Character(gameEngine);
-	var sorcererVillain = new SorcererVillain(gameEngine);
+    character = new Character(gameEngine);
+	sorcererVillain = new SorcererVillain(gameEngine);
     var centerthingy = new CenterThingy(gameEngine);
 
     // Initial configuration of entity.
