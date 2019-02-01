@@ -35,16 +35,16 @@ function GameEngine(ctx, width, height) {
     this.click = null;
     this.mouse = null;
     this.wheel = null;
-    this.surfaceWidth = null;
-    this.surfaceHeight = null;
+	this.one = null;
+    this.surfaceWidth = width;
+    this.surfaceHeight = height;
     this.origin = {x: 0, y: 0};
     this.debug = false; // If true, console output and entity boxes will appear.
     this.screenSize = {width: width, height: height};
 }
 
 GameEngine.prototype.init = function () {
-    this.surfaceWidth = this.ctx.canvas.width;
-    this.surfaceHeight = this.ctx.canvas.height;
+    
     this.startInput();
     this.timer = new Timer();
     console.log('game initialized');
@@ -76,7 +76,10 @@ GameEngine.prototype.startInput = function () {
 
     this.ctx.canvas.addEventListener("keydown", function(e) {
         switch(e.keyCode) {
-            case 32: // ' '
+            case 49: // 1
+                that.one = true;
+                break;
+			case 32: // ' '
                 that.space = true;
                 break;
             case 37: // arrow left
@@ -108,7 +111,10 @@ GameEngine.prototype.startInput = function () {
 
     this.ctx.canvas.addEventListener("keyup", function(e) {
         switch (e.keyCode) {
-            case 32: // ' '
+            case 49: // 1
+                that.one = false;
+                break;
+			case 32: // ' '
                 that.space = false;
                 break;
             case 37: // arrow left
@@ -181,6 +187,7 @@ GameEngine.prototype.loop = function () {
     this.draw();
     this.space = null;
     this.click = null;
+	this.one = null;
 }
 
 function Entity(game, x, y) {
