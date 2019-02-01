@@ -173,13 +173,21 @@ CenterThingy.prototype.draw = function(ctx) {
 }
 
 function SorcererVillain(game) {
+    this.ctx = game.ctx;
     this.standingAttackAnimation = new Animation(ASSET_MANAGER.getAsset("./img/sorcererVillain.png"), 0, 0, 100, 100, 0.1, 10, true, false);
     this.animation = this.standingAttackAnimation;
-	this.speed = 0;
-	this.scale = 1;
-    this.ctx = game.ctx;
+	this.moveSpeed = 70;
+	this.fleeSpeed = 90;
+	this.attackSpeed = 3;
+	this.attackInterval = 0.6;
     this.cooldown = 0;
     this.special = 4;
+    this.dangerRange = 50;
+    this.fleeRange = 100;
+    this.startAttackRange = 80;
+    this.stopAttackRange = 300;
+    this.startFollowRange = 150;
+    this.stopFollowRange = 350;
     Entity.call(this, game, 450, 450); // where it starts
 
 }
@@ -191,27 +199,60 @@ SorcererVillain.prototype.update = function () {
     if (this.cooldown > 0) this.cooldown -= gameEngine.clockTick;
     if (this.special > 0) this.cooldown -= gameEngine.clockTick;
 
-    let xDiff = this.x - character.x, yDiff = this.y - character.y;
+    let xOrigC = (character.x + character.animation.frameWidth / 2);
+    let yOrigC = (character.y + character.animation.frameHeight / 2);
+    let xOrigS = (this.x + this.animation.frameWidth / 2)
+    let yOrigS = (this.y + this.animation.frameHeight / 2)
+    let xDiff = xOrigC - xOrigS;
+    let yDiff = yOrigC - yOrigS;
     let distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
-    if (distance <= 200) {
-        if (this.special <= 0) {
-            // TODO
-            //this.special = 4;
-        } else if (this.cooldown <= 0) {
-            let projectile = new Projectile(gameEngine,
-                this.x + this.animation.frameWidth / 2,
-                this.y + this.animation.frameHeight / 2,
-                -xDiff / 20,
-                -yDiff / 20);
-            gameEngine.addEntity(projectile);
-            this.cooldown = 0.5
-        }
-    } else if (distance < 300) {
-        this.x -= xDiff * gameEngine.clockTick / 4;
-        this.y -= yDiff * gameEngine.clockTick / 4;
+
+    if (distance < this.fleeRange) {
+        let velX = (this.fleeSpeed * xDiff) / distance;
+        let velY = (this.fleeSpeed * yDiff) / distance;
+
+        this.x -= gameEngine.clockTick * velX;
+        this.y -= gameEngine.clockTick * velY;
+
+        if (distance < this.dangerRange) this.specialAttack(xDiff, yDiff, distance, xOrigS, yOrigS);
+    } else if (this.startAttackRange <= distance && distance <= this.stopAttackRange) {
+        this.attack(xDiff, yDiff, distance, xOrigS, yOrigS);
+    }
+
+    if (this.startFollowRange <= distance && distance <= this.stopFollowRange) {
+        let velX = (this.moveSpeed * xDiff) / distance;
+        let velY = (this.moveSpeed * yDiff) / distance;
+
+        this.x += gameEngine.clockTick * velX;
+        this.y += gameEngine.clockTick * velY;
     }
 
 	Entity.prototype.update.call(this);
+}
+
+SorcererVillain.prototype.attack = function (xDiff, yDiff, distance, xOrigS, yOrigS) {
+    if (this.special <= 0) {
+        this.specialAttack(xDiff, yDiff, distance, xOrigS, yOrigS);
+    } else if (this.cooldown <= 0) {
+        this.normalAttack(xDiff, yDiff, distance, xOrigS, yOrigS);
+    }
+}
+
+SorcererVillain.prototype.normalAttack = function (xDiff, yDiff, distance, xOrigS, yOrigS) {
+    let velX = (this.attackSpeed * xDiff) / distance;
+    let velY = (this.attackSpeed * yDiff) / distance;
+
+    let projectile = new Projectile(gameEngine,
+        xOrigS,
+        yOrigS,
+        velX,
+        velY);
+    gameEngine.addEntity(projectile);
+    this.cooldown = this.attackInterval;
+}
+
+SorcererVillain.prototype.specialAttack = function (xDiff, yDiff, distance, xOrigS, yOrigS) {
+    // TODO
 }
 
 SorcererVillain.prototype.draw = function () {
@@ -222,8 +263,8 @@ SorcererVillain.prototype.draw = function () {
 function Projectile(game, x, y, xs, ys) {
     this.xs = xs;
     this.ys = ys;
-    this.scale = 1;
-    this.life = 2;
+    this.scale = 4;
+    this.life = 10;
     Entity.call(this, game, x, y);
 }
 
@@ -240,8 +281,8 @@ Projectile.prototype.update = function () {
 Projectile.prototype.draw = function () {
     ctx.save();
     ctx.beginPath();
-    ctx.arc(this.x, this.y, 3, 0, 2 * Math.PI);
-    ctx.fillStyle = 'red';
+    ctx.arc(this.x, this.y, this.scale, 0, 2 * Math.PI);
+    ctx.fillStyle = `rgb(253,208,157)`;
     ctx.fill();
     ctx.restore();
 }
