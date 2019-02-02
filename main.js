@@ -784,11 +784,10 @@ Character.prototype.draw = function (ctx) {
     }
     Entity.prototype.draw.call(this);
     let scaleOf = 4;
-    let accuracy = 0;
     for (let i = 2; i < gameEngine.entities.length; i++) {
         if (gameEngine.entities[i] instanceof SorcererVillain) continue;
         scaleOf = (gameEngine.entities[i] instanceof Projectile) ? 4 : currentScale - 20;
-        if (isCollise(this.x + 20, this.y - scaleOf, 5, 42, gameEngine.entities[i], scaleOf, scaleOf)) { gameEngine.entities.splice(i, 1); }
+        if (isCollise(this.x + 20, this.y - scaleOf + 20, 5, 42, gameEngine.entities[i], scaleOf, scaleOf)) { gameEngine.entities.splice(i, 1); }
         else if (gameEngine.entities[i] instanceof Projectile && collisionDetect(gameEngine.entities[i].x, gameEngine.entities[i].y, currentScale)) {
             gameEngine.entities.splice(i, 1);
         }
