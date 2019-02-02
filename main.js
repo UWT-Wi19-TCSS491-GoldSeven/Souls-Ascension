@@ -1,3 +1,4 @@
+/*----------------------------------------------Boiler Code Start-------------------------------------------------------------------------------------------- */
 function Animation(spriteSheet, startX, startY, frameWidth, frameHeight, frameDuration, frames, loop, reverse) {
     console.log(spriteSheet);
     this.spriteSheet = spriteSheet;
@@ -12,7 +13,6 @@ function Animation(spriteSheet, startX, startY, frameWidth, frameHeight, frameDu
     this.loop = loop;
     this.reverse = reverse;
 }
-
 Animation.prototype.drawFrame = function(tick, ctx, x, y, scaleBy) {
     var scaleBy = scaleBy || 1; //The size of the sprite. 1 = 100%
     this.elapsedTime += tick;
@@ -44,15 +44,15 @@ Animation.prototype.drawFrame = function(tick, ctx, x, y, scaleBy) {
         this.frameWidth * scaleBy,
         this.frameHeight * scaleBy);
 }
-
 Animation.prototype.currentFrame = function() {
     return Math.floor(this.elapsedTime / this.frameDuration);
 }
-
 Animation.prototype.isDone = function() {
     return (this.elapsedTime >= this.totalTime);
 }
-//----------------------------------------------------------------------------------------------------------------------------------------
+/*----------------------------------------------Boiler Code End-------------------------------------------------------------------------------------------- */
+
+/*----------------------------------------------Dungeon Array for level 1 Start------------------------------------------------------------------------------ */
 /*
  * Slime Dungeon Level 1 (88x33) each number is a 32x32 pixel space
  * 0 = no block (should layer background image so these are not just a solid color)
@@ -138,6 +138,10 @@ var slimeDungeonLevelOneEntities = new Array(
 	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,
 	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0
 	);
+
+/*----------------------------------------------Dungeon Array for level 1 End-------------------------------------------------------------------------------- */	
+
+/*----------------------------------------------Background for level 1 Start--------------------------------------------------------------------------------- */
 var currentScale = 48;
 var currentWTiles = 88; // number of tiles width wise on the map
 function Background(game, spritesheet) {
@@ -151,26 +155,37 @@ function Background(game, spritesheet) {
     this.game = game;
     this.ctx = game.ctx;
 };
-
-
-// The brown background is only for a point of reference. OK to delete.
 Background.prototype = new Entity();
 Background.prototype.constructor = Background;
 Background.prototype.update = function() {}
-Background.prototype.draw = function(ctx) {
-    ctx.fillStyle = "SaddleBrown";
-    ctx.fillRect(0, 0, 800, 300);
-    Entity.prototype.draw.call(this);
-}
+Background.prototype.draw = function () {
+	var spriteX = 0;
+	var spriteY = 0;
+	var count = 0;
+	var x = this.x;
+	var y = this.y;
 
-// The BockThingy is only for testing a point of reference.  OK to delete.
-function BlockThingy(game) {
-    Entity.call(this, game, 400, 0);
-    this.radius = 200;
-}
-BlockThingy.prototype = new Entity();
-BlockThingy.prototype.constructor = Background;
-/*------------------------------------BSP TREE---------------------------*/
+	// Loop to generate each tile
+    for (var i = 0; i < slimeDungeonLevelOne.length; i++) {
+		spriteX = (slimeDungeonLevelOne[i] - 1) * 32; // 32 is the number of pixels per sprite
+		this.ctx.drawImage(this.spritesheet, spriteX, spriteY, this.sw, this.sh, x, y, this.dw, this.dh);
+		count++;
+		if (count >= currentWTiles) // change the value based on how many tiles you will draw. (88 atm)
+		{
+			x = this.x;
+			y += currentScale;
+			count = 0;
+		}
+		else
+		{
+			x += currentScale;
+		}
+    };
+    //if (!isfilledBSP) { fillBSPTree(slimeDungeonLevelOne, this); isfilledBSP = true;}
+};
+/*----------------------------------------------Background for level 1 End----------------------------------------------------------------------------------- */
+
+/*----------------------------------------------BSP TREE Start----------------------------------------------------------------------------------------------- */
 
 var Tree = function (leaf) {
     this.leaf = leaf
@@ -328,8 +343,9 @@ function fillBSPTree(target) {//, background) {
 }
 var isfilledBSP = false;
 fillBSPTree(slimeDungeonLevelOne);
-/*------------------------------------BSP TREE---------------------------*/
-/*------------------------------------Collision--------------------------- */
+/*----------------------------------------------BSP TREE End------------------------------------------------------------------------------------------------- */
+
+/*----------------------------------------------Collision Start---------------------------------------------------------------------------------------------- */
 var Collision = function (entity, killable, width, height) {
     this.Entity = entity;
     this.killable = false;
@@ -375,35 +391,9 @@ function collisionDetect(characterX, characterY, width) {
     }  
     return false;
 }
-/*------------------------------------Collision End--------------------------- */
+/*----------------------------------------------Collision End------------------------------------------------------------------------------------------------ */
 
-
-Background.prototype.draw = function () {
-	var spriteX = 0;
-	var spriteY = 0;
-	var count = 0;
-	var x = this.x;
-	var y = this.y;
-
-	// Loop to generate each tile
-    for (var i = 0; i < slimeDungeonLevelOne.length; i++) {
-		spriteX = (slimeDungeonLevelOne[i] - 1) * 32; // 32 is the number of pixels per sprite
-		this.ctx.drawImage(this.spritesheet, spriteX, spriteY, this.sw, this.sh, x, y, this.dw, this.dh);
-		count++;
-		if (count >= currentWTiles) // change the value based on how many tiles you will draw. (88 atm)
-		{
-			x = this.x;
-			y += currentScale;
-			count = 0;
-		}
-		else
-		{
-			x += currentScale;
-		}
-    };
-    //if (!isfilledBSP) { fillBSPTree(slimeDungeonLevelOne, this); isfilledBSP = true;}
-};
-
+/*----------------------------------------------Torch Start-------------------------------------------------------------------------------------------------- */
 function Torch(game, spritesheet) {
 	this.x = 0;
     this.y = 0;
@@ -430,26 +420,9 @@ Torch.prototype.draw = function () {
 	this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
     Entity.prototype.draw.call(this);
 };
+/*----------------------------------------------Torch End-------------------------------------------------------------------------------------------------- */
 
-
-
-//--------------------------------------------------------------------------------------------------
-
-
-function CenterThingy(game) {
-    // Displays the center of the canvas/camera.
-    Entity.call(this, game, 390, 390);
-    this.radius = 200;
-}
-CenterThingy.prototype = new Entity();
-CenterThingy.prototype.constructor = Background;
-CenterThingy.prototype.update = function() {}
-CenterThingy.prototype.draw = function(ctx) {
-    ctx.fillStyle = "blue";
-    ctx.fillRect(395, 395, 10, 10);
-    Entity.prototype.draw.call(this);
-}
-
+/*----------------------------------------------SorcererVillain Start-------------------------------------------------------------------------------------- */
 function SorcererVillain(game) {
     this.ctx = game.ctx;
     this.standingAttackAnimation = new Animation(ASSET_MANAGER.getAsset("./img/sorcererVillain.png"), 0, 0, 100, 100, 0.1, 10, true, false);
@@ -568,7 +541,9 @@ Projectile.prototype.draw = function () {
     ctx.fill();
     ctx.restore();
 }
+/*----------------------------------------------SorcererVillain End---------------------------------------------------------------------------------------- */
 
+/*----------------------------------------------Character Start-------------------------------------------------------------------------------------------- */
 // The entity's origin is determined by its BoundingBox object.
 function Character(game) {                                                                                            //loop  reversed
     this.standAnimation = new Animation(ASSET_MANAGER.getAsset("./img/characterIdleAnimation.png"), 0, 0, 42, 42, 0.08, 4, true, false);
@@ -605,9 +580,8 @@ function Character(game) {                                                      
 }
 
 Character.prototype = new Entity();
-Character.prototype.update = function () {
-    
-    
+
+Character.prototype.update = function () {   
     this.isMovingUp = false;
     this.isMovingLeft = false;
     this.isMovingDown = false;
@@ -631,11 +605,9 @@ Character.prototype.update = function () {
     if (this.game.down && !collisionDetect(this.x + 10, currentScale + this.y + this.travelSpeed,25)) {
         this.isMovingDown = true;
     }
-
     if (this.game.debug && (this.isMovingLeft || this.isMovingRight || this.isMovingUp || this.isMovingDown)) {
         console.log(this);
     }
-
     if (this.isMovingUp) {
         this.game.origin.y -= this.travelSpeed;
         this.game.ctx.translate(0, this.travelSpeed); // Moves the canvas/camera.
@@ -645,7 +617,6 @@ Character.prototype.update = function () {
         this.game.ctx.translate(0, -this.travelSpeed); // Moves the canvas/camera.
         this.y += this.travelSpeed; // Moves the entity.
     }
-
     if (this.isMovingLeft) {
         var speed = this.travelSpeed;
         this.game.origin.x -= speed;
@@ -657,11 +628,9 @@ Character.prototype.update = function () {
         this.game.ctx.translate(-speed, 0); // Moves the canvas/camera.
         this.x += this.travelSpeed; // Moves the entity.
     }
-
     // The boundingBox follows the entity.
     this.boundingBox.x = this.x;
     this.boundingBox.y = this.y;
-
     if (this.isAttacking) {
         if (this.attackRightAnimation.isDone()) {
             this.attackRightAnimation.elapsedTime = 0
@@ -686,12 +655,10 @@ Character.prototype.update = function () {
             this.isWhirlwinding = false;
 		}
 	}
-
     Entity.prototype.update.call(this);
 }
 
 Character.prototype.draw = function (ctx) {
-
     if (this.isAttacking) {
         if (this.isAttacking && this.isMovingUp) {
 			this.animation = this.attackUpAnimation;
@@ -747,15 +714,31 @@ Character.prototype.draw = function (ctx) {
         }
     }
 }
+/*----------------------------------------------Character End---------------------------------------------------------------------------------------------- */
 
+/*----------------------------------------------Debug Stuff Start------------------------------------------------------------------------------------------ */
+function CenterThingy(game) {
+    // Displays the center of the canvas/camera.
+    Entity.call(this, game, 390, 390);
+    this.radius = 200;
+}
+CenterThingy.prototype = new Entity();
+CenterThingy.prototype.constructor = Background;
+CenterThingy.prototype.update = function() {}
+CenterThingy.prototype.draw = function(ctx) {
+    ctx.fillStyle = "blue";
+    ctx.fillRect(395, 395, 10, 10);
+    Entity.prototype.draw.call(this);
+}
+/*----------------------------------------------Debug Stuff End-------------------------------------------------------------------------------------------- */
+
+/*----------------------------------------------Main Code Start-------------------------------------------------------------------------------------------- */
+// the "main" code begins here
 var gameEngine;
 let character;
 let sorcererVillain;
 let canvas;
 var ctx;
-
-// the "main" code begins here
-
 var ASSET_MANAGER = new AssetManager();
 
 ASSET_MANAGER.queueDownload('./img/spritesheet.png');
@@ -772,11 +755,13 @@ ASSET_MANAGER.queueDownload("./img/characterUpAttack.png");
 ASSET_MANAGER.queueDownload("./img/characterDownAttack.png");
 ASSET_MANAGER.queueDownload("./img/characterWhirlWindAttackAnimation.png");
 ASSET_MANAGER.queueDownload("./img/sorcererVillain.png");
+
 ASSET_MANAGER.downloadAll(function() {
     console.log("starting up da sheild");
     canvas = document.getElementById("gameWorld");
     ctx = canvas.getContext("2d");
-
+	
+	// Creates new entity instances
     gameEngine = new GameEngine(ctx, ctx.canvas.width, ctx.canvas.height);
     var bg = new Background(gameEngine, ASSET_MANAGER.getAsset("./img/DungeonBackgroundSpriteSheet.png"));
     character = new Character(gameEngine);
@@ -789,15 +774,13 @@ ASSET_MANAGER.downloadAll(function() {
     character.boundingBox.width = 22;   // Left.
     character.boundingBox.height = 40;  // Down.
 
+	// Adding the entities
 	gameEngine.addEntity(bg);
-	
     gameEngine.addEntity(character);
 	gameEngine.addEntity(sorcererVillain);
-
     if (gameEngine.debug) gameEngine.addEntity(centerthingy);
 
+	// Starting up the game
     gameEngine.init();
-    gameEngine.start();
-
-    
+    gameEngine.start(); 
 });
