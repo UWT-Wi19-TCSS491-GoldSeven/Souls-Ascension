@@ -277,6 +277,25 @@ var isfilledBSP = false;
 fillBSPTree(slimeDungeonLevelOne);
 /*------------------------------------BSP TREE---------------------------*/
 /*------------------------------------Collision--------------------------- */
+var Collision = function (entity, killable, width, height) {
+    this.Entity = entity;
+    this.killable = false;
+    this.w = width;
+    this.h = height;
+};
+// if enemies got kill (empty health) override
+//entityPosition  is position in array of entities
+function isCollise (targetX, targetY, targetW, targetH, entity ,entityW, entityH) {
+    if (entity.x < targetX + targetW &&
+        entity.x + entityW > targetX &&
+        entity.y < targetY + targetH &&
+        entity.y > targetY) {
+        console.log('colli');
+        return true;
+    }
+    return false;
+}
+
 var isColli = false;
 function collisionDetect(characterX, characterY) {
     var targetX, targetY;
@@ -364,7 +383,7 @@ function SorcererVillain(game) {
     this.stopAttackRange = 300;
     this.startFollowRange = 150;
     this.stopFollowRange = 350;
-    Entity.call(this, game, 750, 550); // where it starts
+    Entity.call(this, game, 550, 550); // where it starts
 
 }
 
@@ -503,10 +522,9 @@ function Character(game) {                                                      
 }
 
 Character.prototype = new Entity();
-
-Character.prototype.constructor = Character;
-
 Character.prototype.update = function () {
+    
+    
     this.isMovingUp = false;
     this.isMovingLeft = false;
     this.isMovingDown = false;
@@ -589,7 +607,8 @@ Character.prototype.update = function () {
     Entity.prototype.update.call(this);
 }
 
-Character.prototype.draw = function(ctx) {
+Character.prototype.draw = function (ctx) {
+
     if (this.isAttacking) {
         if (this.isAttacking && this.isMovingUp) {
 			this.animation = this.attackUpAnimation;
@@ -624,7 +643,7 @@ Character.prototype.draw = function(ctx) {
     this.animation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
     if(!this.boxes) {
         ctx.strokeStyle = "green";
-        ctx.strokeRect(this.boundingBox.x + 10, this.boundingBox.y, this.boundingBox.width, this.boundingBox.height);
+        ctx.strokeRect(this.boundingBox.x, this.boundingBox.y, 42, 42);
         //ctx.strokeStyle = "orange";
         //ctx.strokeRect(this.x, this.y, this.animation.frameWidth*this.scale, this.animation.frameHeight*this.scale); //
         //console.log('BoundingBox: ' + this.boundingBox.x + ',' + this.boundingBox.y); // Debugging.
@@ -637,9 +656,24 @@ Character.prototype.draw = function(ctx) {
         }
     }
     Entity.prototype.draw.call(this);
+    for (let i = 2; i < gameEngine.entities.length; i++) {
+        if (isCollise(this.x + 20, this.y, 0, 42, gameEngine.entities[i], i, 4, 4)) { gameEngine.entities.splice(i, 1); }
+        else if (gameEngine.entities[i] instanceof Projectile && collisionDetect(gameEngine.entities[i].x, gameEngine.entities[i].y)) {
+            gameEngine.entities.splice(i, 1);
+        }
+    }
+    if (!this.boxes && gameEngine.entities.length >= 4) {/*
+        console.log('Character entity: ' + (gameEngine.entities["Character"] instanceof Character));
+        console.log('SorcerVillain Entities: ' + (gameEngine.entities[1] instanceof SorcererVillain));
+        console.log('Projectile Entities: ' + (gameEngine.entities[2] instanceof Projectile));
+        console.log('Projectile Entities: ' + (gameEngine.entities[3] instanceof Projectile));*/
+        //remove entity
+        
+    //remove entity when removable.   
+    }
 }
 
-let gameEngine;
+var gameEngine;
 let character;
 let sorcererVillain;
 let canvas;
