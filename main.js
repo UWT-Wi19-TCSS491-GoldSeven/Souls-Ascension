@@ -373,10 +373,11 @@ var Collision = function (entity, killable, width, height) {
 //entityPosition  is position in array of entities
 function isCollise(targetX, targetY, targetW, targetH, entity, entityW, entityH) {
     if (!entity.killable) return false;
+
     if (entity.x < targetX + targetW &&
         entity.x + entityW > targetX &&
         entity.y < targetY + targetH &&
-        entity.y > targetY) {
+        entity.y + entityH> targetY) {
         return true;
     }
     return false;
@@ -767,7 +768,7 @@ Character.prototype.draw = function (ctx) {
          this.animation = this.standAnimation;
     }
     this.animation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
-    if(this.boxes) {
+    if(!this.boxes) {
         ctx.strokeStyle = "green";
         ctx.strokeRect(this.boundingBox.x, this.boundingBox.y, 42, 42);
         //ctx.strokeStyle = "orange";
@@ -782,9 +783,11 @@ Character.prototype.draw = function (ctx) {
         }
     }
     Entity.prototype.draw.call(this);
+    let scaleOf = 4;
     for (let i = 2; i < gameEngine.entities.length; i++) {
         if (gameEngine.entities[i] instanceof SorcererVillain) continue;
-        if (isCollise(this.x + 20, this.y, 0, 42, gameEngine.entities[i], i, 4, 4)) { gameEngine.entities.splice(i, 1); }
+        scaleOf = (gameEngine.entities[i] instanceof Projectile) ? 4 : currentScale - 20;
+        if (isCollise(this.x + 20, this.y, 0, 42, gameEngine.entities[i], scaleOf, scaleOf)) { gameEngine.entities.splice(i, 1); }
         else if (gameEngine.entities[i] instanceof Projectile && collisionDetect(gameEngine.entities[i].x, gameEngine.entities[i].y, currentScale)) {
             gameEngine.entities.splice(i, 1);
         }
