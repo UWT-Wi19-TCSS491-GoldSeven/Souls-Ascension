@@ -243,6 +243,15 @@ BoundingBox.prototype.collide = function (oth) {
     return false;
 }
 
+BoundingBox.prototype.setPos = function (x, y) {
+    this.left = x;
+    this.top = y;
+    this.right = this.left + this.width;
+    this.bottom = this.top + this.height
+    this.origin.x = this.left + this.width / 2;
+    this.origin.y = this.top + this.height / 2;
+}
+
 
 // Do not delete this, else all entities will not draw!
 Entity.prototype.update = function () {
