@@ -60,13 +60,13 @@ Animation.prototype.isDone = function() {
  * 8 = Bottom Left L shaped corner, 9 = Bottom Right L shaped corner, 10 = North T shaped wall, 11 = East T shaped wall,
  * 12 = West T shaped wall, 13 = South T shaped wall, 14 = + shaped wall, 15 = Horizontal wall with door,
  * 16 = North floor, 17 = East floor, 18 = West floor, 19 = South floor, 20 = Top Left L floor, 21 = Top Right L floor,
- * 22 = Bottom Left L floor, 23 = Bottom Right L floor, 24 = Center floor.
+ * 22 = Bottom Left L floor, 23 = Bottom Right L floor, 24 = Center floor, 25 = silver key platform floor, 26 = gold key platform floor.
  */
 var slimeDungeonLevelOne = new Array(
 	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,6 ,1 ,2 ,1 ,7 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,6 ,1 ,2 ,1 ,7 ,0 ,0 ,0 ,0 ,6 ,3 ,4 ,7 ,0 ,0 ,0 ,0 ,6 ,1 ,1 ,2 ,1 ,4 ,1 ,7 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,
-	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,5 ,20,16,21,12,1 ,2 ,1 ,2 ,1 ,7 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,6 ,2 ,20,16,21,3 ,7 ,0 ,6 ,2 ,1 ,20,21,2 ,1 ,7 ,0 ,6 ,3 ,20,16,16,16,16,21,12,1 ,2 ,2 ,2 ,2 ,1 ,7 ,0 ,0 ,0 ,0 ,0 ,0 ,
+	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,5 ,20,16,21,12,1 ,2 ,1 ,2 ,1 ,7 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,6 ,2 ,20,16,21,3 ,7 ,0 ,6 ,2 ,1 ,20,21,2 ,1 ,7 ,0 ,6 ,3 ,20,16,16,16,16,25,12,1 ,2 ,2 ,2 ,2 ,1 ,7 ,0 ,0 ,0 ,0 ,0 ,0 ,
 	0 ,0 ,0 ,0 ,6 ,1 ,2 ,1 ,1 ,2 ,2 ,1 ,3 ,4 ,1 ,1 ,1 ,2 ,2 ,1 ,1 ,1 ,3 ,1 ,1 ,2 ,1 ,11,18,24,17,5 ,20,16,16,16,21,1 ,7 ,0 ,0 ,0 ,6 ,1 ,2 ,1 ,10,10,4 ,1 ,20,24,24,24,21,2 ,10,1 ,20,16,24,24,16,21,1 ,2 ,11,20,24,24,19,19,19,23,5 ,20,16,16,16,16,21,1 ,3 ,1 ,4 ,7 ,0 ,0 ,
-	0 ,0 ,0 ,0 ,5 ,20,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,21,5 ,22,19,23,5 ,22,19,19,24,24,21,3 ,1 ,2 ,1 ,4 ,20,16,21,3 ,4 ,20,16,24,24,24,24,24,21,1 ,20,24,24,24,24,24,24,16,21,5 ,22,24,17,6 ,1 ,2 ,1 ,3 ,18,24,19,19,19,24,16,16,16,21,5 ,0 ,0 ,
+	0 ,0 ,0 ,0 ,5 ,20,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,21,5 ,22,19,23,5 ,22,19,19,24,24,21,3 ,1 ,2 ,1 ,4 ,20,16,21,3 ,4 ,20,16,24,24,24,24,24,21,1 ,20,24,24,24,24,24,24,16,21,5 ,22,24,17,6 ,1 ,2 ,1 ,3 ,18,24,19,19,19,24,16,16,16,25,5 ,0 ,0 ,
 	0 ,0 ,0 ,0 ,5 ,18,24,24,24,24,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,24,17,1 ,3 ,15,4 ,1 ,1 ,1 ,2 ,18,24,24,16,16,16,16,16,24,24,24,16,16,24,19,24,24,24,24,24,24,16,24,24,24,24,24,24,24,24,17,2 ,7 ,18,17,5 ,20,16,16,16,24,23,6 ,10,7 ,18,24,24,24,17,5 ,0 ,0 ,
 	0 ,0 ,0 ,0 ,5 ,18,24,24,24,17,1 ,2 ,1 ,10,1 ,2 ,1 ,2 ,3 ,4 ,1 ,1 ,2 ,1 ,7 ,18,24,16,16,16,16,16,16,16,16,24,24,24,24,24,19,19,19,19,19,19,19,24,17,5 ,22,24,24,24,24,19,19,19,19,24,24,24,24,24,24,24,21,5 ,18,17,5 ,18,24,19,19,23,6 ,1 ,1 ,5 ,22,19,19,19,23,5 ,0 ,0 ,
 	0 ,0 ,0 ,0 ,5 ,18,24,24,24,24,16,16,21,5 ,20,16,16,16,16,16,16,16,16,21,5 ,18,24,24,24,24,24,24,24,19,19,24,24,24,24,17,6 ,10,10,10,1 ,1 ,7 ,18,17,1 ,7 ,18,24,24,17,1 ,10,10,7 ,18,24,24,24,24,24,24,17,5 ,18,17,5 ,18,17,2 ,1 ,1 ,2 ,20,21,3 ,1 ,2 ,1 ,1 ,1 ,4 ,7 ,0 ,
@@ -83,7 +83,7 @@ var slimeDungeonLevelOne = new Array(
 	0 ,0 ,5 ,18,17,5 ,20,24,24,19,19,24,24,16,16,16,21,12,11,18,17,5 ,18,24,24,24,21,1 ,7 ,18,24,24,24,24,24,24,24,24,24,17,1 ,7 ,24,6 ,1 ,2 ,2 ,4 ,3 ,7 ,18,17,6 ,1 ,1 ,3 ,20,21,5 ,18,24,17,2 ,2 ,7 ,22,19,24,24,24,19,23,6 ,3 ,2 ,2 ,7 ,22,24,17,5 ,20,16,24,24,17,4 ,7 ,
 	0 ,0 ,5 ,18,17,5 ,18,24,17,6 ,7 ,22,19,24,24,24,17,12,2 ,18,17,5 ,18,24,24,24,24,21,5 ,18,24,24,24,24,24,24,24,24,24,24,21,1 ,15,11,20,16,16,16,21,1 ,18,17,1 ,20,16,16,24,17,5 ,22,19,24,16,21,1 ,2 ,7 ,22,19,23,6 ,4 ,2 ,20,16,21,1 ,7 ,18,17,1 ,18,24,24,24,24,21,5 ,
 	0 ,0 ,5 ,18,17,5 ,22,19,23,12,14,1 ,7 ,22,24,24,17,5 ,20,24,17,5 ,18,24,24,24,24,17,5 ,18,24,24,24,24,24,24,24,24,24,24,24,16,21,5 ,18,24,24,24,24,16,24,24,16,24,24,24,24,17,1 ,2 ,1 ,18,24,24,16,21,4 ,1 ,1 ,1 ,4 ,20,16,24,24,24,21,5 ,18,24,16,24,24,24,24,24,17,5 ,
-	6 ,1 ,1 ,18,17,1 ,1 ,4 ,1 ,2 ,11,24,3 ,7 ,22,24,23,5 ,18,24,23,5 ,18,24,24,24,24,23,5 ,18,24,24,24,24,24,24,24,24,24,19,24,24,17,5 ,18,24,24,19,19,19,24,24,24,24,24,24,24,24,16,16,16,24,24,24,24,24,16,16,16,16,16,24,24,24,24,24,17,5 ,18,24,24,24,24,24,24,24,17,5 ,
+	6 ,1 ,1 ,18,17,1 ,1 ,4 ,1 ,2 ,11,25,3 ,7 ,22,24,23,5 ,18,24,23,5 ,18,24,24,24,24,23,5 ,18,24,24,24,24,24,24,24,24,24,19,24,24,17,5 ,18,24,24,19,19,19,24,24,24,24,24,24,24,24,16,16,16,24,24,24,24,24,16,16,16,16,16,24,24,24,24,24,17,5 ,18,24,24,24,24,24,24,24,17,5 ,
 	5 ,20,16,24,24,16,16,16,16,21,5 ,18,21,4 ,7 ,24,6 ,2 ,18,17,6 ,1 ,18,24,24,24,23,6 ,3 ,18,24,24,24,24,24,24,24,24,23,5 ,18,24,17,5 ,18,24,17,1 ,1 ,7 ,18,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,19,24,24,24,24,24,24,24,24,17,1 ,7 ,22,19,19,19,24,24,24,17,5 ,
 	5 ,18,24,24,24,24,19,19,24,17,5 ,18,24,21,3 ,10,1 ,20,24,17,5 ,20,24,24,24,23,6 ,2 ,20,24,24,24,24,24,24,24,24,23,6 ,11,18,24,17,5 ,18,24,24,16,21,5 ,22,19,19,24,24,24,24,24,24,24,24,24,24,24,24,24,17,5 ,22,24,24,24,24,24,24,24,24,21,1 ,4 ,2 ,1 ,7 ,18,24,24,17,5 ,
 	5 ,18,24,24,24,17,6 ,7 ,18,17,5 ,18,24,24,21,5 ,20,24,24,23,5 ,18,24,24,23,6 ,4 ,20,24,24,24,24,24,24,24,24,17,2 ,14,11,18,24,17,5 ,18,24,24,24,17,2 ,2 ,3 ,1 ,18,24,24,24,24,24,19,24,24,24,24,24,24,17,3 ,7 ,18,24,24,24,24,24,24,24,24,16,16,16,21,5 ,22,19,19,17,5 ,
@@ -93,13 +93,13 @@ var slimeDungeonLevelOne = new Array(
 	5 ,18,17,3 ,4 ,18,24,24,24,17,5 ,18,24,24,21,1 ,20,24,24,24,24,5 ,18,24,24,17,12,24,24,24,24,24,24,24,24,19,24,24,24,24,24,24,17,5 ,18,24,24,24,23,6 ,2 ,0 ,2 ,3 ,1 ,0 ,0 ,5 ,24,5 ,20,16,24,24,24,24,17,5 ,24,19,19,24,24,24,24,24,16,16,24,24,16,16,16,24,24,21,5 ,0 ,
 	5 ,18,24,16,16,24,24,24,24,17,5 ,18,24,19,24,16,24,19,19,23,6 ,4 ,18,24,24,23,12,3 ,18,24,24,24,24,24,23,5 ,22,24,24,24,24,24,23,5 ,22,19,24,23,6 ,2 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,1 ,10,3 ,18,24,24,24,24,24,17,2 ,1 ,3 ,7 ,18,24,24,24,24,24,24,19,19,19,19,24,24,24,17,5 ,0 ,
 	5 ,22,19,19,19,19,19,19,19,23,5 ,18,23,5 ,22,24,23,6 ,1 ,4 ,2 ,20,24,19,23,6 ,11,24,24,24,24,24,24,24,6 ,13,7 ,18,24,24,24,17,6 ,13,1 ,7 ,24,6 ,9 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,5 ,20,24,19,19,19,24,24,24,16,16,21,5 ,18,24,24,24,24,24,17,6 ,1 ,1 ,1 ,7 ,18,24,17,5 ,0 ,
-	8 ,1 ,1 ,1 ,1 ,2 ,2 ,2 ,1 ,2 ,11,24,6 ,1 ,7 ,24,6 ,11,20,16,16,24,23,6 ,1 ,13,13,7 ,22,19,19,19,19,23,5 ,0 ,5 ,18,24,24,19,23,5 ,0 ,0 ,8 ,1 ,9 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,5 ,22,23,6 ,1 ,7 ,22,24,24,24,24,23,5 ,22,19,19,24,24,19,23,5 ,0 ,0 ,0 ,5 ,22,19,23,5 ,0 ,
-	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,8, 1 ,9 ,0 ,8 ,1 ,14,11,22,19,19,23,6 ,9 ,0 ,0 ,0 ,8 ,1 ,1 ,1 ,1 ,1 ,1 ,9 ,0 ,5 ,22,19,23,6 ,1 ,9 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,8 ,1 ,1 ,9 ,0 ,8 ,7 ,22,19,19,23,6 ,14,1 ,1 ,7 ,22,23,6 ,1 ,9 ,0 ,0 ,0 ,8 ,1 ,1 ,1 ,9 ,0 ,
+	8 ,1 ,1 ,1 ,1 ,2 ,2 ,2 ,1 ,2 ,11,24,6 ,1 ,7 ,24,6 ,11,20,16,16,24,23,6 ,1 ,13,13,7 ,22,19,19,19,19,23,5 ,0 ,5 ,18,24,24,19,23,5 ,0 ,0 ,8 ,1 ,9 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,5 ,22,23,6 ,1 ,7 ,22,24,24,24,24,23,5 ,22,19,19,24,24,19,23,5 ,0 ,0 ,0 ,5 ,22,19,26,5 ,0 ,
+	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,8, 1 ,9 ,0 ,8 ,1 ,14,11,25,19,19,23,6 ,9 ,0 ,0 ,0 ,8 ,1 ,1 ,1 ,1 ,1 ,1 ,9 ,0 ,5 ,22,19,23,6 ,1 ,9 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,8 ,1 ,1 ,9 ,0 ,8 ,7 ,22,19,19,23,6 ,14,1 ,1 ,7 ,22,23,6 ,1 ,9 ,0 ,0 ,0 ,8 ,1 ,1 ,1 ,9 ,0 ,
 	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,8 ,1 ,1 ,1 ,1 ,1 ,9 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,8 ,1 ,2 ,1 ,9 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,8 ,1 ,1 ,1 ,1 ,1 ,9 ,0 ,0 ,8 ,1 ,1 ,9 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0
 	);
 
 /*
- * Slime Dungeon Level 1 entity array (88x33) each number is a 32x32 pixel space
+ * Slime Dungeon Level 1 entity array (88x33) each number is a 48x48 pixel space
  * 0 = no entity
  * 1 = Torch
  */
@@ -144,6 +144,12 @@ var slimeDungeonLevelOneEntities = new Array(
 		if (slimeDungeonLevelOne[i] >= 1 && slimeDungeonLevelOne[i] <= 4) {
 			slimeDungeonLevelOneEntities[i] = 1; // adds a torch to the entities array
 		}
+		if (slimeDungeonLevelOne[i] == 25) {
+			slimeDungeonLevelOneEntities[i] = 2; // adds a silverKey to the entities array
+		}
+		if (slimeDungeonLevelOne[i] == 26) {
+			slimeDungeonLevelOneEntities[i] = 3; // adds a goldKey to the entities array
+		}
 	};
 /*----------------------------------------------Dungeon Array for level 1 End-------------------------------------------------------------------------------- */	
 
@@ -153,8 +159,8 @@ var currentWTiles = 88; // number of tiles width wise on the map
 function Background(game, spritesheet) {
     this.x = 0;
     this.y = 0;
-	this.sw = 32;
-    this.sh = 32;
+	this.sw = 48;
+    this.sh = 48;
 	this.dw = currentScale;
     this.dh = currentScale;
     this.spritesheet = spritesheet;
@@ -174,7 +180,7 @@ Background.prototype.draw = function () {
 
 	// Loop to generate each tile
     for (var i = 0; i < slimeDungeonLevelOne.length; i++) {
-		spriteX = (slimeDungeonLevelOne[i] - 1) * 32; // 32 is the number of pixels per sprite
+		spriteX = (slimeDungeonLevelOne[i] - 1) * 48; // 32 is the number of pixels per sprite
 		this.ctx.drawImage(this.spritesheet, spriteX, spriteY, this.sw, this.sh, x, y, this.dw, this.dh);
 		count++;
 		if (count >= currentWTiles) // change the value based on how many tiles you will draw. (88 atm)
@@ -419,6 +425,47 @@ Torch.prototype.draw = function () {
     Entity.prototype.draw.call(this);
 };
 /*----------------------------------------------Torch End-------------------------------------------------------------------------------------------------- */
+
+/*----------------------------------------------Silver Key Start--------------------------------------------------------------------------------------------- */
+function SilverKey(game, x, y) {
+	this.ctx = game.ctx;
+	this.silverKeyAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SilverKeyAnimation.png"), 0, 0, 48, 48, 0.1, 4, true, currentScale);
+	this.animation = this.silverKeyAnimation;   
+	Entity.call(this, game, x, y);// where it starts
+}
+
+SilverKey.prototype = new Entity();
+SilverKey.prototype.constructor = SilverKey;
+
+SilverKey.prototype.update = function () {
+	Entity.prototype.update.call(this);
+}
+SilverKey.prototype.draw = function () {
+	this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    Entity.prototype.draw.call(this);
+};
+/*----------------------------------------------Silver Key End----------------------------------------------------------------------------------------------- */
+
+/*----------------------------------------------Gold Key Start----------------------------------------------------------------------------------------------- */
+function GoldKey(game, x, y) {
+	this.ctx = game.ctx;
+	this.goldKeyAnimation = new Animation(ASSET_MANAGER.getAsset("./img/GoldKeyAnimation.png"), 0, 0, 48, 48, 0.1, 4, true, currentScale);
+	this.animation = this.goldKeyAnimation;   
+	Entity.call(this, game, x, y);// where it starts
+}
+
+GoldKey.prototype = new Entity();
+GoldKey.prototype.constructor = GoldKey;
+
+GoldKey.prototype.update = function () {
+	Entity.prototype.update.call(this);
+}
+GoldKey.prototype.draw = function () {
+	this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    Entity.prototype.draw.call(this);
+};
+/*----------------------------------------------Gold Key End------------------------------------------------------------------------------------------------- */
+
 
 /*----------------------------------------------SorcererVillain Start-------------------------------------------------------------------------------------- */
 function SorcererVillain(game) {
@@ -738,6 +785,8 @@ var gameEngine;
 let character;
 let sorcererVillain;
 let torch;
+let sKey;
+let gKey;
 let canvas;
 var ctx;
 var ASSET_MANAGER = new AssetManager();
@@ -757,6 +806,9 @@ ASSET_MANAGER.queueDownload("./img/characterDownAttack.png");
 ASSET_MANAGER.queueDownload("./img/characterWhirlWindAttackAnimation.png");
 ASSET_MANAGER.queueDownload("./img/sorcererVillain.png");
 ASSET_MANAGER.queueDownload("./img/torchAnimation.png");
+ASSET_MANAGER.queueDownload("./img/SilverKeyAnimation.png");
+ASSET_MANAGER.queueDownload("./img/GoldKeyAnimation.png");
+
 
 ASSET_MANAGER.downloadAll(function() {
     console.log("starting up da sheild");
@@ -767,14 +819,29 @@ ASSET_MANAGER.downloadAll(function() {
     gameEngine = new GameEngine(ctx, ctx.canvas.width, ctx.canvas.height);
     var bg = new Background(gameEngine, ASSET_MANAGER.getAsset("./img/DungeonBackgroundSpriteSheet.png"));
 	var torches = [];
-	// generates a torch array that will generate the torches in the right spots.
+	var sKeys = [];
+	var gKeys = [];
+	
+	// generates an array that will generate each entity in the right spots.
 	for (var i = 0; i < slimeDungeonLevelOneEntities.length; i++) {
 		if (slimeDungeonLevelOneEntities[i] == 1) {
 			var torchX = (i % 88) * 48;
 			var torchY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
 			var torch = new Torch(gameEngine, torchX, torchY);
 			torches.push(torch);
-		}	
+		}
+		if (slimeDungeonLevelOneEntities[i] == 2) {
+			var sKeyX = (i % 88) * 48;
+			var sKeyY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
+			var sKey = new SilverKey(gameEngine, sKeyX, sKeyY);
+			sKeys.push(sKey);
+		}
+		if (slimeDungeonLevelOneEntities[i] == 3) {
+			var gKeyX = (i % 88) * 48;
+			var gKeyY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
+			var gKey = new GoldKey(gameEngine, gKeyX, gKeyY);
+			gKeys.push(gKey);
+		}
 	}
 	character = new Character(gameEngine);
 	sorcererVillain = new SorcererVillain(gameEngine);
@@ -790,6 +857,12 @@ ASSET_MANAGER.downloadAll(function() {
 	gameEngine.addEntity(bg);
 	for(var i = 0; i < torches.length; i++) {
 		gameEngine.addEntity(torches[i]);
+	}
+	for(var i = 0; i < sKeys.length; i++) {
+		gameEngine.addEntity(sKeys[i]);
+	}
+	for(var i = 0; i < gKeys.length; i++) {
+		gameEngine.addEntity(gKeys[i]);
 	}
     gameEngine.addEntity(character);
 	gameEngine.addEntity(sorcererVillain);
