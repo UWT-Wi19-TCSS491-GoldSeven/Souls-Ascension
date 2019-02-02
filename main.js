@@ -173,8 +173,19 @@ var Container = function (x, y, w, h) {
     )
 }
 Container.prototype.pushWall = function (theX, theY) {
-    if (this.x <= theX && theX < this.x + this.w && this.y <= theY && theY < this.y + this.h) {
+   // this.x + (this.w / 2),
+    //    this.y + (this.h / 2)
+    if (this.x <= theX + currentScale / 2 && theX + currentScale / 2 < this.x + this.w
+        && this.y <= theY + currentScale / 2 && theY + currentScale / 2 < this.y + this.h) {
         this.walls.push(new Point(theX, theY));        
+    }
+    if (this.x <= theX  && theX < this.x + this.w
+        && this.y <= theY && theY  < this.y + this.h) {
+        this.walls.push(new Point(theX, theY));
+    }
+    if (this.x <= theX && theX < this.x + this.w
+        && this.y <= theY + currentScale && theY + currentScale < this.y + this.h) {
+        this.walls.push(new Point(theX, theY));
     }
 }
 Container.prototype.paint = function (c) {
@@ -242,7 +253,7 @@ const mapWidth = currentWTiles * currentScale + currentScale ;
 const mapHeight = (slimeDungeonLevelOne.length / currentWTiles) * currentScale;
 var MAP_SIZE = currentScale;
 var SQUARE = currentWTiles;
-var N_ITERATIONS = 7;
+var N_ITERATIONS = 6;
 var DISCARD_BY_RATIO = true;
 var H_RATIO = 0.45;
 var W_RATIO = 0.45;
@@ -290,14 +301,13 @@ function isCollise (targetX, targetY, targetW, targetH, entity ,entityW, entityH
         entity.x + entityW > targetX &&
         entity.y < targetY + targetH &&
         entity.y > targetY) {
-        console.log('colli');
         return true;
     }
     return false;
 }
 
 var isColli = false;
-function collisionDetect(characterX, characterY) {
+function collisionDetect(characterX, characterY, width) { 
     var targetX, targetY;
     var j; // area to check collision
     for (j = 0; j < leafs.length; j++) {
@@ -312,8 +322,8 @@ function collisionDetect(characterX, characterY) {
     for (var i = 0; i < leafs[j].walls.length; i++) {
         targetX = leafs[j].walls[i].x;
         targetY = leafs[j].walls[i].y;
-        if (characterX < targetX + currentScale &&
-            characterX + currentScale > targetX &&
+        if (characterX < targetX + currentScale &&// - width for more percise when work with character
+            characterX + currentScale - width> targetX &&
             characterY < targetY + currentScale &&
             characterY > targetY) {
             isColli = true;
@@ -518,7 +528,7 @@ function Character(game) {                                                      
     this.boxes = game.debug;         // For debugging, game.debug = true;
     this.scale = 1; // set to 1 if the sprite dimensions are the exact size that should be rendered.
     //console.log(this); // Debugging.
-    Entity.call(this, game, 400, 450); // Spawn the entity's upper left corner at these coordinates of the world.
+    Entity.call(this, game, 385, 450); // Spawn the entity's upper left corner at these coordinates of the world.
 }
 
 Character.prototype = new Entity();
@@ -540,12 +550,18 @@ Character.prototype.update = function () {
     if (this.game.up && this.game.right) this.isMovingUpRight = true;
     if (this.game.down && this.game.left) this.isMovingDownLeft = true;
     if (this.game.down && this.game.right) this.isMovingDownRight = true;
-    if (this.game.left && !collisionDetect(this.x + 10 - this.travelSpeed, this.y)) { this.isMovingLeft = true }// 
-    if (this.game.right && !collisionDetect(this.x + 10 + this.travelSpeed, this.y )) { this.isMovingRight = true }
-    if (this.game.up && !collisionDetect(this.x + 10, currentScale + this.y - this.travelSpeed)) {
+    if (this.game.left && !collisionDetect(this.x + 10 - this.travelSpeed, currentScale - 5 + this.y, 20)) { this.isMovingLeft = true }// 
+    if (this.game.right && !collisionDetect(this.x + 10 + this.travelSpeed, currentScale - 5 + this.y, 20)) { this.isMovingRight = true }
+    if (this.game.up && !collisionDetect(this.x + 10, 20 + this.y - this.travelSpeed,25)) {
         this.isMovingUp = true;     
     }
-    if (this.game.down && !collisionDetect(this.x + 10, currentScale + this.y + this.travelSpeed)) {
+    /*
+     (characterX < targetX + currentScale &&// - width for more percise when work with character
+            characterX + currentScale - width> targetX &&
+            characterY < targetY + currentScale &&
+            characterY > targetY)
+     */
+    if (this.game.down && !collisionDetect(this.x + 10, currentScale + this.y + this.travelSpeed,25)) {
         this.isMovingDown = true;
     }
 
@@ -657,8 +673,9 @@ Character.prototype.draw = function (ctx) {
     }
     Entity.prototype.draw.call(this);
     for (let i = 2; i < gameEngine.entities.length; i++) {
+        if (gameEngine.entities[i] instanceof SorcererVillain) continue;
         if (isCollise(this.x + 20, this.y, 0, 42, gameEngine.entities[i], i, 4, 4)) { gameEngine.entities.splice(i, 1); }
-        else if (gameEngine.entities[i] instanceof Projectile && collisionDetect(gameEngine.entities[i].x, gameEngine.entities[i].y)) {
+        else if (gameEngine.entities[i] instanceof Projectile && collisionDetect(gameEngine.entities[i].x, gameEngine.entities[i].y,0)) {
             gameEngine.entities.splice(i, 1);
         }
     }
