@@ -371,7 +371,8 @@ var Collision = function (entity, killable, width, height) {
 };
 // if enemies got kill (empty health) override
 //entityPosition  is position in array of entities
-function isCollise (targetX, targetY, targetW, targetH, entity ,entityW, entityH) {
+function isCollise(targetX, targetY, targetW, targetH, entity, entityW, entityH) {
+    if (!entity.killable) return false;
     if (entity.x < targetX + targetW &&
         entity.x + entityW > targetX &&
         entity.y < targetY + targetH &&
@@ -414,7 +415,8 @@ function collisionDetect(characterX, characterY, width) {
 function Torch(game, x, y) {
 	this.ctx = game.ctx;
 	this.flameAnimation = new Animation(ASSET_MANAGER.getAsset("./img/torchAnimation.png"), 0, 0, 48, 48, 0.1, 4, true, currentScale);
-	this.animation = this.flameAnimation;   
+    this.animation = this.flameAnimation;
+    this.killable = false;
 	Entity.call(this, game, x, y);// where it starts
 }
 
@@ -434,7 +436,8 @@ Torch.prototype.draw = function () {
 function SilverKey(game, x, y) {
 	this.ctx = game.ctx;
 	this.silverKeyAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SilverKeyAnimation.png"), 0, 0, 48, 48, 0.1, 4, true, currentScale);
-	this.animation = this.silverKeyAnimation;   
+    this.animation = this.silverKeyAnimation;   
+    this.killable = true;
 	Entity.call(this, game, x, y);// where it starts
 }
 
@@ -454,7 +457,8 @@ SilverKey.prototype.draw = function () {
 function GoldKey(game, x, y) {
 	this.ctx = game.ctx;
 	this.goldKeyAnimation = new Animation(ASSET_MANAGER.getAsset("./img/GoldKeyAnimation.png"), 0, 0, 48, 48, 0.1, 4, true, currentScale);
-	this.animation = this.goldKeyAnimation;   
+    this.animation = this.goldKeyAnimation;   
+    this.killable = true;
 	Entity.call(this, game, x, y);// where it starts
 }
 
@@ -474,7 +478,8 @@ GoldKey.prototype.draw = function () {
 function HealingPotion(game, x, y) {
 	this.ctx = game.ctx;
 	this.sparkleAnimation = new Animation(ASSET_MANAGER.getAsset("./img/HealthPotionAnimation.png"), 0, 0, 48, 48, 0.1, 4, true, currentScale);
-	this.animation = this.sparkleAnimation;   
+    this.animation = this.sparkleAnimation;   
+    this.killable = true;
 	Entity.call(this, game, x, y);// where it starts
 }
 
@@ -667,8 +672,8 @@ Character.prototype.update = function () {
     if (this.game.up && this.game.right) this.isMovingUpRight = true;
     if (this.game.down && this.game.left) this.isMovingDownLeft = true;
     if (this.game.down && this.game.right) this.isMovingDownRight = true;
-    if (this.game.left && !collisionDetect(this.x + 10 - this.travelSpeed, currentScale - 5 + this.y, 20)) { this.isMovingLeft = true }// 
-    if (this.game.right && !collisionDetect(this.x + 10 + this.travelSpeed, currentScale - 5 + this.y, 20)) { this.isMovingRight = true }
+    if (this.game.left && !collisionDetect(this.x + 7 - this.travelSpeed, currentScale - 5 + this.y, 20)) { this.isMovingLeft = true }// 
+    if (this.game.right && !collisionDetect(this.x + 7 + this.travelSpeed, currentScale - 5 + this.y, 20)) { this.isMovingRight = true }
     if (this.game.up && !collisionDetect(this.x + 10, 27 + this.y - this.travelSpeed,25)) {
         this.isMovingUp = true;     
     }
