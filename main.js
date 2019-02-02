@@ -151,6 +151,233 @@ function Background(game, spritesheet) {
     this.game = game;
     this.ctx = game.ctx;
 };
+
+
+// The brown background is only for a point of reference. OK to delete.
+Background.prototype = new Entity();
+Background.prototype.constructor = Background;
+Background.prototype.update = function() {}
+Background.prototype.draw = function(ctx) {
+    ctx.fillStyle = "SaddleBrown";
+    ctx.fillRect(0, 0, 800, 300);
+    Entity.prototype.draw.call(this);
+}
+
+// The BockThingy is only for testing a point of reference.  OK to delete.
+function BlockThingy(game) {
+    Entity.call(this, game, 400, 0);
+    this.radius = 200;
+}
+BlockThingy.prototype = new Entity();
+BlockThingy.prototype.constructor = Background;
+/*------------------------------------BSP TREE---------------------------*/
+
+var Tree = function (leaf) {
+    this.leaf = leaf
+    this.lchild = undefined
+    this.rchild = undefined
+}
+
+Tree.prototype.getLeafs = function () {
+    if (this.lchild === undefined && this.rchild === undefined)
+        return [this.leaf]
+    else
+        return [].concat(this.lchild.getLeafs(), this.rchild.getLeafs())
+}
+
+Tree.prototype.getLevel = function (level, queue) {
+    if (queue === undefined)
+        queue = []
+    if (level == 1) {
+        queue.push(this)
+    } else {
+        if (this.lchild !== undefined)
+            this.lchild.getLevel(level - 1, queue)
+        if (this.rchild !== undefined)
+            this.rchild.getLevel(level - 1, queue)
+    }
+    return queue
+}
+var Point = function (x, y) {
+    this.x = x;
+    this.y = y; 
+}
+//a container prototype.
+var Container = function (x, y, w, h) {
+    this.x = x
+    this.y = y
+    this.w = w
+    this.h = h
+    this.walls = [];
+    this.center = new Point(
+        this.x + (this.w / 2),
+        this.y + (this.h / 2)
+    )
+}
+Container.prototype.pushWall = function (theX, theY) {
+   // this.x + (this.w / 2),
+    //    this.y + (this.h / 2)
+    if (this.x <= theX + currentScale / 2 && theX + currentScale / 2 < this.x + this.w
+        && this.y <= theY + currentScale / 2 && theY + currentScale / 2 < this.y + this.h) {
+        this.walls.push(new Point(theX, theY));        
+    }
+    if (this.x <= theX  && theX < this.x + this.w
+        && this.y <= theY && theY  < this.y + this.h) {
+        this.walls.push(new Point(theX, theY));
+    }
+    if (this.x <= theX && theX < this.x + this.w
+        && this.y <= theY + currentScale && theY + currentScale < this.y + this.h) {
+        this.walls.push(new Point(theX, theY));
+    }
+}
+Container.prototype.paint = function (c) {
+    c.strokeStyle = "#0F0"
+    c.lineWidth = 2
+    c.strokeRect(this.x * SQUARE, this.y * SQUARE,
+        this.w * SQUARE, this.h * SQUARE)
+}
+// build this tree
+function split_container(container, iter) {
+    var root = new Tree(container)
+    if (iter != 0) {
+        var sr = random_split(container)
+        root.lchild = split_container(sr[0], iter - 1)
+        root.rchild = split_container(sr[1], iter - 1)
+    }
+    return root
+}
+function random(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) + min)
+}
+function random_split(container) {
+    var r1, r2
+    if (random(0, 1) == 0) {
+        // Vertical
+        r1 = new Container(
+            container.x, container.y,             // r1.x, r1.y
+            random(1, container.w), container.h   // r1.w, r1.h
+        )
+        r2 = new Container(
+            container.x + r1.w, container.y,      // r2.x, r2.y
+            container.w - r1.w, container.h       // r2.w, r2.h
+        )
+
+        if (DISCARD_BY_RATIO) {
+            var r1_w_ratio = r1.w / r1.h
+            var r2_w_ratio = r2.w / r2.h
+            if (r1_w_ratio < W_RATIO || r2_w_ratio < W_RATIO) {
+                return random_split(container)
+            }
+        }
+    } else {
+        // Horizontal
+        r1 = new Container(
+            container.x, container.y,             // r1.x, r1.y
+            container.w, random(1, container.h)   // r1.w, r1.h
+        )
+        r2 = new Container(
+            container.x, container.y + r1.h,      // r2.x, r2.y
+            container.w, container.h - r1.h       // r2.w, r2.h
+        )
+
+        if (DISCARD_BY_RATIO) {
+            var r1_h_ratio = r1.h / r1.w
+            var r2_h_ratio = r2.h / r2.w
+            if (r1_h_ratio < H_RATIO || r2_h_ratio < H_RATIO) {
+                return random_split(container)
+            }
+        }
+    }
+    return [r1, r2]
+}
+
+const mapWidth = currentWTiles * currentScale + currentScale ;
+const mapHeight = (slimeDungeonLevelOne.length / currentWTiles) * currentScale;
+var MAP_SIZE = currentScale;
+var SQUARE = currentWTiles;
+var N_ITERATIONS = 6;
+var DISCARD_BY_RATIO = true;
+var H_RATIO = 0.45;
+var W_RATIO = 0.45;
+var main_container = new Container(0, 0, mapWidth, mapHeight);
+var container_tree = split_container(main_container, N_ITERATIONS);
+
+var leafs = container_tree.getLeafs();
+
+
+function fillBSPTree(target) {//, background) {
+    
+    var x = 0;
+    var y = 0;
+    var count = 0;
+    for (var i = 0; i <= target.length; i++) {
+        if (count >= currentWTiles) // change the value based on how many tiles you will draw. (88 atm)
+        {
+            x = 0;
+            y += currentScale;
+            count = 0;
+        }
+        if (13 >= target[i] && target[i] >= 0) { //wall code
+            x = count * currentScale;
+             //and the wall into property container
+            for (var j = 0; j < leafs.length; j++) leafs[j].pushWall(x, y);
+        }
+
+        count++;
+    };
+}
+var isfilledBSP = false;
+fillBSPTree(slimeDungeonLevelOne);
+/*------------------------------------BSP TREE---------------------------*/
+/*------------------------------------Collision--------------------------- */
+var Collision = function (entity, killable, width, height) {
+    this.Entity = entity;
+    this.killable = false;
+    this.w = width;
+    this.h = height;
+};
+// if enemies got kill (empty health) override
+//entityPosition  is position in array of entities
+function isCollise (targetX, targetY, targetW, targetH, entity ,entityW, entityH) {
+    if (entity.x < targetX + targetW &&
+        entity.x + entityW > targetX &&
+        entity.y < targetY + targetH &&
+        entity.y > targetY) {
+        return true;
+    }
+    return false;
+}
+
+var isColli = false;
+function collisionDetect(characterX, characterY, width) { 
+    var targetX, targetY;
+    var j; // area to check collision
+    for (j = 0; j < leafs.length; j++) {
+        if (leafs[j].x <= characterX && characterX <= leafs[j].x + leafs[j].w
+            && leafs[j].y <= characterY && characterY <= leafs[j].y + leafs[j].h) {
+            break;
+        }
+    }
+    //console.log('Block Area: ' + j + 'Total target: ' + leafs[j].walls.length);
+    //console.log('x-Area:' + leafs[j].x + '---' + (leafs[j].x + leafs[j].w) + 'y-Area: ' + leafs[j].y + '---' + (leafs[j].y + leafs[j].h));
+    //console.log('Character position X:' + characterX + '-- Y ' + characterY);
+    for (var i = 0; i < leafs[j].walls.length; i++) {
+        targetX = leafs[j].walls[i].x;
+        targetY = leafs[j].walls[i].y;
+        if (characterX < targetX + currentScale &&// - width for more percise when work with character
+            characterX + currentScale - width> targetX &&
+            characterY < targetY + currentScale &&
+            characterY > targetY) {
+            isColli = true;
+            console.log('Collision position: X:' + targetX + 'Y: ' + targetY);
+            return true;
+        }
+    }  
+    return false;
+}
+/*------------------------------------Collision End--------------------------- */
+
+
 Background.prototype.draw = function () {
 	var spriteX = 0;
 	var spriteY = 0;
@@ -173,7 +400,8 @@ Background.prototype.draw = function () {
 		{
 			x += currentScale;
 		}
-	};
+    };
+    //if (!isfilledBSP) { fillBSPTree(slimeDungeonLevelOne, this); isfilledBSP = true;}
 };
 
 function Torch(game, spritesheet) {
@@ -238,7 +466,7 @@ function SorcererVillain(game) {
     this.stopAttackRange = 300;
     this.startFollowRange = 150;
     this.stopFollowRange = 350;
-    Entity.call(this, game, 450, 450); // where it starts
+    Entity.call(this, game, 550, 550); // where it starts
 
 }
 
@@ -307,6 +535,10 @@ SorcererVillain.prototype.specialAttack = function (xDiff, yDiff, distance, xOri
 
 SorcererVillain.prototype.draw = function () {
     this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    if (this.boxes) {
+        ctx.strokeStyle = "green";
+        ctx.strokeRect(this.x, this.y, 100, 100);
+    }
     Entity.prototype.draw.call(this);
 }
 
@@ -369,14 +601,13 @@ function Character(game) {                                                      
     this.boxes = game.debug;         // For debugging, game.debug = true;
     this.scale = 1; // set to 1 if the sprite dimensions are the exact size that should be rendered.
     //console.log(this); // Debugging.
-    Entity.call(this, game, 384, 384); // Spawn the entity's upper left corner at these coordinates of the world.
+    Entity.call(this, game, 385, 450); // Spawn the entity's upper left corner at these coordinates of the world.
 }
 
 Character.prototype = new Entity();
-
-Character.prototype.constructor = Character;
-
-Character.prototype.update = function() {
+Character.prototype.update = function () {
+    
+    
     this.isMovingUp = false;
     this.isMovingLeft = false;
     this.isMovingDown = false;
@@ -392,34 +623,38 @@ Character.prototype.update = function() {
     if (this.game.up && this.game.right) this.isMovingUpRight = true;
     if (this.game.down && this.game.left) this.isMovingDownLeft = true;
     if (this.game.down && this.game.right) this.isMovingDownRight = true;
-    if (this.game.left)  { this.isMovingLeft = true }
-    if (this.game.right) { this.isMovingRight = true }
-    if (this.game.up)    { this.isMovingUp = true }
-    if (this.game.down)  { this.isMovingDown = true }
+    if (this.game.left && !collisionDetect(this.x + 10 - this.travelSpeed, currentScale - 5 + this.y, 20)) { this.isMovingLeft = true }// 
+    if (this.game.right && !collisionDetect(this.x + 10 + this.travelSpeed, currentScale - 5 + this.y, 20)) { this.isMovingRight = true }
+    if (this.game.up && !collisionDetect(this.x + 10, 27 + this.y - this.travelSpeed,25)) {
+        this.isMovingUp = true;     
+    }
+    if (this.game.down && !collisionDetect(this.x + 10, currentScale + this.y + this.travelSpeed,25)) {
+        this.isMovingDown = true;
+    }
 
-    if(this.game.debug && (this.isMovingLeft || this.isMovingRight || this.isMovingUp || this.isMovingDown)) {
+    if (this.game.debug && (this.isMovingLeft || this.isMovingRight || this.isMovingUp || this.isMovingDown)) {
         console.log(this);
     }
 
-    if(this.isMovingUp) {
+    if (this.isMovingUp) {
         this.game.origin.y -= this.travelSpeed;
-        this.game.ctx.translate(0,this.travelSpeed); // Moves the canvas/camera.
+        this.game.ctx.translate(0, this.travelSpeed); // Moves the canvas/camera.
         this.y -= this.travelSpeed; // Moves the entity.
     } else if (this.isMovingDown) {
         this.game.origin.y += this.travelSpeed;
-        this.game.ctx.translate(0,-this.travelSpeed); // Moves the canvas/camera.
+        this.game.ctx.translate(0, -this.travelSpeed); // Moves the canvas/camera.
         this.y += this.travelSpeed; // Moves the entity.
     }
 
-    if(this.isMovingLeft) {
+    if (this.isMovingLeft) {
         var speed = this.travelSpeed;
         this.game.origin.x -= speed;
-        this.game.ctx.translate(speed,0); // Moves the canvas/camera.
+        this.game.ctx.translate(speed, 0); // Moves the canvas/camera.
         this.x -= this.travelSpeed; // Moves the entity.
     } else if (this.isMovingRight) {
         var speed = this.travelSpeed;
         this.game.origin.x += speed;
-        this.game.ctx.translate(-speed,0); // Moves the canvas/camera.
+        this.game.ctx.translate(-speed, 0); // Moves the canvas/camera.
         this.x += this.travelSpeed; // Moves the entity.
     }
 
@@ -455,7 +690,8 @@ Character.prototype.update = function() {
     Entity.prototype.update.call(this);
 }
 
-Character.prototype.draw = function(ctx) {
+Character.prototype.draw = function (ctx) {
+
     if (this.isAttacking) {
         if (this.isAttacking && this.isMovingUp) {
 			this.animation = this.attackUpAnimation;
@@ -490,19 +726,33 @@ Character.prototype.draw = function(ctx) {
     this.animation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
     if(this.boxes) {
         ctx.strokeStyle = "green";
-        ctx.strokeRect(this.boundingBox.x, this.boundingBox.y, this.boundingBox.width, this.boundingBox.height);
+        ctx.strokeRect(this.boundingBox.x, this.boundingBox.y, 42, 42);
         //ctx.strokeStyle = "orange";
         //ctx.strokeRect(this.x, this.y, this.animation.frameWidth*this.scale, this.animation.frameHeight*this.scale); //
         //console.log('BoundingBox: ' + this.boundingBox.x + ',' + this.boundingBox.y); // Debugging.
+        for (var i = 0; i < leafs.length; i++) {
+            ctx.strokeStyle = "red";
+            ctx.strokeRect(leafs[i].x, leafs[i].y, leafs[i].w, leafs[i].h);
+            ctx.strokeStyle = "green";
+            for (var j = 0; j < leafs[i].walls.length; j++)
+            ctx.strokeRect(leafs[i].walls[j].x, leafs[i].walls[j].y, 48, 48);
+        }
     }
     Entity.prototype.draw.call(this);
+    for (let i = 2; i < gameEngine.entities.length; i++) {
+        if (gameEngine.entities[i] instanceof SorcererVillain) continue;
+        if (isCollise(this.x + 20, this.y, 0, 42, gameEngine.entities[i], i, 4, 4)) { gameEngine.entities.splice(i, 1); }
+        else if (gameEngine.entities[i] instanceof Projectile && collisionDetect(gameEngine.entities[i].x, gameEngine.entities[i].y, currentScale)) {
+            gameEngine.entities.splice(i, 1);
+        }
+    }
 }
 
-let gameEngine;
+var gameEngine;
 let character;
 let sorcererVillain;
 let canvas;
-let ctx;
+var ctx;
 
 // the "main" code begins here
 
@@ -536,8 +786,8 @@ ASSET_MANAGER.downloadAll(function() {
     // Initial configuration of entity.
     character.boundingBox.offsetX = 0;
     character.boundingBox.offsetY = 0;
-    character.boundingBox.width = 32;   // Left.
-    character.boundingBox.height = 32;  // Down.
+    character.boundingBox.width = 22;   // Left.
+    character.boundingBox.height = 40;  // Down.
 
 	gameEngine.addEntity(bg);
 	
@@ -548,4 +798,6 @@ ASSET_MANAGER.downloadAll(function() {
 
     gameEngine.init();
     gameEngine.start();
+
+    
 });
