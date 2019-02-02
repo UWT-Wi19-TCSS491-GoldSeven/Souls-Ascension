@@ -54,7 +54,7 @@ Animation.prototype.isDone = function() {
 
 /*----------------------------------------------Dungeon Array for level 1 Start------------------------------------------------------------------------------ */
 /*
- * Slime Dungeon Level 1 (88x33) each number is a 32x32 pixel space
+ * Slime Dungeon Level 1 (88x33) each number is a 32x32 pixel area
  * 0 = no block (should layer background image so these are not just a solid color)
  * 1-4 = alternating horizontal wall tiles, 5 = Vertical wall tile, 6 = Top Left L shaped corner, 7 = Top Right L shaped corner,
  * 8 = Bottom Left L shaped corner, 9 = Bottom Right L shaped corner, 10 = North T shaped wall, 11 = East T shaped wall,
@@ -138,11 +138,17 @@ var slimeDungeonLevelOneEntities = new Array(
 	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,
 	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0
 	);
-
+	// Loop to generate each entity
+    for (var i = 0; i < slimeDungeonLevelOne.length; i++) {
+		// Generates the position of each torch within the entity array
+		if (slimeDungeonLevelOne[i] >= 1 && slimeDungeonLevelOne[i] <= 4) {
+			slimeDungeonLevelOneEntities[i] = 1; // adds a torch to the entities array
+		}
+	};
 /*----------------------------------------------Dungeon Array for level 1 End-------------------------------------------------------------------------------- */	
 
 /*----------------------------------------------Background for level 1 Start--------------------------------------------------------------------------------- */
-var currentScale = 48;
+var currentScale = 48; // number of pixels 
 var currentWTiles = 88; // number of tiles width wise on the map
 function Background(game, spritesheet) {
     this.x = 0;
@@ -162,6 +168,7 @@ Background.prototype.draw = function () {
 	var spriteX = 0;
 	var spriteY = 0;
 	var count = 0;
+	var torchCounter = 0;
 	var x = this.x;
 	var y = this.y;
 
@@ -180,10 +187,10 @@ Background.prototype.draw = function () {
 		{
 			x += currentScale;
 		}
-    };
-    //if (!isfilledBSP) { fillBSPTree(slimeDungeonLevelOne, this); isfilledBSP = true;}
+	};
 };
 /*----------------------------------------------Background for level 1 End----------------------------------------------------------------------------------- */
+
 
 /*----------------------------------------------BSP TREE Start----------------------------------------------------------------------------------------------- */
 
@@ -394,27 +401,18 @@ function collisionDetect(characterX, characterY, width) {
 /*----------------------------------------------Collision End------------------------------------------------------------------------------------------------ */
 
 /*----------------------------------------------Torch Start-------------------------------------------------------------------------------------------------- */
-function Torch(game, spritesheet) {
-	this.x = 0;
-    this.y = 0;
-	this.sw = 32;
-    this.sh = 32;
-	this.dw = currentScale;
-    this.dh = currentScale;
-    this.spritesheet = spritesheet;
-    this.game = game;
-    this.ctx = game.ctx;
+function Torch(game, x, y) {
+	this.ctx = game.ctx;
+	this.flameAnimation = new Animation(ASSET_MANAGER.getAsset("./img/torchAnimation.png"), 0, 0, 48, 48, 0.1, 4, true, currentScale);
+	this.animation = this.flameAnimation;   
+	Entity.call(this, game, x, y);// where it starts
 }
 
 Torch.prototype = new Entity();
 Torch.prototype.constructor = Torch;
 
 Torch.prototype.update = function () {
-	this.ctx = game.ctx;
-    this.flameAnimation = new Animation(ASSET_MANAGER.getAsset("./img/sorcererVillain.png"), 0, 0, 100, 100, 0.1, 10, true, false);
-    this.animation = this.flameAnimation;
-	
-	
+	Entity.prototype.update.call(this);
 }
 Torch.prototype.draw = function () {
 	this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
@@ -514,7 +512,9 @@ SorcererVillain.prototype.draw = function () {
     }
     Entity.prototype.draw.call(this);
 }
+/*----------------------------------------------SorcererVillain End---------------------------------------------------------------------------------------- */
 
+/*----------------------------------------------Projectile Start------------------------------------------------------------------------------------------- */
 function Projectile(game, x, y, xs, ys) {
     this.xs = xs;
     this.ys = ys;
@@ -541,7 +541,7 @@ Projectile.prototype.draw = function () {
     ctx.fill();
     ctx.restore();
 }
-/*----------------------------------------------SorcererVillain End---------------------------------------------------------------------------------------- */
+/*----------------------------------------------Projectile End--------------------------------------------------------------------------------------------- */
 
 /*----------------------------------------------Character Start-------------------------------------------------------------------------------------------- */
 // The entity's origin is determined by its BoundingBox object.
@@ -737,6 +737,7 @@ CenterThingy.prototype.draw = function(ctx) {
 var gameEngine;
 let character;
 let sorcererVillain;
+let torch;
 let canvas;
 var ctx;
 var ASSET_MANAGER = new AssetManager();
@@ -755,6 +756,7 @@ ASSET_MANAGER.queueDownload("./img/characterUpAttack.png");
 ASSET_MANAGER.queueDownload("./img/characterDownAttack.png");
 ASSET_MANAGER.queueDownload("./img/characterWhirlWindAttackAnimation.png");
 ASSET_MANAGER.queueDownload("./img/sorcererVillain.png");
+ASSET_MANAGER.queueDownload("./img/torchAnimation.png");
 
 ASSET_MANAGER.downloadAll(function() {
     console.log("starting up da sheild");
@@ -764,7 +766,17 @@ ASSET_MANAGER.downloadAll(function() {
 	// Creates new entity instances
     gameEngine = new GameEngine(ctx, ctx.canvas.width, ctx.canvas.height);
     var bg = new Background(gameEngine, ASSET_MANAGER.getAsset("./img/DungeonBackgroundSpriteSheet.png"));
-    character = new Character(gameEngine);
+	var torches = [];
+	// generates a torch array that will generate the torches in the right spots.
+	for (var i = 0; i < slimeDungeonLevelOneEntities.length; i++) {
+		if (slimeDungeonLevelOneEntities[i] == 1) {
+			var torchX = (i % 88) * 48;
+			var torchY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
+			var torch = new Torch(gameEngine, torchX, torchY);
+			torches.push(torch);
+		}	
+	}
+	character = new Character(gameEngine);
 	sorcererVillain = new SorcererVillain(gameEngine);
     var centerthingy = new CenterThingy(gameEngine);
 
@@ -776,6 +788,9 @@ ASSET_MANAGER.downloadAll(function() {
 
 	// Adding the entities
 	gameEngine.addEntity(bg);
+	for(var i = 0; i < torches.length; i++) {
+		gameEngine.addEntity(torches[i]);
+	}
     gameEngine.addEntity(character);
 	gameEngine.addEntity(sorcererVillain);
     if (gameEngine.debug) gameEngine.addEntity(centerthingy);
