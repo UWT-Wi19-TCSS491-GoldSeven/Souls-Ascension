@@ -552,15 +552,9 @@ Character.prototype.update = function () {
     if (this.game.down && this.game.right) this.isMovingDownRight = true;
     if (this.game.left && !collisionDetect(this.x + 10 - this.travelSpeed, currentScale - 5 + this.y, 20)) { this.isMovingLeft = true }// 
     if (this.game.right && !collisionDetect(this.x + 10 + this.travelSpeed, currentScale - 5 + this.y, 20)) { this.isMovingRight = true }
-    if (this.game.up && !collisionDetect(this.x + 10, 20 + this.y - this.travelSpeed,25)) {
+    if (this.game.up && !collisionDetect(this.x + 10, 27 + this.y - this.travelSpeed,25)) {
         this.isMovingUp = true;     
     }
-    /*
-     (characterX < targetX + currentScale &&// - width for more percise when work with character
-            characterX + currentScale - width> targetX &&
-            characterY < targetY + currentScale &&
-            characterY > targetY)
-     */
     if (this.game.down && !collisionDetect(this.x + 10, currentScale + this.y + this.travelSpeed,25)) {
         this.isMovingDown = true;
     }
@@ -675,18 +669,9 @@ Character.prototype.draw = function (ctx) {
     for (let i = 2; i < gameEngine.entities.length; i++) {
         if (gameEngine.entities[i] instanceof SorcererVillain) continue;
         if (isCollise(this.x + 20, this.y, 0, 42, gameEngine.entities[i], i, 4, 4)) { gameEngine.entities.splice(i, 1); }
-        else if (gameEngine.entities[i] instanceof Projectile && collisionDetect(gameEngine.entities[i].x, gameEngine.entities[i].y,0)) {
+        else if (gameEngine.entities[i] instanceof Projectile && collisionDetect(gameEngine.entities[i].x, gameEngine.entities[i].y, currentScale)) {
             gameEngine.entities.splice(i, 1);
         }
-    }
-    if (!this.boxes && gameEngine.entities.length >= 4) {/*
-        console.log('Character entity: ' + (gameEngine.entities["Character"] instanceof Character));
-        console.log('SorcerVillain Entities: ' + (gameEngine.entities[1] instanceof SorcererVillain));
-        console.log('Projectile Entities: ' + (gameEngine.entities[2] instanceof Projectile));
-        console.log('Projectile Entities: ' + (gameEngine.entities[3] instanceof Projectile));*/
-        //remove entity
-        
-    //remove entity when removable.   
     }
 }
 
