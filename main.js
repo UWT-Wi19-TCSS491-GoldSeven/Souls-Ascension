@@ -595,6 +595,7 @@ function Projectile(game, x, y, xs, ys) {
     this.ys = ys;
     this.scale = 4;
     this.life = 10;
+    this.killable = true;
     Entity.call(this, game, x, y);
 }
 
