@@ -462,7 +462,7 @@ SorcererVillain.prototype.specialAttack = function (xDiff, yDiff, distance, xOri
 
 SorcererVillain.prototype.draw = function () {
     this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
-    if (!this.boxes) {
+    if (this.boxes) {
         ctx.strokeStyle = "green";
         ctx.strokeRect(this.x, this.y, 100, 100);
     }
@@ -651,7 +651,7 @@ Character.prototype.draw = function (ctx) {
          this.animation = this.standAnimation;
     }
     this.animation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
-    if(!this.boxes) {
+    if(this.boxes) {
         ctx.strokeStyle = "green";
         ctx.strokeRect(this.boundingBox.x, this.boundingBox.y, 42, 42);
         //ctx.strokeStyle = "orange";
