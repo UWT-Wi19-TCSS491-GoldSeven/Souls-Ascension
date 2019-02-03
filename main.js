@@ -50,7 +50,137 @@ Animation.prototype.currentFrame = function() {
 Animation.prototype.isDone = function() {
     return (this.elapsedTime >= this.totalTime);
 }
-/*----------------------------------------------Boiler Code End-------------------------------------------------------------------------------------------- */
+/*----------------------------------------------Boiler Code End---------------------------------------------------------------------------------------------- */
+
+/*----------------------------------------------Dungeon Procedural Generation Start-------------------------------------------------------------------------- */
+// random number generator
+function generateRandomNumber(minValue , maxValue) {
+   let randomNumber = Math.random() * (maxValue - minValue) + minValue;
+   return Math.floor(randomNumber);
+}
+// Base shapes
+// create rectangle room
+function generateRectangle(minX, maxX, minY, maxY) {
+	var x = generateRandomNumber(minX, maxX);
+	var y = generateRandomNumber(minY, maxY);
+	var recArea = x*y;
+	var rectangle = new Array(recArea);
+	var currentLevel = 1;	
+	for (var i = 0; i < recArea; i++) {
+		if(((i > recArea - x - 1) && i != recArea - 1) || (i < x && i != 0)) {
+			rectangle[i] = 2;
+		}
+		else if((i % x == 0)  || ((i + 1) % x == 0)) {
+			rectangle[i] = 1;
+		}
+		else {
+			rectangle[i] = 7;
+		}
+	}
+	rectangle[0] = 3;
+	rectangle[x - 1] = 4;
+	rectangle[recArea - x] = 5;
+	rectangle[recArea - 1] = 6;	
+	rectangle.push(x);
+	rectangle.push(y);	
+	return rectangle;
+}
+// create circular room
+
+// create half cirular room
+
+
+// level Generation (88x33)
+var worldGeneration = new Array(
+	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,
+	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,
+	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,
+	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,
+	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,
+	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,
+	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,
+	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,
+	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,
+	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,
+	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,
+	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,
+	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,
+	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,
+	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,
+	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,
+	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,
+	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,
+	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,
+	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,
+	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,
+	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,
+	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,
+	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,
+	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,
+	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,
+	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,
+	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,
+	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,
+	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,
+	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,
+	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,
+	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0
+	);
+
+
+// generate first room and get dimensions
+var vDirection;
+var hDirection;
+var startingPosition = generateRandomNumber(0 , 524);
+var currentPosition = startingPosition;
+var firstRoom = generateRectangle(6, 50, 6, 50);
+var xDimension = firstRoom[firstRoom.length - 2];
+var yDimension = firstRoom[firstRoom.length - 1]
+var roomArea = xDimension * yDimension;
+var offset = 25 - xDimension;
+var tileCount = 0;
+// correct starting position for copy
+if(startingPosition % 25 >= xDimension) {
+	hDirection = "left";
+}
+else {
+	hDirection = "right";		
+}
+if(Math.ceil(startingPosition / 25) >= yDimension) {
+	vDirection = "up";			
+}
+else {
+	vDirection = "down";
+}
+if(hDirection == "left" && vDirection == "up") {
+	startingPosition = startingPosition - (xDimension + (yDimension * 25));
+}
+else if(hDirection == "left" && vDirection == "down") {
+	startingPosition = (startingPosition - xDimension) + (yDimension * 25);
+}
+else if(hDirection == "right" && vDirection == "up") {
+	startingPosition = (startingPosition + xDimension) - (yDimension * 25);
+}
+else {
+	// do nothing
+}	
+// copy room to game world
+for(var i = 0; i < roomArea; i++) {
+	if(tileCount < xDimension && firstRoom[i] != 0) {
+		worldGeneration[currentPosition] = firstRoom[i];
+		currentPosition++;
+		tileCount++;
+	}
+	else if(tileCount < xDimension && firstRoom[i] == 0) { // skipping the blank tiles
+		currentPosition++;
+		tileCount++;
+	}
+	if(tileCount == xDimension) {
+		tileCount = 0;
+		currentPosition += offset;
+	}
+}
+/*----------------------------------------------Dungeon Procedural Generation End---------------------------------------------------------------------------- */
 
 /*----------------------------------------------Dungeon Array for level 1 Start------------------------------------------------------------------------------ */
 /*
@@ -63,7 +193,7 @@ Animation.prototype.isDone = function() {
  * 22 = Bottom Left L floor, 23 = Bottom Right L floor, 24 = Center floor, 25 = silver key platform floor, 26 = gold key platform floor,
  * 27 = healing potion floor, 28 = Soul Jar floor, 
  * 33 = player starting Position floor, 34 = sorcererVillain starting position floor, 35 = slimeEnemy starting position floor,
- * 36 = slimeBehemoth starting position floor.
+ * 36 = slimeBehemoth starting position floor, 37 = wizard starting position.
  */
 var slimeDungeonLevelOne = new Array(
 	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,6 ,1 ,2 ,1 ,7 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,6 ,1 ,2 ,1 ,7 ,0 ,0 ,0 ,0 ,6 ,3 ,4 ,7 ,0 ,0 ,0 ,0 ,6 ,1 ,1 ,2 ,1 ,4 ,1 ,7 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,
@@ -77,7 +207,7 @@ var slimeDungeonLevelOne = new Array(
 	0 ,0 ,0 ,6 ,1 ,1 ,2 ,1 ,1 ,10,7 ,18,17,5 ,18,35,24,24,17,6 ,10,10,10,1 ,11,22,19,19,19,19,19,23,6 ,1 ,20,24,24,24,24,24,16,16,21,5 ,18,17,2 ,7 ,22,24,16,24,24,24,24,17,3 ,20,16,24,24,24,24,24,24,24,17,5 ,18,17,5 ,22,24,24,24,24,24,19,19,19,19,19,19,19,24,17,5 ,0 ,
 	0 ,0 ,6 ,4 ,20,16,16,16,21,4 ,3 ,18,17,5 ,18,24,24,24,17,1 ,14,14,2 ,24,1 ,1 ,2 ,3 ,2 ,4 ,2 ,1 ,1 ,20,24,24,24,24,24,24,24,24,17,5 ,18,24,21,4 ,7 ,22,19,19,19,19,24,24,16,24,24,19,24,24,19,19,19,19,23,5 ,18,17,1 ,7 ,18,24,24,24,17,1 ,1 ,1 ,1 ,1 ,1 ,1 ,18,17,4 ,7 ,
 	0 ,6 ,1 ,20,24,24,19,24,24,16,16,24,17,5 ,22,24,24,24,24,21,1 ,11,20,24,16,16,16,16,16,16,16,16,16,24,24,24,24,24,24,24,24,24,17,5 ,18,24,24,21,1 ,2 ,1 ,3 ,4 ,7 ,22,19,24,24,23,5 ,18,17,6 ,4 ,1 ,1 ,1 ,3 ,18,24,21,5 ,18,24,24,24,24,16,16,16,16,16,16,16,24,24,21,5 ,
-	0 ,5 ,20,24,24,23,5 ,18,24,19,19,24,17,4 ,7 ,18,24,24,24,24,21,5 ,18,24,19,19,19,19,19,19,24,24,24,24,24,24,24,24,24,24,24,24,17,5 ,18,24,24,24,16,16,16,16,21,12,1 ,7 ,22,23,6 ,4 ,18,17,1 ,20,16,16,16,16,24,24,17,5 ,18,24,24,24,19,19,19,19,19,24,24,24,24,24,17,5 ,
+	0 ,5 ,20,24,24,23,5 ,18,24,19,19,24,17,4 ,7 ,18,24,24,24,24,21,5 ,37,24,19,19,19,19,19,19,24,24,24,24,24,24,24,24,24,24,24,24,17,5 ,18,24,24,24,16,16,16,16,21,12,1 ,7 ,22,23,6 ,4 ,18,17,1 ,20,16,16,16,16,24,24,17,5 ,18,24,24,24,19,19,19,19,19,24,24,24,24,24,17,5 ,
 	0 ,5 ,18,24,17,1 ,1 ,18,17,6 ,7 ,22,24,21,2 ,7 ,19,19,19,19,23,5 ,18,17,6 ,4 ,3 ,4 ,3 ,7 ,22,19,24,24,24,24,24,24,24,24,24,24,17,5 ,18,24,24,24,24,19,24,24,23,5 ,24,1 ,1 ,1 ,4 ,20,24,24,16,24,24,24,24,24,24,24,17,5 ,22,24,24,23,6 ,3 ,2 ,4 ,7 ,18,24,19,19,19,23,5 ,
 	0 ,5 ,18,24,24,16,16,24,23,12,1 ,7 ,22,24,21,1 ,1 ,3 ,15,4 ,2 ,11,18,17,5 ,20,16,16,21,1 ,1 ,7 ,22,19,19,19,19,24,24,24,19,19,23,5 ,22,19,19,19,23,5 ,22,23,6 ,11,18,16,16,16,16,24,19,19,19,24,24,24,24,24,24,24,17,2 ,7 ,22,23,6 ,4 ,20,16,21,1 ,18,17,1 ,2 ,1 ,10,9 ,
 	0 ,5 ,22,24,24,24,19,23,6 ,1 ,24,1 ,7 ,22,24,16,16,16,16,16,21,5 ,18,17,5 ,22,19,24,24,16,21,1 ,1 ,2 ,4 ,1 ,7 ,22,19,23,6 ,1 ,4 ,2 ,1 ,1 ,2 ,4 ,3 ,1 ,15,1 ,3 ,1 ,18,24,24,19,19,23,6 ,4 ,7 ,18,24,24,24,24,24,24,24,21,1 ,2 ,2 ,1 ,20,24,24,24,16,24,24,16,16,21,5 ,0 ,
@@ -103,8 +233,7 @@ var slimeDungeonLevelOne = new Array(
 
 /*
  * Slime Dungeon Level 1 entity array (88x33) each number is a 48x48 pixel space
- * 0 = no entity
- * 1 = Torch
+ * 
  */
 var slimeDungeonLevelOneEntities = new Array(
 	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,
@@ -170,6 +299,9 @@ var slimeDungeonLevelOneEntities = new Array(
 		}
 		if (slimeDungeonLevelOne[i] == 36) {
 			slimeDungeonLevelOneEntities[i] = 13; // adds a slimeBehemoth to the entities array
+		}
+		if (slimeDungeonLevelOne[i] == 37) {
+			slimeDungeonLevelOneEntities[i] = 14; // adds a wizard to the entities array
 		}
 		
 	};
@@ -582,19 +714,6 @@ SlimeBehemoth.prototype.update = function () {
 	if (this.isMovingWest) {
 		this.x -= gameEngine.clockTick * this.moveSpeed;
 	}
-		
-/* 
-	if (this.startAttackRange <= distance && distance <= this.stopAttackRange) {
-        //this.normalAttack(xDiff, yDiff, distance, xOrigS, yOrigS);
-    }
-	
-    if (this.startFollowRange <= distance && distance <= this.stopFollowRange) {
-        let velX = (this.moveSpeed * xDiff) / distance;
-        let velY = (this.moveSpeed * yDiff) / distance;
-        this.x += gameEngine.clockTick * velX;
-        this.y += gameEngine.clockTick * velY;
-    }
-*/
 	Entity.prototype.update.call(this);
 }
 SlimeBehemoth.prototype.normalAttack = function (xDiff, yDiff, distance, xOrigS, yOrigS) {
@@ -674,6 +793,70 @@ SlimeEnemy.prototype.draw = function () {
     Entity.prototype.draw.call(this);
 }
 /*----------------------------------------------SlimeEnemy End---------------------------------------------------------------------------------------------- */
+
+/*----------------------------------------------Wizard Start------------------------------------------------------------------------------------------------ */
+function Wizard(game, startingX, startingY) {
+    this.ctx = game.ctx;
+    this.wizardWalkingLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/wizardWalkLeft.png"), 0, 0, 80, 80, 0.1, 6, true, false);
+    this.animation = this.wizardWalkingLeftAnimation;
+	this.wizardWalkingRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/wizardWalkRight.png"), 0, 0, 80, 80, 0.1, 6, true, false);
+    this.animation = this.wizardWalkingRightAnimation;
+	this.isMovingWest = false;
+    this.isMovingEast = true;
+	this.moveSpeed = 140;
+	this.attackSpeed = 3;
+	this.attackInterval = 0.6;
+    this.startAttackRange = 80;
+    this.stopAttackRange = 300;
+    this.startFollowRange = 150;
+    this.stopFollowRange = 350;
+    Entity.call(this, game, startingX - 50, startingY - 25); // where it starts
+
+}
+
+Wizard.prototype = new Entity();
+Wizard.prototype.constructor = Wizard;
+
+Wizard.prototype.update = function () {
+    let xOrigC = (character.x + character.animation.frameWidth / 2);
+    let yOrigC = (character.y + character.animation.frameHeight / 2);
+    let xOrigS = (this.x + this.animation.frameWidth / 2)
+    let yOrigS = (this.y + this.animation.frameHeight / 2)
+    let xDiff = xOrigC - xOrigS;
+    let yDiff = yOrigC - yOrigS;
+    let distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+
+	if (this.x < 1050 && this.isMovingWest) {
+		this.isMovingEast = true;
+		this.isMovingWest = false;
+		this.x += gameEngine.clockTick * this.moveSpeed;
+	} 
+	if (this.x > 1970 && this.isMovingEast) {
+		this.isMovingEast = false;
+		this.isMovingWest = true;
+		this.x -= gameEngine.clockTick * this.moveSpeed;
+	}
+	if (this.isMovingEast) {
+		this.x += gameEngine.clockTick * this.moveSpeed;
+	}
+	if (this.isMovingWest) {
+		this.x -= gameEngine.clockTick * this.moveSpeed;
+	}
+	Entity.prototype.update.call(this);
+}
+Wizard.prototype.normalAttack = function (xDiff, yDiff, distance, xOrigS, yOrigS) {
+    // to do
+}
+Wizard.prototype.draw = function () {
+	if (this.isMovingWest) {
+        this.animation = this.wizardWalkingLeftAnimation;
+    } else {
+        this.animation = this.wizardWalkingRightAnimation;
+    }
+    this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    Entity.prototype.draw.call(this);
+}
+/*----------------------------------------------Wizard End--------------------------------------------------------------------------------------------------- */
 
 /*----------------------------------------------SorcererVillain Start---------------------------------------------------------------------------------------- */
 function SorcererVillain(game, x, y) {
@@ -997,6 +1180,7 @@ let character;
 let sorcererVillain;
 let slimeBehemoth;
 let slimeEnemy;
+let wizard;
 let torch;
 let sKey;
 let gKey;
@@ -1029,6 +1213,8 @@ ASSET_MANAGER.queueDownload("./img/SlimeBehemothWalkingLeft.png");
 ASSET_MANAGER.queueDownload("./img/SlimeBehemothWalkingRight.png");
 ASSET_MANAGER.queueDownload("./img/SlimeWalkLeft.png");
 ASSET_MANAGER.queueDownload("./img/SlimeWalkRight.png");
+ASSET_MANAGER.queueDownload("./img/wizardWalkLeft.png");
+ASSET_MANAGER.queueDownload("./img/wizardWalkRight.png");
 
 ASSET_MANAGER.downloadAll(function() {
     console.log("starting up da sheild");
@@ -1045,6 +1231,7 @@ ASSET_MANAGER.downloadAll(function() {
 	var sJars = [];
 	var slimeBehemoths = [];
 	var slimeEnemies = [];
+	var wizards = [];
 	var sorcererVillains = [];
 	// generates an array that will generate each entity in the right spots.
 	for (var i = 0; i < slimeDungeonLevelOneEntities.length; i++) {
@@ -1084,19 +1271,25 @@ ASSET_MANAGER.downloadAll(function() {
 			var sv = new SorcererVillain(gameEngine, svX, svY);
 			sorcererVillains.push(sv);
 		}
-		if (slimeDungeonLevelOneEntities[i] == 13) {
-			var sbX = (i % 88) * 48;
-			var sbY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
-			var sb = new SlimeBehemoth(gameEngine, sbX, sbY);
-			slimeBehemoths.push(sb);
-		}
 		if (slimeDungeonLevelOneEntities[i] == 12) {
 			var seX = (i % 88) * 48;
 			var seY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
 			var se = new SlimeEnemy(gameEngine, seX, seY);
 			slimeEnemies.push(se);
 		}
-		if (slimeDungeonLevelOneEntities[i] == 10) {
+		if (slimeDungeonLevelOneEntities[i] == 13) {
+			var sbX = (i % 88) * 48;
+			var sbY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
+			var sb = new SlimeBehemoth(gameEngine, sbX, sbY);
+			slimeBehemoths.push(sb);
+		}
+		if (slimeDungeonLevelOneEntities[i] == 14) {
+			var wizardX = (i % 88) * 48;
+			var wizardY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
+			var wizard = new Wizard(gameEngine, wizardX, wizardY);
+			wizards.push(wizard);
+		}
+		if (slimeDungeonLevelOneEntities[i] == 10) { // for the player character
 			var characterStartingX = (i % 88) * 48;
 			var characterStartingY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
 		}
@@ -1128,15 +1321,19 @@ ASSET_MANAGER.downloadAll(function() {
 	for(var i = 0; i < sJars.length; i++) {
 		gameEngine.addEntity(sJars[i]);
 	}
+	for(var i = 0; i < slimeEnemies.length; i++) {
+		gameEngine.addEntity(slimeEnemies[i]);
+	}
 	for(var i = 0; i < slimeBehemoths.length; i++) {
 		gameEngine.addEntity(slimeBehemoths[i]);
 	}
-	for(var i = 0; i < slimeEnemies.length; i++) {
-		gameEngine.addEntity(slimeEnemies[i]);
+	for(var i = 0; i < wizards.length; i++) {
+		gameEngine.addEntity(wizards[i]);
 	}
 	for(var i = 0; i < sorcererVillains.length; i++) {
 		gameEngine.addEntity(sorcererVillains[i]);
 	}
+	
     gameEngine.addEntity(character);
     if (gameEngine.debug) gameEngine.addEntity(centerthingy);
 
