@@ -653,7 +653,8 @@ HealingPotion.prototype.draw = function () {
 function SoulJar(game, x, y) {
 	this.ctx = game.ctx;
 	this.sparkleAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SoulJarAnimation.png"), 0, 0, 48, 48, 0.1, 4, true, currentScale);
-	this.animation = this.sparkleAnimation;   
+    this.animation = this.sparkleAnimation;
+    this.killable = true;
 	Entity.call(this, game, x, y);// where it starts
 }
 
@@ -1103,12 +1104,12 @@ Character.prototype.update = function () {
     if (this.game.up && this.game.right) this.isMovingUpRight = true;
     if (this.game.down && this.game.left) this.isMovingDownLeft = true;
     if (this.game.down && this.game.right) this.isMovingDownRight = true;
-    if (this.game.left && !collisionDetect(this.x + 7 - this.travelSpeed, currentScale - 5 + this.y, 20)) { this.isMovingLeft = true }// 
-    if (this.game.right && !collisionDetect(this.x + 7 + this.travelSpeed, currentScale - 5 + this.y, 20)) { this.isMovingRight = true }
-    if (this.game.up && !collisionDetect(this.x + 10, 27 + this.y - this.travelSpeed,25)) {
+    if (this.game.left && !collisionDetect(this.x + 8 - this.travelSpeed, currentScale - 5 + this.y, 25)) { this.isMovingLeft = true }// 
+    if (this.game.right && !collisionDetect(this.x + 8 + this.travelSpeed, currentScale - 5 + this.y, 25)) { this.isMovingRight = true }
+    if (this.game.up && !collisionDetect(this.x + 8, 25 + this.y - this.travelSpeed,25)) {
         this.isMovingUp = true;     
     }
-    if (this.game.down && !collisionDetect(this.x + 10, currentScale + this.y + this.travelSpeed,25)) {
+    if (this.game.down && !collisionDetect(this.x + 8, currentScale + this.y,25)) {
         this.isMovingDown = true;
     }
     if (this.game.debug && (this.isMovingLeft || this.isMovingRight || this.isMovingUp || this.isMovingDown)) {
