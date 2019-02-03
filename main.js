@@ -769,6 +769,7 @@ function SlimeEnemy(game, startingX, startingY) {
     this.stopFollowRange = 350;
     this.maxHealth = 100;
     this.currentHealth = 100;
+    this.killable = true;
     Entity.call(this, game, startingX - 50, startingY - 15); // where it starts
 
 }
@@ -835,6 +836,7 @@ function Skeleton(game, startingX, startingY) {
     this.stopFollowRange = 350;
     this.maxHealth = 100;
     this.currentHealth = 90;
+    this.killable = true;
     Entity.call(this, game, startingX - 50, startingY - 25); // where it starts
 
 }
@@ -901,6 +903,7 @@ function Wizard(game, startingX, startingY) {
     this.stopFollowRange = 350;
     this.maxHealth = 100;
     this.currentHealth = 90;
+    this.killable = true;
     Entity.call(this, game, startingX - 50, startingY - 25); // where it starts
 
 }
@@ -968,6 +971,7 @@ function SorcererVillain(game, x, y) {
     this.stopFollowRange = 350;
     this.maxHealth = 100;
     this.currentHealth = 90;
+    this.killable = true;
     Entity.call(this, game, x, y); // where it starts
 
 }
@@ -1248,8 +1252,8 @@ Character.prototype.draw = function (ctx) {
             if (this.game.click) {
                 this.game.click = false;
                 gameEngine.entities[i].currentHealth -= 20;
-            };
-            if (gameEngine.entities[i].currentHealth <= 0) { gameEngine.entities.splice(i, 1); }
+            }
+            if (gameEngine.entities[i].currentHealth <= 0 || gameEngine.entities[i].currentHealth == null) { gameEngine.entities.splice(i, 1); }
         }
         else if (gameEngine.entities[i] instanceof Projectile && collisionDetect(gameEngine.entities[i].x, gameEngine.entities[i].y, currentScale)) {
             gameEngine.entities.splice(i, 1);
