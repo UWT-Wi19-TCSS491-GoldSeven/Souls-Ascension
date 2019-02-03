@@ -60,17 +60,19 @@ Animation.prototype.isDone = function() {
  * 8 = Bottom Left L shaped corner, 9 = Bottom Right L shaped corner, 10 = North T shaped wall, 11 = East T shaped wall,
  * 12 = West T shaped wall, 13 = South T shaped wall, 14 = + shaped wall, 15 = Horizontal wall with door,
  * 16 = North floor, 17 = East floor, 18 = West floor, 19 = South floor, 20 = Top Left L floor, 21 = Top Right L floor,
- * 22 = Bottom Left L floor, 23 = Bottom Right L floor, 24 = Center floor, 25 = silver key platform floor, 26 = gold key platform floor
- * 27 = healing potion floor.
+ * 22 = Bottom Left L floor, 23 = Bottom Right L floor, 24 = Center floor, 25 = silver key platform floor, 26 = gold key platform floor,
+ * 27 = healing potion floor, 28 = Soul Jar floor, 
+ * 33 = player starting Position floor, 34 = sorcererVillain starting position floor, 35 = slimeEnemy starting position floor,
+ * 36 = slimeBehemoth starting position floor.
  */
 var slimeDungeonLevelOne = new Array(
 	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,6 ,1 ,2 ,1 ,7 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,6 ,1 ,2 ,1 ,7 ,0 ,0 ,0 ,0 ,6 ,3 ,4 ,7 ,0 ,0 ,0 ,0 ,6 ,1 ,1 ,2 ,1 ,4 ,1 ,7 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,
 	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,5 ,20,16,21,12,1 ,2 ,1 ,2 ,1 ,7 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,6 ,2 ,20,16,21,3 ,7 ,0 ,6 ,2 ,1 ,20,21,2 ,1 ,7 ,0 ,6 ,3 ,20,16,16,16,16,25,12,1 ,2 ,2 ,2 ,2 ,1 ,7 ,0 ,0 ,0 ,0 ,0 ,0 ,
-	0 ,0 ,0 ,0 ,6 ,1 ,2 ,1 ,1 ,2 ,2 ,1 ,3 ,4 ,1 ,1 ,1 ,2 ,2 ,1 ,1 ,1 ,3 ,1 ,1 ,2 ,1 ,11,18,24,17,5 ,20,16,16,16,21,1 ,7 ,0 ,0 ,0 ,6 ,1 ,2 ,1 ,10,10,4 ,1 ,20,24,24,24,21,2 ,10,1 ,20,16,24,24,16,21,1 ,2 ,11,20,24,24,19,19,19,23,5 ,20,16,16,16,16,21,1 ,3 ,1 ,4 ,7 ,0 ,0 ,
+	0 ,0 ,0 ,0 ,6 ,1 ,2 ,1 ,1 ,2 ,2 ,1 ,3 ,4 ,1 ,1 ,1 ,2 ,2 ,1 ,1 ,1 ,3 ,1 ,1 ,2 ,1 ,11,18,28,17,5 ,20,16,16,16,21,1 ,7 ,0 ,0 ,0 ,6 ,1 ,2 ,1 ,10,10,4 ,1 ,20,24,24,24,21,2 ,10,1 ,20,16,24,24,16,21,1 ,2 ,11,20,24,24,19,19,19,23,5 ,20,16,16,16,16,21,1 ,3 ,1 ,4 ,7 ,0 ,0 ,
 	0 ,0 ,0 ,0 ,5 ,20,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,21,5 ,22,19,23,5 ,22,19,19,24,24,21,3 ,1 ,2 ,1 ,4 ,20,16,21,3 ,4 ,20,16,24,24,24,24,24,21,1 ,20,24,24,24,24,24,24,16,21,5 ,22,24,17,6 ,1 ,2 ,1 ,3 ,18,24,19,19,19,24,16,16,16,25,5 ,0 ,0 ,
-	0 ,0 ,0 ,0 ,5 ,18,24,24,24,24,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,24,17,1 ,3 ,15,4 ,1 ,1 ,1 ,2 ,18,24,24,16,16,16,16,16,24,24,24,16,16,24,19,24,24,24,24,24,24,16,24,24,24,24,24,24,24,24,17,2 ,7 ,18,17,5 ,20,16,16,16,24,23,6 ,10,7 ,18,24,24,24,17,5 ,0 ,0 ,
+	0 ,0 ,0 ,0 ,5 ,18,24,24,24,24,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,24,36,1 ,3 ,15,4 ,1 ,1 ,1 ,2 ,18,24,24,16,16,16,16,16,24,24,24,16,16,24,19,24,24,24,24,24,24,16,24,24,24,24,24,24,24,24,17,2 ,7 ,18,17,5 ,20,16,16,16,24,23,6 ,10,7 ,18,24,24,24,17,5 ,0 ,0 ,
 	0 ,0 ,0 ,0 ,5 ,18,24,24,24,17,1 ,2 ,1 ,10,1 ,2 ,1 ,2 ,3 ,4 ,1 ,1 ,2 ,1 ,7 ,18,24,16,16,16,16,16,16,16,16,24,24,24,24,24,19,19,19,19,19,19,19,24,17,5 ,22,24,24,24,24,19,19,19,19,24,24,24,24,24,24,24,21,5 ,18,17,5 ,18,24,19,19,23,6 ,1 ,1 ,5 ,22,19,19,19,23,5 ,0 ,0 ,
-	0 ,0 ,0 ,0 ,5 ,18,24,24,24,24,16,16,21,5 ,20,16,16,16,16,16,16,16,16,21,5 ,18,24,24,24,24,24,24,24,19,19,24,24,24,24,17,6 ,10,10,10,1 ,1 ,7 ,18,17,1 ,7 ,18,24,24,17,1 ,10,10,7 ,18,24,24,24,24,24,24,17,5 ,18,17,5 ,18,17,2 ,1 ,1 ,2 ,20,21,3 ,1 ,2 ,1 ,1 ,1 ,4 ,7 ,0 ,
+	0 ,0 ,0 ,0 ,5 ,18,24,24,24,24,16,16,21,5 ,20,16,16,16,16,16,16,16,16,28,5 ,18,24,24,24,24,24,24,24,19,19,24,24,24,24,17,6 ,10,10,10,1 ,1 ,7 ,18,17,1 ,7 ,18,24,24,17,1 ,10,10,7 ,18,24,24,24,24,24,24,17,5 ,18,17,5 ,18,17,2 ,1 ,1 ,2 ,20,21,3 ,1 ,2 ,1 ,1 ,1 ,4 ,7 ,0 ,
 	0 ,0 ,0 ,0 ,5 ,22,19,19,19,19,19,24,17,5 ,18,24,24,24,24,19,19,19,19,23,5 ,18,24,24,24,24,24,24,23,6 ,1 ,18,24,24,24,17,2 ,1 ,2 ,11,27,21,5 ,18,24,21,1 ,18,24,24,24,21,12,1 ,1 ,18,24,24,24,24,24,24,17,5 ,18,17,5 ,18,24,16,16,16,16,24,24,16,16,16,16,16,16,21,5 ,0 ,
 	0 ,0 ,0 ,6 ,1 ,1 ,2 ,1 ,1 ,10,7 ,18,17,5 ,18,24,24,24,17,6 ,10,10,10,1 ,11,22,19,19,19,19,19,23,6 ,1 ,20,24,24,24,24,24,16,16,21,5 ,18,17,2 ,7 ,22,24,16,24,24,24,24,17,3 ,20,16,24,24,24,24,24,24,24,17,5 ,18,17,5 ,22,24,24,24,24,24,19,19,19,19,19,19,19,24,17,5 ,0 ,
 	0 ,0 ,6 ,4 ,20,16,16,16,21,4 ,3 ,18,17,5 ,18,24,24,24,17,1 ,14,14,2 ,24,1 ,1 ,2 ,3 ,2 ,4 ,2 ,1 ,1 ,20,24,24,24,24,24,24,24,24,17,5 ,18,24,21,4 ,7 ,22,19,19,19,19,24,24,16,24,24,19,24,24,19,19,19,19,23,5 ,18,17,1 ,7 ,18,24,24,24,17,1 ,1 ,1 ,1 ,1 ,1 ,1 ,18,17,4 ,7 ,
@@ -92,8 +94,8 @@ var slimeDungeonLevelOne = new Array(
 	5 ,18,24,19,19,24,16,16,24,17,5 ,18,24,24,23,5 ,22,24,24,21,5 ,22,24,24,21,3 ,7 ,22,24,24,24,24,24,24,24,24,24,17,2 ,20,24,24,17,5 ,18,24,24,24,24,24,19,19,19,24,19,19,19,19,17,12,10,10,1 ,18,24,24,24,23,5 ,18,24,24,24,24,24,17,6 ,7 ,18,24,19,23,5 ,20,21,5 ,24,5 ,
 	5 ,18,17,6 ,7 ,18,24,24,24,17,5 ,18,24,17,1 ,14,4 ,18,24,17,2 ,7 ,18,24,24,21,12,1 ,18,24,24,24,24,24,24,24,24,24,16,24,24,24,17,5 ,18,24,24,24,24,23,6 ,1 ,7 ,24,6 ,2 ,4 ,7 ,24,12,3 ,4 ,20,24,24,24,17,6 ,2 ,18,24,24,24,24,24,17,4 ,1 ,18,17,1 ,2 ,3 ,18,17,2 ,10,9 ,
 	5 ,18,17,3 ,4 ,18,24,24,24,17,5 ,18,24,24,21,1 ,20,24,24,24,24,5 ,18,24,24,17,12,24,24,24,24,24,24,24,24,19,24,24,24,24,24,24,17,5 ,18,24,24,24,23,6 ,2 ,0 ,2 ,3 ,1 ,0 ,0 ,5 ,24,5 ,20,16,24,24,24,24,17,5 ,24,19,19,24,24,24,24,24,16,16,24,24,16,16,16,24,24,21,5 ,0 ,
-	5 ,18,24,16,16,24,24,24,24,17,5 ,18,24,19,24,16,24,19,19,23,6 ,4 ,18,24,24,23,12,3 ,18,24,24,24,24,24,23,5 ,22,24,24,24,24,24,23,5 ,22,19,24,23,6 ,2 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,1 ,10,3 ,18,24,24,24,24,24,17,2 ,1 ,3 ,7 ,18,24,24,24,24,24,24,19,19,19,19,24,24,24,17,5 ,0 ,
-	5 ,22,19,19,19,19,19,19,19,23,5 ,18,23,5 ,22,24,23,6 ,1 ,4 ,2 ,20,24,19,23,6 ,11,24,24,24,24,24,24,24,6 ,13,7 ,18,24,24,24,17,6 ,13,1 ,7 ,24,6 ,9 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,5 ,20,24,19,19,19,24,24,24,16,16,21,5 ,18,24,24,24,24,24,17,6 ,1 ,1 ,1 ,7 ,18,24,17,5 ,0 ,
+	5 ,18,24,16,16,24,24,24,33,17,5 ,18,24,19,24,16,24,19,19,23,6 ,4 ,18,24,24,23,12,3 ,18,24,24,24,24,24,23,5 ,22,24,24,24,24,24,23,5 ,22,19,24,23,6 ,2 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,1 ,10,3 ,18,24,24,24,24,24,17,2 ,1 ,3 ,7 ,18,24,24,24,24,24,24,19,19,19,19,24,24,24,17,5 ,0 ,
+	5 ,22,19,19,19,19,19,19,19,23,5 ,18,23,5 ,22,24,23,6 ,1 ,4 ,2 ,20,24,19,23,6 ,11,24,24,34,24,24,24,24,6 ,13,7 ,18,24,24,24,17,6 ,13,1 ,7 ,24,6 ,9 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,5 ,20,24,19,19,19,24,24,24,16,16,21,5 ,18,24,24,24,24,24,17,6 ,1 ,1 ,1 ,7 ,18,24,17,5 ,0 ,
 	8 ,1 ,1 ,1 ,1 ,2 ,2 ,2 ,1 ,2 ,11,24,6 ,1 ,7 ,24,6 ,11,20,16,16,24,23,6 ,1 ,13,13,7 ,22,19,19,19,19,23,5 ,0 ,5 ,18,24,24,19,23,5 ,0 ,0 ,8 ,1 ,9 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,5 ,22,23,6 ,1 ,7 ,22,24,24,24,24,23,5 ,22,19,19,24,24,19,23,5 ,0 ,0 ,0 ,5 ,22,19,26,5 ,0 ,
 	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,8, 1 ,9 ,0 ,8 ,1 ,14,11,25,19,19,23,6 ,9 ,0 ,0 ,0 ,8 ,1 ,1 ,1 ,1 ,1 ,1 ,9 ,0 ,5 ,22,19,23,6 ,1 ,9 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,8 ,1 ,1 ,9 ,0 ,8 ,7 ,22,19,19,23,6 ,14,1 ,1 ,7 ,22,23,6 ,1 ,9 ,0 ,0 ,0 ,8 ,1 ,1 ,1 ,9 ,0 ,
 	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,8 ,1 ,1 ,1 ,1 ,1 ,9 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,8 ,1 ,2 ,1 ,9 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,8 ,1 ,1 ,1 ,1 ,1 ,9 ,0 ,0 ,8 ,1 ,1 ,9 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0
@@ -154,6 +156,22 @@ var slimeDungeonLevelOneEntities = new Array(
 		if (slimeDungeonLevelOne[i] == 27) {
 			slimeDungeonLevelOneEntities[i] = 4; // adds a healingPotion to the entities array
 		}
+		if (slimeDungeonLevelOne[i] == 28) {
+			slimeDungeonLevelOneEntities[i] = 5; // adds a SoulJar to the entities array
+		}
+		if (slimeDungeonLevelOne[i] == 33) {
+			slimeDungeonLevelOneEntities[i] = 10; // adds the playerCharacter to the entities array
+		}
+		if (slimeDungeonLevelOne[i] == 34) {
+			slimeDungeonLevelOneEntities[i] = 11; // adds a SorcererVillain to the entities array
+		}
+		if (slimeDungeonLevelOne[i] == 35) {
+			slimeDungeonLevelOneEntities[i] = 12; // adds a slimeEnemy to the entities array
+		}
+		if (slimeDungeonLevelOne[i] == 36) {
+			slimeDungeonLevelOneEntities[i] = 13; // adds a slimeBehemoth to the entities array
+		}
+		
 	};
 /*----------------------------------------------Dungeon Array for level 1 End-------------------------------------------------------------------------------- */	
 
@@ -496,6 +514,105 @@ HealingPotion.prototype.draw = function () {
 };
 /*----------------------------------------------Healing Potion end------------------------------------------------------------------------------------------- */
 
+/*----------------------------------------------Soul Jar Start----------------------------------------------------------------------------------------------- */
+function SoulJar(game, x, y) {
+	this.ctx = game.ctx;
+	this.sparkleAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SoulJarAnimation.png"), 0, 0, 48, 48, 0.1, 4, true, currentScale);
+	this.animation = this.sparkleAnimation;   
+	Entity.call(this, game, x, y);// where it starts
+}
+
+SoulJar.prototype = new Entity();
+SoulJar.prototype.constructor = SoulJar;
+
+SoulJar.prototype.update = function () {
+	Entity.prototype.update.call(this);
+}
+SoulJar.prototype.draw = function () {
+	this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    Entity.prototype.draw.call(this);
+};
+/*----------------------------------------------Soul Jar end------------------------------------------------------------------------------------------------- */
+
+/*----------------------------------------------SlimeBehemoth Start------------------------------------------------------------------------------------------ */
+function SlimeBehemoth(game, startingX, startingY) {
+    this.ctx = game.ctx;
+    this.slimeBehemothWalkingLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SlimeBehemothWalkingLeft.png"), 0, 0, 80, 68, 0.1, 8, true, false);
+    this.animation = this.slimeBehemothWalkingLeftAnimation;
+	this.slimeBehemothWalkingRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SlimeBehemothWalkingRight.png"), 0, 0, 80, 68, 0.1, 8, true, false);
+    this.animation = this.slimeBehemothWalkingRightAnimation;
+	this.isMovingWest = true;
+    this.isMovingEast = false;
+	this.moveSpeed = 70;
+	this.attackSpeed = 3;
+	this.attackInterval = 0.6;
+    this.startAttackRange = 80;
+    this.stopAttackRange = 300;
+    this.startFollowRange = 150;
+    this.stopFollowRange = 350;
+	this.currentDirection = "west";
+    Entity.call(this, game, startingX, startingY - 30); // where it starts
+
+}
+
+SlimeBehemoth.prototype = new Entity();
+SlimeBehemoth.prototype.constructor = SlimeBehemoth;
+
+SlimeBehemoth.prototype.update = function () {
+    let xOrigC = (character.x + character.animation.frameWidth / 2);
+    let yOrigC = (character.y + character.animation.frameHeight / 2);
+    let xOrigS = (this.x + this.animation.frameWidth / 2)
+    let yOrigS = (this.y + this.animation.frameHeight / 2)
+    let xDiff = xOrigC - xOrigS;
+    let yDiff = yOrigC - yOrigS;
+    let distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+
+	if (this.x < 230 && this.isMovingWest) {
+		this.isMovingEast = true;
+		this.isMovingWest = false;
+		this.x += gameEngine.clockTick * this.moveSpeed;
+	} 
+	if (this.x > 1210 && this.isMovingEast) {
+		this.isMovingEast = false;
+		this.isMovingWest = true;
+		this.x -= gameEngine.clockTick * this.moveSpeed;
+	}
+	if (this.isMovingEast) {
+		this.x += gameEngine.clockTick * this.moveSpeed;
+	}
+	if (this.isMovingWest) {
+		this.x -= gameEngine.clockTick * this.moveSpeed;
+	}
+		
+/* 
+	if (this.startAttackRange <= distance && distance <= this.stopAttackRange) {
+        //this.normalAttack(xDiff, yDiff, distance, xOrigS, yOrigS);
+    }
+	
+    if (this.startFollowRange <= distance && distance <= this.stopFollowRange) {
+        let velX = (this.moveSpeed * xDiff) / distance;
+        let velY = (this.moveSpeed * yDiff) / distance;
+
+        this.x += gameEngine.clockTick * velX;
+        this.y += gameEngine.clockTick * velY;
+    }
+*/
+	Entity.prototype.update.call(this);
+}
+SlimeBehemoth.prototype.normalAttack = function (xDiff, yDiff, distance, xOrigS, yOrigS) {
+    // to do
+}
+SlimeBehemoth.prototype.draw = function () {
+	if (this.isMovingWest) {
+        this.animation = this.slimeBehemothWalkingLeftAnimation;
+    } else {
+        this.animation = this.slimeBehemothWalkingRightAnimation;
+    }
+    this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    Entity.prototype.draw.call(this);
+}
+/*----------------------------------------------SlimeBehemoth End-------------------------------------------------------------------------------------------- */
+
 /*----------------------------------------------SorcererVillain Start---------------------------------------------------------------------------------------- */
 function SorcererVillain(game) {
     this.ctx = game.ctx;
@@ -816,10 +933,12 @@ CenterThingy.prototype.draw = function(ctx) {
 var gameEngine;
 let character;
 let sorcererVillain;
+let slimeBehemoth;
 let torch;
 let sKey;
 let gKey;
 let hPotion;
+let sJar;
 let canvas;
 var ctx;
 var ASSET_MANAGER = new AssetManager();
@@ -842,6 +961,9 @@ ASSET_MANAGER.queueDownload("./img/torchAnimation.png");
 ASSET_MANAGER.queueDownload("./img/SilverKeyAnimation.png");
 ASSET_MANAGER.queueDownload("./img/GoldKeyAnimation.png");
 ASSET_MANAGER.queueDownload("./img/HealthPotionAnimation.png");
+ASSET_MANAGER.queueDownload("./img/SoulJarAnimation.png");
+ASSET_MANAGER.queueDownload("./img/SlimeBehemothWalkingLeft.png");
+ASSET_MANAGER.queueDownload("./img/SlimeBehemothWalkingRight.png");
 
 
 ASSET_MANAGER.downloadAll(function() {
@@ -856,7 +978,8 @@ ASSET_MANAGER.downloadAll(function() {
 	var sKeys = [];
 	var gKeys = [];
 	var hPotions = [];
-	
+	var sJars = [];
+	var slimeBehemoths = [];
 	// generates an array that will generate each entity in the right spots.
 	for (var i = 0; i < slimeDungeonLevelOneEntities.length; i++) {
 		if (slimeDungeonLevelOneEntities[i] == 1) {
@@ -883,8 +1006,21 @@ ASSET_MANAGER.downloadAll(function() {
 			var hPotion = new HealingPotion(gameEngine, hPotionX, hPotionY);
 			hPotions.push(hPotion);
 		}
+		if (slimeDungeonLevelOneEntities[i] == 5) {
+			var sJarX = (i % 88) * 48;
+			var sJarY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
+			var sJar = new SoulJar(gameEngine, sJarX, sJarY);
+			sJars.push(sJar);
+		}
+		if (slimeDungeonLevelOneEntities[i] == 13) {
+			var sbX = (i % 88) * 48;
+			var sbY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
+			var sb = new SlimeBehemoth(gameEngine, sbX, sbY);
+			slimeBehemoths.push(sb);
+		}
 	}
 	character = new Character(gameEngine);
+	
 	sorcererVillain = new SorcererVillain(gameEngine);
     var centerthingy = new CenterThingy(gameEngine);
 
@@ -907,6 +1043,12 @@ ASSET_MANAGER.downloadAll(function() {
 	}
 	for(var i = 0; i < hPotions.length; i++) {
 		gameEngine.addEntity(hPotions[i]);
+	}
+	for(var i = 0; i < sJars.length; i++) {
+		gameEngine.addEntity(sJars[i]);
+	}
+	for(var i = 0; i < slimeBehemoths.length; i++) {
+		gameEngine.addEntity(slimeBehemoths[i]);
 	}
     gameEngine.addEntity(character);
 	gameEngine.addEntity(sorcererVillain);
