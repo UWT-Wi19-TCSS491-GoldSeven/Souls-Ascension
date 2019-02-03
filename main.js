@@ -592,7 +592,6 @@ SlimeBehemoth.prototype.update = function () {
     if (this.startFollowRange <= distance && distance <= this.stopFollowRange) {
         let velX = (this.moveSpeed * xDiff) / distance;
         let velY = (this.moveSpeed * yDiff) / distance;
-
         this.x += gameEngine.clockTick * velX;
         this.y += gameEngine.clockTick * velY;
     }
