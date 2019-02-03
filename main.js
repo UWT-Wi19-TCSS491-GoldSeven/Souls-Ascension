@@ -193,7 +193,7 @@ for(var i = 0; i < roomArea; i++) {
  * 22 = Bottom Left L floor, 23 = Bottom Right L floor, 24 = Center floor, 25 = silver key platform floor, 26 = gold key platform floor,
  * 27 = healing potion floor, 28 = Soul Jar floor, 
  * 33 = player starting Position floor, 34 = sorcererVillain starting position floor, 35 = slimeEnemy starting position floor,
- * 36 = slimeBehemoth starting position floor, 37 = wizard starting position.
+ * 36 = slimeBehemoth starting position floor, 37 = wizard starting position, 38 = skeleton starting position.
  */
 var slimeDungeonLevelOne = new Array(
 	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,6 ,1 ,2 ,1 ,7 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,6 ,1 ,2 ,1 ,7 ,0 ,0 ,0 ,0 ,6 ,3 ,4 ,7 ,0 ,0 ,0 ,0 ,6 ,1 ,1 ,2 ,1 ,4 ,1 ,7 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,
@@ -209,7 +209,7 @@ var slimeDungeonLevelOne = new Array(
 	0 ,6 ,1 ,20,24,24,19,24,24,16,16,24,17,5 ,22,24,24,24,24,21,1 ,11,20,24,16,16,16,16,16,16,16,16,16,24,24,24,24,24,24,24,24,24,17,5 ,18,24,24,21,1 ,2 ,1 ,3 ,4 ,7 ,22,19,24,24,23,5 ,18,17,6 ,4 ,1 ,1 ,1 ,3 ,18,24,21,5 ,18,24,24,24,24,16,16,16,16,16,16,16,24,24,21,5 ,
 	0 ,5 ,20,24,24,23,5 ,18,24,19,19,24,17,4 ,7 ,18,24,24,24,24,21,5 ,37,24,19,19,19,19,19,19,24,24,24,24,24,24,24,24,24,24,24,24,17,5 ,18,24,24,24,16,16,16,16,21,12,1 ,7 ,22,23,6 ,4 ,18,17,1 ,20,16,16,16,16,24,24,17,5 ,18,24,24,24,19,19,19,19,19,24,24,24,24,24,17,5 ,
 	0 ,5 ,18,24,17,1 ,1 ,18,17,6 ,7 ,22,24,21,2 ,7 ,19,19,19,19,23,5 ,18,17,6 ,4 ,3 ,4 ,3 ,7 ,22,19,24,24,24,24,24,24,24,24,24,24,17,5 ,18,24,24,24,24,19,24,24,23,5 ,24,1 ,1 ,1 ,4 ,20,24,24,16,24,24,24,24,24,24,24,17,5 ,22,24,24,23,6 ,3 ,2 ,4 ,7 ,18,24,19,19,19,23,5 ,
-	0 ,5 ,18,24,24,16,16,24,23,12,1 ,7 ,22,24,21,1 ,1 ,3 ,15,4 ,2 ,11,18,17,5 ,20,16,16,21,1 ,1 ,7 ,22,19,19,19,19,24,24,24,19,19,23,5 ,22,19,19,19,23,5 ,22,23,6 ,11,18,16,16,16,16,24,19,19,19,24,24,24,24,24,24,24,17,2 ,7 ,22,23,6 ,4 ,20,16,21,1 ,18,17,1 ,2 ,1 ,10,9 ,
+	0 ,5 ,18,24,24,16,16,24,23,12,1 ,7 ,22,24,21,1 ,1 ,3 ,15,4 ,2 ,11,18,17,5 ,20,16,16,21,1 ,1 ,7 ,22,19,19,19,19,24,24,24,19,19,23,5 ,22,19,19,19,23,5 ,22,23,6 ,11,18,16,16,16,16,24,19,19,19,24,24,24,24,24,24,24,38,2 ,7 ,22,23,6 ,4 ,20,16,21,1 ,18,17,1 ,2 ,1 ,10,9 ,
 	0 ,5 ,22,24,24,24,19,23,6 ,1 ,24,1 ,7 ,22,24,16,16,16,16,16,21,5 ,18,17,5 ,22,19,24,24,16,21,1 ,1 ,2 ,4 ,1 ,7 ,22,19,23,6 ,1 ,4 ,2 ,1 ,1 ,2 ,4 ,3 ,1 ,15,1 ,3 ,1 ,18,24,24,19,19,23,6 ,4 ,7 ,18,24,24,24,24,24,24,24,21,1 ,2 ,2 ,1 ,20,24,24,24,16,24,24,16,16,21,5 ,0 ,
 	0 ,8 ,7 ,18,24,23,6 ,1 ,2 ,20,24,21,1 ,7 ,22,19,19,19,19,24,17,5 ,18,17,1 ,4 ,7 ,22,24,24,24,16,16,16,16,21,4 ,1 ,1 ,2 ,11,20,16,16,16,16,16,16,16,16,16,16,16,16,24,19,23,6 ,10,1 ,1 ,24,5 ,18,24,24,24,24,24,24,24,24,16,16,16,16,24,24,24,24,19,19,19,24,24,17,5 ,0 ,
 	0 ,0 ,5 ,18,17,6 ,4 ,20,16,24,24,24,21,1 ,4 ,15,3 ,10,7 ,18,17,5 ,18,24,16,21,1 ,7 ,22,24,24,24,24,24,24,24,16,16,16,21,5 ,22,24,19,19,19,19,19,19,19,24,24,19,19,23,6 ,4 ,3 ,11,20,16,17,5 ,22,19,24,24,24,24,24,24,24,19,19,19,19,19,24,24,17,6 ,1 ,1 ,18,24,17,5 ,0 ,
@@ -302,6 +302,9 @@ var slimeDungeonLevelOneEntities = new Array(
 		}
 		if (slimeDungeonLevelOne[i] == 37) {
 			slimeDungeonLevelOneEntities[i] = 14; // adds a wizard to the entities array
+		}
+		if (slimeDungeonLevelOne[i] == 38) {
+			slimeDungeonLevelOneEntities[i] = 15; // adds a skeleton to the entities array
 		}
 		
 	};
@@ -794,6 +797,70 @@ SlimeEnemy.prototype.draw = function () {
 }
 /*----------------------------------------------SlimeEnemy End---------------------------------------------------------------------------------------------- */
 
+/*----------------------------------------------Skeleton Start---------------------------------------------------------------------------------------------- */
+function Skeleton(game, startingX, startingY) {
+    this.ctx = game.ctx;
+    this.skeletonWalkingLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SkeletonWalkLeft.png"), 0, 0, 44, 66, 0.1, 13, true, false);
+    this.animation = this.skeletonWalkingLeftAnimation;
+	this.skeletonWalkingRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SkeletonWalkRight.png"), 0, 0, 44, 66, 0.1, 13, true, false);
+    this.animation = this.skeletonWalkingRightAnimation;
+	this.isMovingWest = true;
+    this.isMovingEast = false;
+	this.moveSpeed = 30;
+	this.attackSpeed = 3;
+	this.attackInterval = 0.6;
+    this.startAttackRange = 80;
+    this.stopAttackRange = 300;
+    this.startFollowRange = 150;
+    this.stopFollowRange = 350;
+    Entity.call(this, game, startingX - 50, startingY - 25); // where it starts
+
+}
+
+Skeleton.prototype = new Entity();
+Skeleton.prototype.constructor = Skeleton;
+
+Skeleton.prototype.update = function () {
+    let xOrigC = (character.x + character.animation.frameWidth / 2);
+    let yOrigC = (character.y + character.animation.frameHeight / 2);
+    let xOrigS = (this.x + this.animation.frameWidth / 2)
+    let yOrigS = (this.y + this.animation.frameHeight / 2)
+    let xDiff = xOrigC - xOrigS;
+    let yDiff = yOrigC - yOrigS;
+    let distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+
+	if (this.x < 2550 && this.isMovingWest) {
+		this.isMovingEast = true;
+		this.isMovingWest = false;
+		this.x += gameEngine.clockTick * this.moveSpeed;
+	} 
+	if (this.x > 3380 && this.isMovingEast) {
+		this.isMovingEast = false;
+		this.isMovingWest = true;
+		this.x -= gameEngine.clockTick * this.moveSpeed;
+	}
+	if (this.isMovingEast) {
+		this.x += gameEngine.clockTick * this.moveSpeed;
+	}
+	if (this.isMovingWest) {
+		this.x -= gameEngine.clockTick * this.moveSpeed;
+	}
+	Entity.prototype.update.call(this);
+}
+Skeleton.prototype.normalAttack = function (xDiff, yDiff, distance, xOrigS, yOrigS) {
+    // to do
+}
+Skeleton.prototype.draw = function () {
+	if (this.isMovingWest) {
+        this.animation = this.skeletonWalkingLeftAnimation;
+    } else {
+        this.animation = this.skeletonWalkingRightAnimation;
+    }
+    this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    Entity.prototype.draw.call(this);
+}
+/*----------------------------------------------Skeleton End------------------------------------------------------------------------------------------------- */
+
 /*----------------------------------------------Wizard Start------------------------------------------------------------------------------------------------ */
 function Wizard(game, startingX, startingY) {
     this.ctx = game.ctx;
@@ -1181,6 +1248,7 @@ let sorcererVillain;
 let slimeBehemoth;
 let slimeEnemy;
 let wizard;
+let skeleton;
 let torch;
 let sKey;
 let gKey;
@@ -1215,6 +1283,9 @@ ASSET_MANAGER.queueDownload("./img/SlimeWalkLeft.png");
 ASSET_MANAGER.queueDownload("./img/SlimeWalkRight.png");
 ASSET_MANAGER.queueDownload("./img/wizardWalkLeft.png");
 ASSET_MANAGER.queueDownload("./img/wizardWalkRight.png");
+ASSET_MANAGER.queueDownload("./img/SkeletonWalkLeft.png");
+ASSET_MANAGER.queueDownload("./img/SkeletonWalkRight.png");
+
 
 ASSET_MANAGER.downloadAll(function() {
     console.log("starting up da sheild");
@@ -1231,6 +1302,7 @@ ASSET_MANAGER.downloadAll(function() {
 	var sJars = [];
 	var slimeBehemoths = [];
 	var slimeEnemies = [];
+	var skeletons = [];
 	var wizards = [];
 	var sorcererVillains = [];
 	// generates an array that will generate each entity in the right spots.
@@ -1289,6 +1361,12 @@ ASSET_MANAGER.downloadAll(function() {
 			var wizard = new Wizard(gameEngine, wizardX, wizardY);
 			wizards.push(wizard);
 		}
+		if (slimeDungeonLevelOneEntities[i] == 15) {
+			var skeletonX = (i % 88) * 48;
+			var skeletonY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
+			var skeleton = new Skeleton(gameEngine, skeletonX, skeletonY);
+			skeletons.push(skeleton);
+		}
 		if (slimeDungeonLevelOneEntities[i] == 10) { // for the player character
 			var characterStartingX = (i % 88) * 48;
 			var characterStartingY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
@@ -1329,6 +1407,9 @@ ASSET_MANAGER.downloadAll(function() {
 	}
 	for(var i = 0; i < wizards.length; i++) {
 		gameEngine.addEntity(wizards[i]);
+	}
+	for(var i = 0; i < skeletons.length; i++) {
+		gameEngine.addEntity(skeletons[i]);
 	}
 	for(var i = 0; i < sorcererVillains.length; i++) {
 		gameEngine.addEntity(sorcererVillains[i]);
