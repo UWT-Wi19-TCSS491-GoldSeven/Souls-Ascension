@@ -88,7 +88,7 @@ var slimeDungeonLevelOne = new Array(
 	0 ,0 ,5 ,18,17,5 ,27,19,23,12,14,1 ,7 ,22,24,24,17,5 ,20,24,17,5 ,18,24,24,24,24,17,5 ,18,24,24,24,24,24,24,24,24,24,24,24,16,21,5 ,18,24,24,24,24,16,24,24,16,24,24,24,24,17,1 ,2 ,1 ,18,24,24,16,21,4 ,1 ,1 ,1 ,4 ,20,16,24,24,24,21,5 ,18,24,16,24,24,24,24,24,17,5 ,
 	6 ,1 ,1 ,18,17,1 ,1 ,4 ,1 ,2 ,11,25,3 ,7 ,22,24,23,5 ,18,24,23,5 ,18,24,24,24,24,23,5 ,18,24,24,24,24,24,24,24,24,24,19,24,24,17,5 ,18,24,24,19,19,19,24,24,24,24,24,24,24,24,16,16,16,24,24,24,24,24,16,16,16,16,16,24,24,24,24,24,17,5 ,18,24,24,24,24,24,24,24,17,5 ,
 	5 ,20,16,24,24,16,16,16,16,21,5 ,18,21,4 ,7 ,24,6 ,2 ,18,17,6 ,1 ,18,24,24,24,23,6 ,3 ,18,24,24,24,24,24,24,24,24,23,5 ,18,24,17,5 ,18,24,17,1 ,1 ,7 ,18,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,19,24,24,24,24,24,24,24,24,17,1 ,7 ,22,19,19,19,24,24,24,17,5 ,
-	5 ,18,24,24,24,24,19,19,24,17,5 ,18,24,21,3 ,10,1 ,20,24,17,5 ,20,24,24,24,23,6 ,2 ,20,24,24,24,24,24,24,24,24,23,6 ,11,18,24,17,5 ,18,24,24,16,21,5 ,22,19,19,24,24,24,24,24,24,24,24,24,24,24,24,24,17,5 ,22,24,24,24,24,24,24,24,24,21,1 ,4 ,2 ,1 ,7 ,18,24,24,17,5 ,
+	5 ,18,24,24,24,24,19,19,24,17,5 ,18,24,21,3 ,10,1 ,20,24,17,5 ,20,24,24,24,23,6 ,2 ,20,34,24,24,24,24,24,24,24,23,6 ,11,18,24,17,5 ,18,24,24,16,21,5 ,22,19,19,24,24,24,24,24,24,24,24,24,24,24,24,24,17,5 ,22,24,24,24,24,24,24,24,24,21,1 ,4 ,2 ,1 ,7 ,18,24,24,17,5 ,
 	5 ,18,24,24,24,17,6 ,7 ,18,17,5 ,18,24,24,21,5 ,20,24,24,23,5 ,18,24,24,23,6 ,4 ,20,24,24,24,24,24,24,24,24,17,2 ,14,11,18,24,17,5 ,18,24,24,24,17,2 ,2 ,3 ,1 ,18,24,24,24,24,24,19,24,24,24,24,24,24,17,3 ,7 ,18,24,24,24,24,24,24,24,24,16,16,16,21,5 ,22,19,19,17,5 ,
 	5 ,18,24,24,24,17,2 ,4 ,18,17,5 ,18,24,24,17,5 ,18,24,17,1 ,11,18,24,17,2 ,11,24,24,24,24,24,24,24,24,24,24,24,21,12,1 ,18,24,17,5 ,18,24,24,24,24,16,16,16,16,24,24,24,24,24,17,5 ,22,19,19,24,24,24,24,21,5 ,18,24,24,24,24,24,24,19,19,24,24,24,17,12,1 ,4 ,7 ,24,5 ,
 	5 ,18,24,19,19,24,16,16,24,17,5 ,18,24,24,23,5 ,22,24,24,21,5 ,22,24,24,21,3 ,7 ,22,24,24,24,24,24,24,24,24,24,17,2 ,20,24,24,17,5 ,18,24,24,24,24,24,19,19,19,24,19,19,19,19,17,12,10,10,1 ,18,24,24,24,23,5 ,18,24,24,24,24,24,17,6 ,7 ,18,24,19,23,5 ,20,21,5 ,24,5 ,
@@ -614,7 +614,7 @@ SlimeBehemoth.prototype.draw = function () {
 /*----------------------------------------------SlimeBehemoth End-------------------------------------------------------------------------------------------- */
 
 /*----------------------------------------------SorcererVillain Start---------------------------------------------------------------------------------------- */
-function SorcererVillain(game) {
+function SorcererVillain(game, x, y) {
     this.ctx = game.ctx;
     this.standingAttackAnimation = new Animation(ASSET_MANAGER.getAsset("./img/sorcererVillain.png"), 0, 0, 100, 100, 0.1, 10, true, false);
     this.animation = this.standingAttackAnimation;
@@ -630,7 +630,7 @@ function SorcererVillain(game) {
     this.stopAttackRange = 300;
     this.startFollowRange = 150;
     this.stopFollowRange = 350;
-    Entity.call(this, game, 550, 550); // where it starts
+    Entity.call(this, game, x, y); // where it starts
 
 }
 
@@ -980,6 +980,7 @@ ASSET_MANAGER.downloadAll(function() {
 	var hPotions = [];
 	var sJars = [];
 	var slimeBehemoths = [];
+	var sorcererVillains = [];
 	// generates an array that will generate each entity in the right spots.
 	for (var i = 0; i < slimeDungeonLevelOneEntities.length; i++) {
 		if (slimeDungeonLevelOneEntities[i] == 1) {
@@ -1012,6 +1013,12 @@ ASSET_MANAGER.downloadAll(function() {
 			var sJar = new SoulJar(gameEngine, sJarX, sJarY);
 			sJars.push(sJar);
 		}
+		if (slimeDungeonLevelOneEntities[i] == 11) {
+			var svX = (i % 88) * 48;
+			var svY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
+			var sv = new SorcererVillain(gameEngine, svX, svY);
+			sorcererVillains.push(sv);
+		}
 		if (slimeDungeonLevelOneEntities[i] == 13) {
 			var sbX = (i % 88) * 48;
 			var sbY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
@@ -1021,7 +1028,6 @@ ASSET_MANAGER.downloadAll(function() {
 	}
 	character = new Character(gameEngine);
 	
-	sorcererVillain = new SorcererVillain(gameEngine);
     var centerthingy = new CenterThingy(gameEngine);
 
     // Initial configuration of entity.
@@ -1050,8 +1056,10 @@ ASSET_MANAGER.downloadAll(function() {
 	for(var i = 0; i < slimeBehemoths.length; i++) {
 		gameEngine.addEntity(slimeBehemoths[i]);
 	}
+	for(var i = 0; i < sorcererVillains.length; i++) {
+		gameEngine.addEntity(sorcererVillains[i]);
+	}
     gameEngine.addEntity(character);
-	gameEngine.addEntity(sorcererVillain);
     if (gameEngine.debug) gameEngine.addEntity(centerthingy);
 
 	// Starting up the game
