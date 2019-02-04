@@ -568,7 +568,7 @@ function collisionDetect(characterX, characterY, width) {
 
 const drawHPBar = () => {
     var entity;
-    for (var i = 0; i < gameEngine.entities.length; i++) {
+    for (var i = 0; i < gameEngine.entities.length - 1; i++) {
         entity = gameEngine.entities[i];
         ctx.strokeStyle = "red";
         if (entity.maxHealth > 0) {
@@ -576,6 +576,12 @@ const drawHPBar = () => {
             ctx.fillRect(entity.x + 15, entity.y, 50*entity.currentHealth / entity.maxHealth, 3);
         }
     }
+    entity = gameEngine.entities[gameEngine.entities.length - 1];
+    ctx.strokeStyle = "red";
+    
+        ctx.strokeRect(entity.x, entity.y, 40, 3);
+        ctx.fillRect(entity.x, entity.y, 40 * entity.currentHealth / entity.maxHealth, 3);
+
 }
 
 /*----------------------------------------------Health End------------------------------------------------------------------------------------------------ */
@@ -648,6 +654,7 @@ function HealingPotion(game, x, y) {
 	this.sparkleAnimation = new Animation(ASSET_MANAGER.getAsset("./img/HealthPotionAnimation.png"), 0, 0, 48, 48, 0.1, 4, true, currentScale);
     this.animation = this.sparkleAnimation;   
     this.killable = true;
+    this.health = 100;
 	Entity.call(this, game, x, y);// where it starts
 }
 
@@ -669,6 +676,7 @@ function SoulJar(game, x, y) {
 	this.sparkleAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SoulJarAnimation.png"), 0, 0, 48, 48, 0.1, 4, true, currentScale);
     this.animation = this.sparkleAnimation;
     this.killable = true;
+    this.jar = 100;
 	Entity.call(this, game, x, y);// where it starts
 }
 
@@ -1109,6 +1117,9 @@ function Character(game) {                                                      
     this.isMovingDownRight = false;
     this.radius = 100;
     this.travelSpeed = 2;
+    this.killable = true;
+    this.maxHealth = 1000;
+    this.currentHealth = 1000;
     this.boxes = game.debug;         // For debugging, game.debug = true;
     this.scale = 1; // set to 1 if the sprite dimensions are the exact size that should be rendered.
     //console.log(this); // Debugging.
@@ -1263,20 +1274,27 @@ Character.prototype.draw = function (ctx) {
             newY -= currentScale;
         default: break;
     }
-    console.log(`newX:  ${newX} newY: ${newY} range: ${range}`);
-    for (let i = 2; i < gameEngine.entities.length; i++) {        
-        scaleOf = (gameEngine.entities[i] instanceof Projectile) ? 4 : currentScale - 20;
+    for (let i = 0; i < gameEngine.entities.length - 1; i++) {        
+        scaleOf = (gameEngine.entities[i] instanceof Projectile) ? 4 : currentScale - 10;
 
         if (isCollise(newX + 20, newY - scaleOf + 20, 5 + range, 42 + range, gameEngine.entities[i], scaleOf + range, scaleOf + range)) {            
             if (this.game.click) {
                 this.game.click = false;
                 gameEngine.entities[i].currentHealth -= 20;
+            } else this.currentHealth -= 10;
+            if (gameEngine.entities[i].currentHealth <= 0 || gameEngine.entities[i].currentHealth == null) {
+                this.currentHealth = Math.min(this.currentHealth + gameEngine.entities[i].health, this.maxHealth);
+                gameEngine.entities.splice(i, 1);
             }
-            if (gameEngine.entities[i].currentHealth <= 0 || gameEngine.entities[i].currentHealth == null) { gameEngine.entities.splice(i, 1); }
+
         }
         else if (gameEngine.entities[i] instanceof Projectile && collisionDetect(gameEngine.entities[i].x, gameEngine.entities[i].y, currentScale)) {
             gameEngine.entities.splice(i, 1);
         }
+    }
+    if (this.currentHealth <= 0) {
+        gameEngine.entities.splice(gameEngine.entities.length - 1, 1);
+        document.getElementById('gameover').style.display = '';
     }
     drawHPBar();
 }
