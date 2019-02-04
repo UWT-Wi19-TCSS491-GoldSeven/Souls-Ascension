@@ -536,7 +536,7 @@ function isCollise(targetX, targetY, targetW, targetH, entity, entityW, entityH)
     return false;
 }
 
-var isColli = false;
+//var isColli = false;
 function collisionDetect(characterX, characterY, width) { 
     var targetX, targetY;
     var j; // area to check collision
@@ -700,8 +700,8 @@ function SlimeBehemoth(game, startingX, startingY) {
     this.stopAttackRange = 300;
     this.startFollowRange = 150;
     this.stopFollowRange = 350;
-    this.maxHealth = 100;
-    this.currentHealth = 90;
+    this.maxHealth = 500;
+    this.currentHealth = 500;
     this.killable = true;
     Entity.call(this, game, startingX, startingY - 30); // where it starts
 
@@ -767,8 +767,8 @@ function SlimeEnemy(game, startingX, startingY) {
     this.stopAttackRange = 300;
     this.startFollowRange = 150;
     this.stopFollowRange = 350;
-    this.maxHealth = 100;
-    this.currentHealth = 100;
+    this.maxHealth = 300;
+    this.currentHealth = 300;
     this.killable = true;
     Entity.call(this, game, startingX - 50, startingY - 15); // where it starts
 
@@ -834,8 +834,8 @@ function Skeleton(game, startingX, startingY) {
     this.stopAttackRange = 300;
     this.startFollowRange = 150;
     this.stopFollowRange = 350;
-    this.maxHealth = 100;
-    this.currentHealth = 90;
+    this.maxHealth = 1000;
+    this.currentHealth = 1000;
     this.killable = true;
     Entity.call(this, game, startingX - 50, startingY - 25); // where it starts
 
@@ -901,8 +901,8 @@ function Wizard(game, startingX, startingY) {
     this.stopAttackRange = 300;
     this.startFollowRange = 150;
     this.stopFollowRange = 350;
-    this.maxHealth = 100;
-    this.currentHealth = 90;
+    this.maxHealth = 400;
+    this.currentHealth = 400;
     this.killable = true;
     Entity.call(this, game, startingX - 50, startingY - 25); // where it starts
 
@@ -969,8 +969,8 @@ function SorcererVillain(game, x, y) {
     this.stopAttackRange = 300;
     this.startFollowRange = 150;
     this.stopFollowRange = 350;
-    this.maxHealth = 100;
-    this.currentHealth = 90;
+    this.maxHealth = 1000;
+    this.currentHealth = 1000;
     this.killable = true;
     Entity.call(this, game, x, y); // where it starts
 
@@ -1126,9 +1126,8 @@ Character.prototype.update = function () {
     this.isMovingUpRight = false;
     this.isMovingDownLeft = false;
     this.isMovingDownRight = false;
-
-	if (this.game.one) { this.isWhirlwinding = true }
-    if (this.game.click) { this.isAttacking = true }
+    if (this.game.one) { this.isWhirlwinding = true;}
+    if (this.game.click) { this.isAttacking = true;}
     if (this.game.up && this.game.left) this.isMovingUpLeft = true;
     if (this.game.up && this.game.right) this.isMovingUpRight = true;
     if (this.game.down && this.game.left) this.isMovingDownLeft = true;
@@ -1243,12 +1242,32 @@ Character.prototype.draw = function (ctx) {
     }
     Entity.prototype.draw.call(this);
     let scaleOf = 4;
-    for (let i = 2; i < gameEngine.entities.length; i++) {
-        
-        if (gameEngine.entities[i] instanceof SorcererVillain) continue;
+    let range = (this.isWhirlwinding) ? currentScale * 1.5 : (this.isAttacking) ? currentScale / 2 : 0;
+    let newX = this.x;
+    let newY = this.y;
+    switch (this.animation) {
+        case this.attackLeftAnimation:
+            newX -= currentScale/2;
+            break;
+        case this.attackRightAnimation:
+            newX += currentScale/10;
+            break;
+        case this.attackDownAnimation:
+            newY -= currentScale / 5;
+            break;
+        case this.attackUpAnimation:
+            newY += currentScale / 5;
+            break;
+        case this.whirlwindAttackAnimation:
+            newX -= currentScale;
+            newY -= currentScale;
+        default: break;
+    }
+    console.log(`newX:  ${newX} newY: ${newY} range: ${range}`);
+    for (let i = 2; i < gameEngine.entities.length; i++) {        
         scaleOf = (gameEngine.entities[i] instanceof Projectile) ? 4 : currentScale - 20;
-        if (isCollise(this.x + 20, this.y - scaleOf + 20, 5, 42, gameEngine.entities[i], scaleOf, scaleOf)) {
-            
+
+        if (isCollise(newX + 20, newY - scaleOf + 20, 5 + range, 42 + range, gameEngine.entities[i], scaleOf + range, scaleOf + range)) {            
             if (this.game.click) {
                 this.game.click = false;
                 gameEngine.entities[i].currentHealth -= 20;
