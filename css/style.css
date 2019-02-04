@@ -5,3 +5,10 @@
 .column {
     flex: 50%;
 }
+
+p, h1 {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
