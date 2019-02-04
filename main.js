@@ -1302,7 +1302,16 @@ Character.prototype.draw = function (ctx) {
     }
     if (this.currentHealth <= 0) {
         gameEngine.entities.splice(gameEngine.entities.length - 1, 1);
-        document.getElementById('gameover').style.display = '';
+        let text = document.getElementById('gameover');
+		text.style.display = 'inline';
+        let tPos = text.getBoundingClientRect();
+        let cPos = gameEngine.ctx.canvas.getBoundingClientRect();
+        let x = cPos.left + (cPos.width - tPos.width) / 2
+		let y = cPos.top + (cPos.height - tPos.height) / 2
+		console.log(tPos);
+		text.style.position = 'absolute';
+        text.style.left = x + 'px';
+        text.style.top = y + 'px';
     }
     drawHPBar();
 }
