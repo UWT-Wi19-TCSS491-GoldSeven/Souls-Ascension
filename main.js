@@ -1,6 +1,5 @@
 /*----------------------------------------------Boiler Code Start-------------------------------------------------------------------------------------------- */
 function Animation(spriteSheet, startX, startY, frameWidth, frameHeight, frameDuration, frames, loop, reverse) {
-    console.log(spriteSheet);
     this.spriteSheet = spriteSheet;
     this.startX = startX;
     this.startY = startY;
@@ -311,7 +310,7 @@ var slimeDungeonLevelOneEntities = new Array(
 /*----------------------------------------------Dungeon Array for level 1 End-------------------------------------------------------------------------------- */	
 
 /*----------------------------------------------Background for level 1 Start--------------------------------------------------------------------------------- */
-var currentScale = 48; // number of pixels 
+var currentScale = 48; // number of pixels
 var currentWTiles = 88; // number of tiles width wise on the map
 function Background(game, spritesheet) {
     this.x = 0;
@@ -1047,7 +1046,7 @@ SorcererVillain.prototype.specialAttack = function (xDiff, yDiff, distance, xOri
 
 SorcererVillain.prototype.draw = function () {
     this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
-    if (this.boxes) {
+    if (this.game.debug) {
         ctx.strokeStyle = "green";
         ctx.strokeRect(this.x, this.y, 100, 100);
     }
@@ -1086,7 +1085,7 @@ Projectile.prototype.draw = function () {
 /*----------------------------------------------Projectile End----------------------------------------------------------------------------------------------- */
 
 /*----------------------------------------------Character Start---------------------------------------------------------------------------------------------- */
-// The entity's origin is determined by its BoundingBox object.
+// The entity's viewport is determined by its BoundingBox object.
 function Character(game) {                                                                                            //loop  reversed
     this.standAnimation = new Animation(ASSET_MANAGER.getAsset("./img/characterIdleAnimation.png"), 0, 0, 42, 42, 0.08, 4, true, false);
     this.walkRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/characterRightAnimation.png"), 0,  0, 42, 42, 0.15, 6, true, false);
@@ -1118,13 +1117,21 @@ function Character(game) {                                                      
     this.killable = true;
     this.maxHealth = 1000;
     this.currentHealth = 1000;
-    this.boxes = game.debug;         // For debugging, game.debug = true;
     this.scale = 1; // set to 1 if the sprite dimensions are the exact size that should be rendered.
+	this.boundingBox = new BoundingBox(0, 0, 20, 40, 10);
     //console.log(this); // Debugging.
-    Entity.call(this, game, 385, 450); // Spawn the entity's upper left corner at these coordinates of the world.
+    Entity.call(this, game, 385, 450, false); // Spawn the entity's upper left corner at these coordinates of the world.
 }
 
 Character.prototype = new Entity();
+
+Character.prototype.updateViewport = function () {
+	let sx = this.game.viewport.sx;
+	let sy = this.game.viewport.sy;
+	// Calculates the position with the given scale.
+	this.game.viewport.x = (this.x + this.boundingBox.width) * sx - this.game.ctx.canvas.width / 2;
+	this.game.viewport.y = (this.y + this.boundingBox.height / 2) * sy - this.game.ctx.canvas.height / 2;
+}
 
 Character.prototype.update = function () {   
     this.isMovingUp = false;
@@ -1150,31 +1157,26 @@ Character.prototype.update = function () {
         this.isMovingDown = true;
     }
     if (this.game.debug && (this.isMovingLeft || this.isMovingRight || this.isMovingUp || this.isMovingDown)) {
-        console.log(this);
+        // console.log(this);
     }
     if (this.isMovingUp) {
-        this.game.origin.y -= this.travelSpeed;
-        this.game.ctx.translate(0, this.travelSpeed); // Moves the canvas/camera.
         this.y -= this.travelSpeed; // Moves the entity.
     } else if (this.isMovingDown) {
-        this.game.origin.y += this.travelSpeed;
-        this.game.ctx.translate(0, -this.travelSpeed); // Moves the canvas/camera.
         this.y += this.travelSpeed; // Moves the entity.
     }
     if (this.isMovingLeft) {
         var speed = this.travelSpeed;
-        this.game.origin.x -= speed;
-        this.game.ctx.translate(speed, 0); // Moves the canvas/camera.
         this.x -= this.travelSpeed; // Moves the entity.
     } else if (this.isMovingRight) {
         var speed = this.travelSpeed;
-        this.game.origin.x += speed;
-        this.game.ctx.translate(-speed, 0); // Moves the canvas/camera.
         this.x += this.travelSpeed; // Moves the entity.
     }
     // The boundingBox follows the entity.
     this.boundingBox.x = this.x;
     this.boundingBox.y = this.y;
+
+    this.updateViewport();
+
     if (this.isAttacking) {
         if (this.attackRightAnimation.isDone()) {
             this.attackRightAnimation.elapsedTime = 0
@@ -1235,9 +1237,9 @@ Character.prototype.draw = function (ctx) {
          this.animation = this.standAnimation;
     }
     this.animation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
-    if(this.boxes) {
+    if(this.game.debug) {
         ctx.strokeStyle = "green";
-        ctx.strokeRect(this.boundingBox.x, this.boundingBox.y, 42, 42);
+        ctx.strokeRect(this.boundingBox.x, this.boundingBox.y, this.boundingBox.width, this.boundingBox.height);
         //ctx.strokeStyle = "orange";
         //ctx.strokeRect(this.x, this.y, this.animation.frameWidth*this.scale, this.animation.frameHeight*this.scale); //
         //console.log('BoundingBox: ' + this.boundingBox.x + ',' + this.boundingBox.y); // Debugging.
@@ -1373,6 +1375,7 @@ ASSET_MANAGER.downloadAll(function() {
     console.log("starting up da sheild");
     canvas = document.getElementById("gameWorld");
     ctx = canvas.getContext("2d");
+    ctx.imageSmoothingEnabled = true;
 	
 	// Creates new entity instances
     gameEngine = new GameEngine(ctx, ctx.canvas.width, ctx.canvas.height);
@@ -1458,12 +1461,6 @@ ASSET_MANAGER.downloadAll(function() {
 	
     var centerthingy = new CenterThingy(gameEngine);
 
-    // Initial configuration of entity.
-    character.boundingBox.offsetX = 0;
-    character.boundingBox.offsetY = 0;
-    character.boundingBox.width = 22;   // Left.
-    character.boundingBox.height = 40;  // Down.
-
 	// Adding the entities
 	gameEngine.addEntity(bg);
 	for(var i = 0; i < torches.length; i++) {
@@ -1499,6 +1496,9 @@ ASSET_MANAGER.downloadAll(function() {
 	
     gameEngine.addEntity(character);
     if (gameEngine.debug) gameEngine.addEntity(centerthingy);
+
+    gameEngine.debug = false;
+    character.updateViewport();
 
 	// Starting up the game
     gameEngine.init();
