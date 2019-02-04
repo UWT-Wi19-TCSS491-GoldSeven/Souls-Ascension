@@ -557,7 +557,7 @@ function collisionDetect(characterX, characterY, width) {
             characterY < targetY + currentScale &&
             characterY > targetY) {
             isColli = true;
-            console.log('Collision position: X:' + targetX + 'Y: ' + targetY);
+           // console.log('Collision position: X:' + targetX + 'Y: ' + targetY);
             return true;
         }
     }  
@@ -571,16 +571,14 @@ const drawHPBar = () => {
     for (var i = 0; i < gameEngine.entities.length - 1; i++) {
         entity = gameEngine.entities[i];
         ctx.strokeStyle = "red";
-        if (entity.maxHealth > 0) {
+        if (entity.maxHealth > 0 && gameEngine.entities[i] instanceof Character != true) {
             ctx.strokeRect(entity.x + 15, entity.y, 50, 3);
             ctx.fillRect(entity.x + 15, entity.y, 50*entity.currentHealth / entity.maxHealth, 3);
         }
     }
-    entity = gameEngine.entities[gameEngine.entities.length - 1];
-    ctx.strokeStyle = "red";
-    
-        ctx.strokeRect(entity.x, entity.y, 40, 3);
-        ctx.fillRect(entity.x, entity.y, 40 * entity.currentHealth / entity.maxHealth, 3);
+    ctx.strokeStyle = "red";    
+    ctx.strokeRect(character.x, character.y, 40, 3);
+    ctx.fillRect(character.x, character.y, 40 * character.currentHealth / character.maxHealth, 3);
 
 }
 
@@ -1273,21 +1271,29 @@ Character.prototype.draw = function (ctx) {
             newX -= currentScale;
             newY -= currentScale;
         default: break;
-    }
-    for (let i = 0; i < gameEngine.entities.length - 1; i++) {        
+    }//SorcererVillain
+    for (let i = 0; i < gameEngine.entities.length - 1; i++) {
+        if (gameEngine.entities[i] instanceof Character == true) continue;
         scaleOf = (gameEngine.entities[i] instanceof Projectile) ? 4 : currentScale - 10;
-
-        if (isCollise(newX + 20, newY - scaleOf + 20, 5 + range, 42 + range, gameEngine.entities[i], scaleOf + range, scaleOf + range)) {            
-            if (this.game.click) {
-                this.game.click = false;
-                gameEngine.entities[i].currentHealth -= 20;
-            } else this.currentHealth -= 10;
-            if (gameEngine.entities[i].currentHealth <= 0 || gameEngine.entities[i].currentHealth == null) {
-                this.currentHealth = Math.min(this.currentHealth + gameEngine.entities[i].health, this.maxHealth);
-                gameEngine.entities.splice(i, 1);
+        let heal = (gameEngine.entities[i] instanceof HealingPotion) ? gameEngine.entities[i].health : 0;
+        if (isCollise(newX + 20, newY - scaleOf + 20, 5 + range, 42 + range, gameEngine.entities[i], scaleOf + range, scaleOf + range)) {
+            
+                if (this.game.click) {
+                    this.game.click = false;
+                    gameEngine.entities[i].currentHealth -= 20;
+                } 
+                //if (gameEngine.entities[i].currentHealth > 0) this.currentHealth -= 5;
+                if (gameEngine.entities[i].currentHealth <= 0 || gameEngine.entities[i].currentHealth == null) {
+                    this.currentHealth = Math.min(this.currentHealth + heal, this.maxHealth);
+                    gameEngine.entities.splice(i, 1);
+                }
+                //if (gameEngine.entities[i] instanceof Projectile != true)
+                    
+                if (gameEngine.entities[i] instanceof Projectile) {
+                    gameEngine.entities.splice(i, 1); this.currentHealth -= 5;
+                } else this.currentHealth -= 10;
             }
-
-        }
+        
         else if (gameEngine.entities[i] instanceof Projectile && collisionDetect(gameEngine.entities[i].x, gameEngine.entities[i].y, currentScale)) {
             gameEngine.entities.splice(i, 1);
         }
