@@ -1375,7 +1375,7 @@ ASSET_MANAGER.downloadAll(function() {
     console.log("starting up da sheild");
     canvas = document.getElementById("viewport");
     ctx = canvas.getContext("2d");
-    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingEnabled = false;
 	
 	// Creates new entity instances
     gameEngine = new GameEngine(ctx, ctx.canvas.width, ctx.canvas.height);
