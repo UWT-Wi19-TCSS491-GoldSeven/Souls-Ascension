@@ -1373,7 +1373,7 @@ ASSET_MANAGER.queueDownload("./img/SkeletonWalkRight.png");
 
 ASSET_MANAGER.downloadAll(function() {
     console.log("starting up da sheild");
-    canvas = document.getElementById("gameWorld");
+    canvas = document.getElementById("viewport");
     ctx = canvas.getContext("2d");
     ctx.imageSmoothingEnabled = true;
 	
