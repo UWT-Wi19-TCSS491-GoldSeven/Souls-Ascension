@@ -564,7 +564,7 @@ function collisionDetect(characterX, characterY, width) {
 }
 /*----------------------------------------------Collision End------------------------------------------------------------------------------------------------ */
 /*----------------------------------------------Health Start------------------------------------------------------------------------------------------------ */
-
+var bug = 0;
 const drawHPBar = () => {
     var entity;
     for (var i = 0; i < gameEngine.entities.length - 1; i++) {
@@ -1280,27 +1280,33 @@ Character.prototype.draw = function (ctx) {
         let heal = (gameEngine.entities[i] instanceof HealingPotion) ? gameEngine.entities[i].health : 0;
         if (isCollise(newX + 20, newY - scaleOf + 20, 5 + range, 42 + range, gameEngine.entities[i], scaleOf + range, scaleOf + range)) {
             
-                if (this.game.click) {
-                    this.game.click = false;
-                    gameEngine.entities[i].currentHealth -= 20;
-                } 
+            if (this.game.click) {
+                this.game.click = false;
+                gameEngine.entities[i].currentHealth -= 20;
+                bug = 0;
+            }
+            if (bug <= 8) {this.currentHealth += 10; bug++;}
+            
                 //if (gameEngine.entities[i].currentHealth > 0) this.currentHealth -= 5;
-                if (gameEngine.entities[i].currentHealth <= 0 || gameEngine.entities[i].currentHealth == null) {
-                    this.currentHealth = Math.min(this.currentHealth + heal, this.maxHealth);
-                    gameEngine.entities.splice(i, 1);
-                }
+            if (gameEngine.entities[i].currentHealth <= 0 || gameEngine.entities[i].currentHealth == null) {
+                this.currentHealth = Math.min(this.currentHealth + heal, this.maxHealth);
+                gameEngine.entities.splice(i, 1);
+            }
                 //if (gameEngine.entities[i] instanceof Projectile != true)
                     
-                if (gameEngine.entities[i] instanceof Projectile) {
-                    gameEngine.entities.splice(i, 1); this.currentHealth -= 5;
-                } else this.currentHealth -= 10;
+            if (gameEngine.entities[i] instanceof Projectile) {
+                gameEngine.entities.splice(i, 1); this.currentHealth -= 5;
+            } else {
+                this.currentHealth -= 10; //console.log('cross by enemy');
             }
+
+        }
         
         else if (gameEngine.entities[i] instanceof Projectile && collisionDetect(gameEngine.entities[i].x, gameEngine.entities[i].y, currentScale)) {
             gameEngine.entities.splice(i, 1);
         }
     }
-    if (this.currentHealth <= 0) {
+    if (this.currentHealth <= 0) {//check here if got bug
         gameEngine.entities.splice(gameEngine.entities.length - 1, 1);
         let text = document.getElementById('gameover');
 		text.style.display = 'inline';
@@ -1316,7 +1322,6 @@ Character.prototype.draw = function (ctx) {
     drawHPBar();
 }
 /*----------------------------------------------Character End---------------------------------------------------------------------------------------------- */
-
 /*----------------------------------------------Debug Stuff Start------------------------------------------------------------------------------------------ */
 function CenterThingy(game) {
     // Displays the center of the canvas/camera.
