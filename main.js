@@ -1508,8 +1508,8 @@ ASSET_MANAGER.downloadAll(function() {
 	}
     
     // Sounds and effects.
-    gameEngine.sounds.set('musicTitle01', new Sound("01_BROKEN_DESTINY.mp3"));
-    gameEngine.sounds.set('musicTitle02', new Sound("02_BATTLE_CRY.mp3"));
+    gameEngine.sounds.set('musicTitle01', new Sound("01_BROKEN_DESTINY.mp3", true));
+    gameEngine.sounds.set('musicTitle02', new Sound("02_BATTLE_CRY.mp3", true));
     gameEngine.sounds.set('characterAttack01', new Sound("Flame Arrow-SoundBible.com-618067908.mp3"));
     gameEngine.sounds.set('characterAttack02', new Sound("Large Fireball-SoundBible.com-301502490.mp3"));
     gameEngine.sounds.get('musicTitle02').play(); // This is the first thing that plays during starting the game.

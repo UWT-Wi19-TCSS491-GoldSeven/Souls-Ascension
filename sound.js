@@ -10,7 +10,7 @@ function Sound(sourceFileName, repeat) {
     this.source = (sourceFileName) ? "sounds\\" + sourceFileName : null;
     this.audio = (this.source) ? new Audio(this.source) : null;
     if (repeat) {
-        this.repeat = repeat;
+        this.audio.loop = repeat;
     }
 }
 
