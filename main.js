@@ -1383,7 +1383,6 @@ ASSET_MANAGER.queueDownload("./img/wizardWalkLeft.png");
 ASSET_MANAGER.queueDownload("./img/wizardWalkRight.png");
 ASSET_MANAGER.queueDownload("./img/SkeletonWalkLeft.png");
 ASSET_MANAGER.queueDownload("./img/SkeletonWalkRight.png");
-//ASSET_MANAGER.queueDownload("./sounds/01_BROKEN_DESTINY.mp3");
 
 ASSET_MANAGER.downloadAll(function() {
     console.log("starting up da sheild");

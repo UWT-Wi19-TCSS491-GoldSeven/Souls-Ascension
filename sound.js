@@ -9,7 +9,9 @@
 function Sound(sourceFileName, repeat) {
     this.source = (sourceFileName) ? "sounds\\" + sourceFileName : null;
     this.audio = (this.source) ? new Audio(this.source) : null;
-    this.repeat = (repeat) ? true : false;
+    if (repeat) {
+        this.repeat = repeat;
+    }
 }
 
 Sound.prototype.play = function() {
