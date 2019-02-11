@@ -30,6 +30,7 @@ Timer.prototype.tick = function () {
 
 function GameEngine(ctx, width, height) {
     this.entities = [];
+    this.sounds = new Map();
     this.showOutlines = false;
     this.ctx = ctx;
     this.click = null;
@@ -78,6 +79,7 @@ GameEngine.prototype.startInput = function () {
         switch(e.keyCode) {
             case 49: // 1
                 that.one = true;
+                that.sounds.get('characterAttack02').replay();
                 break;
 			case 32: // ' '
                 that.space = true;
@@ -141,9 +143,9 @@ GameEngine.prototype.startInput = function () {
 
     this.ctx.canvas.addEventListener("click", function(e) {
         that.click = getXandY(e);
+        that.sounds.get('characterAttack01').replay();
         if (that.debug) console.log("Clicked at " + e.clientX + "," + e.clientY); // The coordinates on the browser screen.
     }, false);
-
     console.log('Input started');
 }
 
