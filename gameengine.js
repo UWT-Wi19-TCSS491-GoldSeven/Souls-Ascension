@@ -30,7 +30,7 @@ Timer.prototype.tick = function () {
 
 function GameEngine(ctx, width, height) {
     this.entities = [];
-    this.sounds = new Map();
+    this.sounds = new Map(); // The key name can be different than the audio file name.
     this.showOutlines = false;
     this.ctx = ctx;
     this.click = null;
