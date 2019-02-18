@@ -13,13 +13,15 @@
 <p id="gameover" class="gameOver">Game Over</p>
 <div class="row">
     <div class="column">
-        <canvas id="viewport" tabindex="1" width="800" height="800"></canvas>
-        <script>
-            window.onload = function () {
-                document.getElementById('viewport').focus();
-            };
-
-        </script>
+        <div class="row">
+            <canvas id="viewport" tabindex="1" width="800" height="800"></canvas>
+            <script>
+                window.onload = function () {
+                    document.getElementById('viewport').focus();
+                };
+            </script>
+        </div>
+        <div class="row"><button id="start-game" onclick="startGame()">Press to Play</button></div>
     </div>
     <div class="column">
         <div class="row">

@@ -1356,171 +1356,173 @@ let canvas;
 var ctx;
 var ASSET_MANAGER = new AssetManager();
 
-ASSET_MANAGER.queueDownload('./img/spritesheet.png');
-ASSET_MANAGER.queueDownload("./img/DungeonBackgroundSpriteSheet.png");
-ASSET_MANAGER.queueDownload("./img/spritesheet.png");
-ASSET_MANAGER.queueDownload("./img/characterIdleAnimation.png");
-ASSET_MANAGER.queueDownload("./img/CharacterForwardRun.png");
-ASSET_MANAGER.queueDownload("./img/characterBackwardRun.png");
-ASSET_MANAGER.queueDownload("./img/characterRightAnimation.png");
-ASSET_MANAGER.queueDownload("./img/characterLeftAnimation.png");
-ASSET_MANAGER.queueDownload("./img/characterRightAttack.png");
-ASSET_MANAGER.queueDownload("./img/characterLeftAttack.png");
-ASSET_MANAGER.queueDownload("./img/characterUpAttack.png");
-ASSET_MANAGER.queueDownload("./img/characterDownAttack.png");
-ASSET_MANAGER.queueDownload("./img/characterWhirlWindAttackAnimation.png");
-ASSET_MANAGER.queueDownload("./img/sorcererVillain.png");
-ASSET_MANAGER.queueDownload("./img/torchAnimation.png");
-ASSET_MANAGER.queueDownload("./img/SilverKeyAnimation.png");
-ASSET_MANAGER.queueDownload("./img/GoldKeyAnimation.png");
-ASSET_MANAGER.queueDownload("./img/HealthPotionAnimation.png");
-ASSET_MANAGER.queueDownload("./img/SoulJarAnimation.png");
-ASSET_MANAGER.queueDownload("./img/SlimeBehemothWalkingLeft.png");
-ASSET_MANAGER.queueDownload("./img/SlimeBehemothWalkingRight.png");
-ASSET_MANAGER.queueDownload("./img/SlimeWalkLeft.png");
-ASSET_MANAGER.queueDownload("./img/SlimeWalkRight.png");
-ASSET_MANAGER.queueDownload("./img/wizardWalkLeft.png");
-ASSET_MANAGER.queueDownload("./img/wizardWalkRight.png");
-ASSET_MANAGER.queueDownload("./img/SkeletonWalkLeft.png");
-ASSET_MANAGER.queueDownload("./img/SkeletonWalkRight.png");
+function startGame() {
+	ASSET_MANAGER.queueDownload('./img/spritesheet.png');
+	ASSET_MANAGER.queueDownload("./img/DungeonBackgroundSpriteSheet.png");
+	ASSET_MANAGER.queueDownload("./img/spritesheet.png");
+	ASSET_MANAGER.queueDownload("./img/characterIdleAnimation.png");
+	ASSET_MANAGER.queueDownload("./img/CharacterForwardRun.png");
+	ASSET_MANAGER.queueDownload("./img/characterBackwardRun.png");
+	ASSET_MANAGER.queueDownload("./img/characterRightAnimation.png");
+	ASSET_MANAGER.queueDownload("./img/characterLeftAnimation.png");
+	ASSET_MANAGER.queueDownload("./img/characterRightAttack.png");
+	ASSET_MANAGER.queueDownload("./img/characterLeftAttack.png");
+	ASSET_MANAGER.queueDownload("./img/characterUpAttack.png");
+	ASSET_MANAGER.queueDownload("./img/characterDownAttack.png");
+	ASSET_MANAGER.queueDownload("./img/characterWhirlWindAttackAnimation.png");
+	ASSET_MANAGER.queueDownload("./img/sorcererVillain.png");
+	ASSET_MANAGER.queueDownload("./img/torchAnimation.png");
+	ASSET_MANAGER.queueDownload("./img/SilverKeyAnimation.png");
+	ASSET_MANAGER.queueDownload("./img/GoldKeyAnimation.png");
+	ASSET_MANAGER.queueDownload("./img/HealthPotionAnimation.png");
+	ASSET_MANAGER.queueDownload("./img/SoulJarAnimation.png");
+	ASSET_MANAGER.queueDownload("./img/SlimeBehemothWalkingLeft.png");
+	ASSET_MANAGER.queueDownload("./img/SlimeBehemothWalkingRight.png");
+	ASSET_MANAGER.queueDownload("./img/SlimeWalkLeft.png");
+	ASSET_MANAGER.queueDownload("./img/SlimeWalkRight.png");
+	ASSET_MANAGER.queueDownload("./img/wizardWalkLeft.png");
+	ASSET_MANAGER.queueDownload("./img/wizardWalkRight.png");
+	ASSET_MANAGER.queueDownload("./img/SkeletonWalkLeft.png");
+	ASSET_MANAGER.queueDownload("./img/SkeletonWalkRight.png");
 
-ASSET_MANAGER.downloadAll(function() {
-    console.log("starting up da sheild");
-    canvas = document.getElementById("viewport");
-    ctx = canvas.getContext("2d");
-    ctx.imageSmoothingEnabled = false;
-	
-	// Creates new entity instances
-    gameEngine = new GameEngine(ctx, ctx.canvas.width, ctx.canvas.height);
-    var bg = new Background(gameEngine, ASSET_MANAGER.getAsset("./img/DungeonBackgroundSpriteSheet.png"));
-	var torches = [];
-	var sKeys = [];
-	var gKeys = [];
-	var hPotions = [];
-	var sJars = [];
-	var slimeBehemoths = [];
-	var slimeEnemies = [];
-	var skeletons = [];
-	var wizards = [];
-	var sorcererVillains = [];
-	// generates an array that will generate each entity in the right spots.
-	for (var i = 0; i < slimeDungeonLevelOneEntities.length; i++) {
-		if (slimeDungeonLevelOneEntities[i] == 1) {
-			var torchX = (i % 88) * 48;
-			var torchY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
-			var torch = new Torch(gameEngine, torchX, torchY);
-			torches.push(torch);
-		}
-		if (slimeDungeonLevelOneEntities[i] == 2) {
-			var sKeyX = (i % 88) * 48;
-			var sKeyY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
-			var sKey = new SilverKey(gameEngine, sKeyX, sKeyY);
-			sKeys.push(sKey);
-		}
-		if (slimeDungeonLevelOneEntities[i] == 3) {
-			var gKeyX = (i % 88) * 48;
-			var gKeyY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
-			var gKey = new GoldKey(gameEngine, gKeyX, gKeyY);
-			gKeys.push(gKey);
-		}
-		if (slimeDungeonLevelOneEntities[i] == 4) {
-			var hPotionX = (i % 88) * 48;
-			var hPotionY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
-			var hPotion = new HealingPotion(gameEngine, hPotionX, hPotionY);
-			hPotions.push(hPotion);
-		}
-		if (slimeDungeonLevelOneEntities[i] == 5) {
-			var sJarX = (i % 88) * 48;
-			var sJarY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
-			var sJar = new SoulJar(gameEngine, sJarX, sJarY);
-			sJars.push(sJar);
-		}
-		if (slimeDungeonLevelOneEntities[i] == 11) {
-			var svX = (i % 88) * 48;
-			var svY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
-			var sv = new SorcererVillain(gameEngine, svX, svY);
-			sorcererVillains.push(sv);
-		}
-		if (slimeDungeonLevelOneEntities[i] == 12) {
-			var seX = (i % 88) * 48;
-			var seY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
-			var se = new SlimeEnemy(gameEngine, seX, seY);
-			slimeEnemies.push(se);
-		}
-		if (slimeDungeonLevelOneEntities[i] == 13) {
-			var sbX = (i % 88) * 48;
-			var sbY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
-			var sb = new SlimeBehemoth(gameEngine, sbX, sbY);
-			slimeBehemoths.push(sb);
-		}
-		if (slimeDungeonLevelOneEntities[i] == 14) {
-			var wizardX = (i % 88) * 48;
-			var wizardY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
-			var wizard = new Wizard(gameEngine, wizardX, wizardY);
-			wizards.push(wizard);
-		}
-		if (slimeDungeonLevelOneEntities[i] == 15) {
-			var skeletonX = (i % 88) * 48;
-			var skeletonY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
-			var skeleton = new Skeleton(gameEngine, skeletonX, skeletonY);
-			skeletons.push(skeleton);
-		}
-		if (slimeDungeonLevelOneEntities[i] == 10) { // for the player character
-			var characterStartingX = (i % 88) * 48;
-			var characterStartingY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
-		}
-	}
-	character = new Character(gameEngine);
-	
-    var centerthingy = new CenterThingy(gameEngine);
+	ASSET_MANAGER.downloadAll(function() {
+		console.log("starting up da sheild");
+		canvas = document.getElementById("viewport");
+		ctx = canvas.getContext("2d");
+		ctx.imageSmoothingEnabled = false;
 
-	// Adding the entities
-	gameEngine.addEntity(bg);
-	for(var i = 0; i < torches.length; i++) {
-		gameEngine.addEntity(torches[i]);
-	}
-	for(var i = 0; i < sKeys.length; i++) {
-		gameEngine.addEntity(sKeys[i]);
-	}
-	for(var i = 0; i < gKeys.length; i++) {
-		gameEngine.addEntity(gKeys[i]);
-	}
-	for(var i = 0; i < hPotions.length; i++) {
-		gameEngine.addEntity(hPotions[i]);
-	}
-	for(var i = 0; i < sJars.length; i++) {
-		gameEngine.addEntity(sJars[i]);
-	}
-	for(var i = 0; i < slimeEnemies.length; i++) {
-		gameEngine.addEntity(slimeEnemies[i]);
-	}
-	for(var i = 0; i < slimeBehemoths.length; i++) {
-		gameEngine.addEntity(slimeBehemoths[i]);
-	}
-	for(var i = 0; i < wizards.length; i++) {
-		gameEngine.addEntity(wizards[i]);
-	}
-	for(var i = 0; i < skeletons.length; i++) {
-		gameEngine.addEntity(skeletons[i]);
-	}
-	for(var i = 0; i < sorcererVillains.length; i++) {
-		gameEngine.addEntity(sorcererVillains[i]);
-	}
-    
-    // Sounds and effects.
-    gameEngine.sounds.set('musicTitle01', new Sound("01_BROKEN_DESTINY.mp3", true));
-    gameEngine.sounds.set('musicTitle02', new Sound("02_BATTLE_CRY.mp3", true));
-    gameEngine.sounds.set('characterAttack01', new Sound("Flame Arrow-SoundBible.com-618067908.mp3"));
-    gameEngine.sounds.set('characterAttack02', new Sound("Large Fireball-SoundBible.com-301502490.mp3"));
-    gameEngine.sounds.get('musicTitle02').play(); // This is the first thing that plays during starting the game.
+		// Creates new entity instances
+		gameEngine = new GameEngine(ctx, ctx.canvas.width, ctx.canvas.height);
+		var bg = new Background(gameEngine, ASSET_MANAGER.getAsset("./img/DungeonBackgroundSpriteSheet.png"));
+		var torches = [];
+		var sKeys = [];
+		var gKeys = [];
+		var hPotions = [];
+		var sJars = [];
+		var slimeBehemoths = [];
+		var slimeEnemies = [];
+		var skeletons = [];
+		var wizards = [];
+		var sorcererVillains = [];
+		// generates an array that will generate each entity in the right spots.
+		for (var i = 0; i < slimeDungeonLevelOneEntities.length; i++) {
+			if (slimeDungeonLevelOneEntities[i] == 1) {
+				var torchX = (i % 88) * 48;
+				var torchY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
+				var torch = new Torch(gameEngine, torchX, torchY);
+				torches.push(torch);
+			}
+			if (slimeDungeonLevelOneEntities[i] == 2) {
+				var sKeyX = (i % 88) * 48;
+				var sKeyY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
+				var sKey = new SilverKey(gameEngine, sKeyX, sKeyY);
+				sKeys.push(sKey);
+			}
+			if (slimeDungeonLevelOneEntities[i] == 3) {
+				var gKeyX = (i % 88) * 48;
+				var gKeyY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
+				var gKey = new GoldKey(gameEngine, gKeyX, gKeyY);
+				gKeys.push(gKey);
+			}
+			if (slimeDungeonLevelOneEntities[i] == 4) {
+				var hPotionX = (i % 88) * 48;
+				var hPotionY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
+				var hPotion = new HealingPotion(gameEngine, hPotionX, hPotionY);
+				hPotions.push(hPotion);
+			}
+			if (slimeDungeonLevelOneEntities[i] == 5) {
+				var sJarX = (i % 88) * 48;
+				var sJarY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
+				var sJar = new SoulJar(gameEngine, sJarX, sJarY);
+				sJars.push(sJar);
+			}
+			if (slimeDungeonLevelOneEntities[i] == 11) {
+				var svX = (i % 88) * 48;
+				var svY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
+				var sv = new SorcererVillain(gameEngine, svX, svY);
+				sorcererVillains.push(sv);
+			}
+			if (slimeDungeonLevelOneEntities[i] == 12) {
+				var seX = (i % 88) * 48;
+				var seY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
+				var se = new SlimeEnemy(gameEngine, seX, seY);
+				slimeEnemies.push(se);
+			}
+			if (slimeDungeonLevelOneEntities[i] == 13) {
+				var sbX = (i % 88) * 48;
+				var sbY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
+				var sb = new SlimeBehemoth(gameEngine, sbX, sbY);
+				slimeBehemoths.push(sb);
+			}
+			if (slimeDungeonLevelOneEntities[i] == 14) {
+				var wizardX = (i % 88) * 48;
+				var wizardY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
+				var wizard = new Wizard(gameEngine, wizardX, wizardY);
+				wizards.push(wizard);
+			}
+			if (slimeDungeonLevelOneEntities[i] == 15) {
+				var skeletonX = (i % 88) * 48;
+				var skeletonY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
+				var skeleton = new Skeleton(gameEngine, skeletonX, skeletonY);
+				skeletons.push(skeleton);
+			}
+			if (slimeDungeonLevelOneEntities[i] == 10) { // for the player character
+				var characterStartingX = (i % 88) * 48;
+				var characterStartingY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
+			}
+		}
+		character = new Character(gameEngine);
 
-    gameEngine.addEntity(character);
-    if (gameEngine.debug) gameEngine.addEntity(centerthingy);
+		var centerthingy = new CenterThingy(gameEngine);
 
-    gameEngine.debug = false;
-    character.updateViewport();
+		// Adding the entities
+		gameEngine.addEntity(bg);
+		for(var i = 0; i < torches.length; i++) {
+			gameEngine.addEntity(torches[i]);
+		}
+		for(var i = 0; i < sKeys.length; i++) {
+			gameEngine.addEntity(sKeys[i]);
+		}
+		for(var i = 0; i < gKeys.length; i++) {
+			gameEngine.addEntity(gKeys[i]);
+		}
+		for(var i = 0; i < hPotions.length; i++) {
+			gameEngine.addEntity(hPotions[i]);
+		}
+		for(var i = 0; i < sJars.length; i++) {
+			gameEngine.addEntity(sJars[i]);
+		}
+		for(var i = 0; i < slimeEnemies.length; i++) {
+			gameEngine.addEntity(slimeEnemies[i]);
+		}
+		for(var i = 0; i < slimeBehemoths.length; i++) {
+			gameEngine.addEntity(slimeBehemoths[i]);
+		}
+		for(var i = 0; i < wizards.length; i++) {
+			gameEngine.addEntity(wizards[i]);
+		}
+		for(var i = 0; i < skeletons.length; i++) {
+			gameEngine.addEntity(skeletons[i]);
+		}
+		for(var i = 0; i < sorcererVillains.length; i++) {
+			gameEngine.addEntity(sorcererVillains[i]);
+		}
 
-	// Starting up the game
-    gameEngine.init();
-    gameEngine.start(); 
-});
+		// Sounds and effects.
+		gameEngine.sounds.set('musicTitle01', new Sound("01_BROKEN_DESTINY.mp3", true));
+		gameEngine.sounds.set('musicTitle02', new Sound("02_BATTLE_CRY.mp3", true));
+		gameEngine.sounds.set('characterAttack01', new Sound("Flame Arrow-SoundBible.com-618067908.mp3"));
+		gameEngine.sounds.set('characterAttack02', new Sound("Large Fireball-SoundBible.com-301502490.mp3"));
+		gameEngine.sounds.get('musicTitle02').play(); // This is the first thing that plays during starting the game.
+
+		gameEngine.addEntity(character);
+		if (gameEngine.debug) gameEngine.addEntity(centerthingy);
+
+		gameEngine.debug = false;
+		character.updateViewport();
+
+		// Starting up the game
+		gameEngine.init();
+		gameEngine.start();
+	});
+}
