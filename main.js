@@ -545,6 +545,7 @@ function collisionDetect(characterX, characterY, width) {
             break;
         }
     }
+    if (typeof leafs[j] === 'undefined') return true;
     //console.log('Block Area: ' + j + 'Total target: ' + leafs[j].walls.length);
     //console.log('x-Area:' + leafs[j].x + '---' + (leafs[j].x + leafs[j].w) + 'y-Area: ' + leafs[j].y + '---' + (leafs[j].y + leafs[j].h));
     //console.log('Character position X:' + characterX + '-- Y ' + characterY);
@@ -977,7 +978,7 @@ function SorcererVillain(game, x, y) {
     this.maxHealth = 1000;
     this.currentHealth = 1000;
     this.killable = true;
-    Entity.call(this, game, x, y); // where it starts
+    Entity.call(this, game, 350, 100); // where it starts
 
 }
 
@@ -987,14 +988,17 @@ SorcererVillain.prototype.constructor = SorcererVillain;
 SorcererVillain.prototype.update = function () {
     if (this.cooldown > 0) this.cooldown -= gameEngine.clockTick;
     if (this.special > 0) this.cooldown -= gameEngine.clockTick;
-
+    let canMove = false;
     let xOrigC = (character.x + character.animation.frameWidth / 2);
     let yOrigC = (character.y + character.animation.frameHeight / 2);
     let xOrigS = (this.x + this.animation.frameWidth / 2)
     let yOrigS = (this.y + this.animation.frameHeight / 2)
     let xDiff = xOrigC - xOrigS;
     let yDiff = yOrigC - yOrigS;
-    let distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+    let distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);   
+    let origX = this.x;
+    let origY = this.y;
+
 
     if (distance < this.fleeRange) {
         let velX = (this.fleeSpeed * xDiff) / distance;
@@ -1011,11 +1015,16 @@ SorcererVillain.prototype.update = function () {
     if (this.startFollowRange <= distance && distance <= this.stopFollowRange) {
         let velX = (this.moveSpeed * xDiff) / distance;
         let velY = (this.moveSpeed * yDiff) / distance;
-
-        this.x += gameEngine.clockTick * velX;
-        this.y += gameEngine.clockTick * velY;
+        
+            this.x += gameEngine.clockTick * velX;
+            this.y += gameEngine.clockTick * velY;
+        
     }
-
+    if (!collisionDetect(this.x + 30, 90 + this.y, 20)) { canMove = true }
+    if (!canMove) {
+        this.x = origX;
+        this.y = origY;
+    }
 	Entity.prototype.update.call(this);
 }
 
@@ -1049,6 +1058,8 @@ SorcererVillain.prototype.draw = function () {
     if (this.game.debug) {
         ctx.strokeStyle = "green";
         ctx.strokeRect(this.x, this.y, 100, 100);
+        ctx.strokeStyle = "yellow";
+        ctx.strokeRect(this.x + 30, this.y + 30, 30, 100);
     }
     Entity.prototype.draw.call(this);
 }
@@ -1274,13 +1285,13 @@ Character.prototype.draw = function (ctx) {
             newY -= currentScale;
         default: break;
     }//SorcererVillain
-    for (let i = 0; i < gameEngine.entities.length - 1; i++) {
-        if (gameEngine.entities[i] instanceof Character == true) continue;
+    for (let i = 0; i < gameEngine.entities.length; i++) {
+        if (gameEngine.entities[i] instanceof Character == true || typeof gameEngine.entities[i] === 'undefined') continue;
         scaleOf = (gameEngine.entities[i] instanceof Projectile) ? 4 : currentScale - 10;
         let heal = (gameEngine.entities[i] instanceof HealingPotion) ? gameEngine.entities[i].health : 0;
         if (isCollise(newX + 20, newY - scaleOf + 20, 5 + range, 42 + range, gameEngine.entities[i], scaleOf + range, scaleOf + range)) {
-            
-            if (this.game.click) {
+
+            if (this.game.click || this.game.isWhirlwinding || this.game.isAttacking) {
                 this.game.click = false;
                 gameEngine.entities[i].currentHealth -= 20;
                 bug = 0;
@@ -1302,7 +1313,7 @@ Character.prototype.draw = function (ctx) {
 
         }
         
-        else if (gameEngine.entities[i] instanceof Projectile && collisionDetect(gameEngine.entities[i].x, gameEngine.entities[i].y, currentScale)) {
+        else if (gameEngine.entities[i] instanceof Projectile == true && collisionDetect(gameEngine.entities[i].x, gameEngine.entities[i].y, currentScale)) {
             gameEngine.entities.splice(i, 1);
         }
     }
