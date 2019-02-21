@@ -362,6 +362,7 @@ CharacterInfo.prototype.draw = function () {
     if (character.currentSoul > character.levelSoul) {
         character.currentSoul = character.currentSoul - character.levelSoul;
         character.soul++;
+        character.levelSoul *= character.soul; 
     }
 };
 /*----------------------------------------------End character information--------------------------------------------------------------------------------- */
@@ -729,7 +730,8 @@ HealingPotion.prototype.update = function () {
 }
 HealingPotion.prototype.draw = function () {
     if (this.x >= character.x - 280)
-	this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+        this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    if (!this.killed) this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
     Entity.prototype.draw.call(this);
 };
 /*----------------------------------------------Healing Potion end------------------------------------------------------------------------------------------- */
@@ -762,7 +764,8 @@ SoulJar.prototype.update = function () {
 }
 SoulJar.prototype.draw = function () {
     if (this.x >= character.x - 280)
-	this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+        this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    if (!this.killed) this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
     Entity.prototype.draw.call(this);
 };
 
@@ -1371,12 +1374,12 @@ Character.prototype.draw = function (ctx) {
         default: break;
     }//SorcererVillain
     if (new Date().getTime() - damgeST.time > 500) damgeST.damged = 0; //hide
-    for (let i = 0; i < gameEngine.entities.length; i++) {//|| typeof gameEngine.entities[i] === 'undefined'
-        if (gameEngine.entities[i] instanceof Character == true ) continue;
-        scaleOf = (gameEngine.entities[i] instanceof Projectile) ? 4 : currentScale - 10;
-        let heal = (gameEngine.entities[i] instanceof HealingPotion) ? gameEngine.entities[i].health : 0;
-        let jar = (gameEngine.entities[i] instanceof SoulJar) ? gameEngine.entities[i].jar : 0;
+    for (let i = 0; i < gameEngine.entities.length; i++ ) {//
+        if (gameEngine.entities[i] instanceof Character == true || typeof gameEngine.entities[i] === 'undefined') continue;
+        scaleOf = (gameEngine.entities[i] instanceof Projectile) ? 4 : currentScale - 10;        
         if (isCollise(newX + 20, newY - scaleOf + 20, 5 + range, 42 + range, gameEngine.entities[i], scaleOf + range, scaleOf + range)) {
+            let heal = (gameEngine.entities[i] instanceof HealingPotion) ? gameEngine.entities[i].health : 0;
+            let jar = (gameEngine.entities[i] instanceof SoulJar) ? gameEngine.entities[i].jar : 0;
             let damge = this.baseDamge + this.baseDamge * this.soul;
             if (this.game.click || this.game.isWhirlwinding || this.game.isAttacking) {
                 this.game.click = false;
@@ -1391,8 +1394,7 @@ Character.prototype.draw = function (ctx) {
             
                 //if (gameEngine.entities[i].currentHealth > 0) this.currentHealth -= 5;
             if ((gameEngine.entities[i].currentHealth <= 0 || gameEngine.entities[i].currentHealth == null)
-                    && gameEngine.entities[i].killed == null) {
-                this.currentHealth = Math.min(this.currentHealth + heal, this.maxHealth);                
+                    && gameEngine.entities[i].killed == null) {                              
                 gameEngine.entities.splice(i, 1);
             }
                 //if (gameEngine.entities[i] instanceof Projectile != true)
@@ -1403,7 +1405,7 @@ Character.prototype.draw = function (ctx) {
                 this.currentHealth -= 10; //console.log('cross by enemy');
             }
             this.currentSoul += jar;
-
+            this.currentHealth = Math.min(this.currentHealth + heal, this.maxHealth);  
             if (jar > 0 || heal > 0) {
                 gameEngine.entities[i].killed = true;
                 let xOrigC = (character.x + character.animation.frameWidth / 2 - 380 + 100);
@@ -1415,6 +1417,8 @@ Character.prototype.draw = function (ctx) {
                 let distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
                 gameEngine.entities[i].toX = (10 * xDiff) / distance;
                 gameEngine.entities[i].toY = (10 * yDiff) / distance;
+                gameEngine.entities[i].x += (50 * xDiff) / distance;
+                gameEngine.entities[i].y += (50 * yDiff) / distance;
             }
         }
         
