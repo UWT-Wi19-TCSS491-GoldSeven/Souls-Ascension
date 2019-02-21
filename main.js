@@ -309,6 +309,63 @@ var slimeDungeonLevelOneEntities = new Array(
 	};
 /*----------------------------------------------Dungeon Array for level 1 End-------------------------------------------------------------------------------- */	
 
+
+function damgeStat(game) {
+    this.x = 0;
+    this.y = 0;
+    this.damged = 0;
+    this.time = new Date().getTime();
+}
+damgeStat.prototype = new Entity();
+damgeStat.prototype.constructor = damgeStat;
+damgeStat.prototype.update = function () {
+    Entity.prototype.update.call(this);
+}
+damgeStat.prototype.draw = function () {
+    if (this.damged !== 0) {
+        ctx.fillStyle = "red";
+        ctx.font = "30px Arial";
+        ctx.fillText(" - " + this.damged, this.x, this.y);
+    }
+}
+/*----------------------------------------------Character Information-------------------------------------------------------------------------------- */
+function CharacterInfo(game, image) {
+    this.x = 0;
+    this.y = 0;
+    this.w = 512;
+    this.h = 512;
+    this.image = image;
+    this.game = game;
+    this.ctx = game.ctx;
+};
+
+CharacterInfo.prototype = new Entity();
+CharacterInfo.prototype.constructor = CharacterInfo;
+CharacterInfo.prototype.update = function () { }
+CharacterInfo.prototype.draw = function () {
+    var x = character.x - 380;
+    var y = character.y - 380;
+    //var gradient = this.ctx.createLinearGradient(0, 0, 100, 0);
+    //gradient.addColorStop("0", " magenta");
+    //gradient.addColorStop("0.5", "blue");
+    //gradient.addColorStop("1.0", "white");
+    // Fill with gradient
+    ctx.drawImage(this.image, x, y, 100, 100);
+    ctx.save();
+    ctx.fillStyle = "#0F0";
+    ctx.fillText("Level " + character.level + ' / Soul level ' + character.soul, x + 100, y + 60);
+    ctx.fillStyle = "#0FF";
+    ctx.fillText("EXP " + character.currentExp + '/' + character.levelExp, x + 100, y + 70);
+    ctx.fillStyle = "#0CF";
+    ctx.fillText("Soul " + character.currentSoul + '/' + character.levelSoul, x + 100, y + 80);
+    ctx.restore();
+    if (character.currentSoul > character.levelSoul) {
+        character.currentSoul = character.currentSoul - character.levelSoul;
+        character.soul++;
+    }
+};
+/*----------------------------------------------End character information--------------------------------------------------------------------------------- */
+
 /*----------------------------------------------Background for level 1 Start--------------------------------------------------------------------------------- */
 var currentScale = 48; // number of pixels
 var currentWTiles = 88; // number of tiles width wise on the map
@@ -653,6 +710,10 @@ function HealingPotion(game, x, y) {
     this.animation = this.sparkleAnimation;   
     this.killable = true;
     this.health = 100;
+    this.toX = 0;
+    this.toY = 0;
+    this.killed = false;
+    this.life = 2;
 	Entity.call(this, game, x, y);// where it starts
 }
 
@@ -660,9 +721,14 @@ HealingPotion.prototype = new Entity();
 HealingPotion.prototype.constructor = HealingPotion;
 
 HealingPotion.prototype.update = function () {
+    this.x += this.toX;
+    this.y += this.toY;
+    if (this.killed) this.life -= gameEngine.clockTick;
+    if (this.life <= 0) this.removeFromWorld = true;
 	Entity.prototype.update.call(this);
 }
 HealingPotion.prototype.draw = function () {
+    if (this.x >= character.x - 280)
 	this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
     Entity.prototype.draw.call(this);
 };
@@ -675,19 +741,31 @@ function SoulJar(game, x, y) {
     this.animation = this.sparkleAnimation;
     this.killable = true;
     this.jar = 100;
-	Entity.call(this, game, x, y);// where it starts
+    this.toX = 0;
+    this.toY = 0;
+    this.killed = false;
+    this.life = 2;
+    Entity.call(this, game, x, y);// where it starts
+
+    
 }
 
 SoulJar.prototype = new Entity();
 SoulJar.prototype.constructor = SoulJar;
 
 SoulJar.prototype.update = function () {
+    this.x += this.toX;
+    this.y += this.toY;
+    if (this.killed) this.life -= gameEngine.clockTick;
+    if (this.life <= 0) { this.removeFromWorld = true; }
 	Entity.prototype.update.call(this);
 }
 SoulJar.prototype.draw = function () {
+    if (this.x >= character.x - 280)
 	this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
     Entity.prototype.draw.call(this);
 };
+
 /*----------------------------------------------Soul Jar end------------------------------------------------------------------------------------------------- */
 
 /*----------------------------------------------SlimeBehemoth Start------------------------------------------------------------------------------------------ */
@@ -978,7 +1056,7 @@ function SorcererVillain(game, x, y) {
     this.maxHealth = 1000;
     this.currentHealth = 1000;
     this.killable = true;
-    Entity.call(this, game, 350, 100); // where it starts
+    Entity.call(this, game, x, y); // where it starts 350, 100
 
 }
 
@@ -1124,10 +1202,17 @@ function Character(game) {                                                      
     this.isMovingDownLeft = false;
     this.isMovingDownRight = false;
     this.radius = 100;
+    this.level = 1;
+    this.soul = 1;
     this.travelSpeed = 2;
     this.killable = true;
-    this.maxHealth = 1000;
+    this.maxHealth = 1000 + 1000*(this.level - 1)*0.2;
     this.currentHealth = 1000;
+    this.currentSoul = 0;
+    this.levelSoul = this.soul * 150;
+    this.baseDamge = 10;
+    this.currentExp = 0;
+    this.levelExp = this.level * 100;
     this.scale = 1; // set to 1 if the sprite dimensions are the exact size that should be rendered.
 	this.boundingBox = new BoundingBox(0, 0, 20, 40, 10);
     //console.log(this); // Debugging.
@@ -1285,22 +1370,29 @@ Character.prototype.draw = function (ctx) {
             newY -= currentScale;
         default: break;
     }//SorcererVillain
-    for (let i = 0; i < gameEngine.entities.length; i++) {
-        if (gameEngine.entities[i] instanceof Character == true || typeof gameEngine.entities[i] === 'undefined') continue;
+    if (new Date().getTime() - damgeST.time > 500) damgeST.damged = 0; //hide
+    for (let i = 0; i < gameEngine.entities.length; i++) {//|| typeof gameEngine.entities[i] === 'undefined'
+        if (gameEngine.entities[i] instanceof Character == true ) continue;
         scaleOf = (gameEngine.entities[i] instanceof Projectile) ? 4 : currentScale - 10;
         let heal = (gameEngine.entities[i] instanceof HealingPotion) ? gameEngine.entities[i].health : 0;
+        let jar = (gameEngine.entities[i] instanceof SoulJar) ? gameEngine.entities[i].jar : 0;
         if (isCollise(newX + 20, newY - scaleOf + 20, 5 + range, 42 + range, gameEngine.entities[i], scaleOf + range, scaleOf + range)) {
-
+            let damge = this.baseDamge + this.baseDamge * this.soul;
             if (this.game.click || this.game.isWhirlwinding || this.game.isAttacking) {
                 this.game.click = false;
-                gameEngine.entities[i].currentHealth -= 20;
+                gameEngine.entities[i].currentHealth -= damge;
+                damgeST.x = gameEngine.entities[i].x;
+                damgeST.y = gameEngine.entities[i].y;
+                damgeST.damged = damge;
+                damgeST.time = new Date().getTime();
                 bug = 0;
             }
             if (bug <= 8) {this.currentHealth += 10; bug++;}
             
                 //if (gameEngine.entities[i].currentHealth > 0) this.currentHealth -= 5;
-            if (gameEngine.entities[i].currentHealth <= 0 || gameEngine.entities[i].currentHealth == null) {
-                this.currentHealth = Math.min(this.currentHealth + heal, this.maxHealth);
+            if ((gameEngine.entities[i].currentHealth <= 0 || gameEngine.entities[i].currentHealth == null)
+                    && gameEngine.entities[i].killed == null) {
+                this.currentHealth = Math.min(this.currentHealth + heal, this.maxHealth);                
                 gameEngine.entities.splice(i, 1);
             }
                 //if (gameEngine.entities[i] instanceof Projectile != true)
@@ -1310,7 +1402,20 @@ Character.prototype.draw = function (ctx) {
             } else {
                 this.currentHealth -= 10; //console.log('cross by enemy');
             }
+            this.currentSoul += jar;
 
+            if (jar > 0 || heal > 0) {
+                gameEngine.entities[i].killed = true;
+                let xOrigC = (character.x + character.animation.frameWidth / 2 - 380 + 100);
+                let yOrigC = (character.y + character.animation.frameHeight / 2 - 380 + 60);
+                let xOrigS = (gameEngine.entities[i].x)
+                let yOrigS = (gameEngine.entities[i].y)
+                let xDiff = xOrigC - xOrigS;
+                let yDiff = yOrigC - yOrigS;
+                let distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+                gameEngine.entities[i].toX = (10 * xDiff) / distance;
+                gameEngine.entities[i].toY = (10 * yDiff) / distance;
+            }
         }
         
         else if (gameEngine.entities[i] instanceof Projectile == true && collisionDetect(gameEngine.entities[i].x, gameEngine.entities[i].y, currentScale)) {
@@ -1333,6 +1438,7 @@ Character.prototype.draw = function (ctx) {
     drawHPBar();
 }
 /*----------------------------------------------Character End---------------------------------------------------------------------------------------------- */
+
 /*----------------------------------------------Debug Stuff Start------------------------------------------------------------------------------------------ */
 function CenterThingy(game) {
     // Displays the center of the canvas/camera.
@@ -1352,6 +1458,7 @@ CenterThingy.prototype.draw = function(ctx) {
 /*----------------------------------------------Main Code Start-------------------------------------------------------------------------------------------- */
 // the "main" code begins here
 var gameEngine;
+var damgeST;
 let character;
 let sorcererVillain;
 let slimeBehemoth;
@@ -1395,7 +1502,7 @@ function startGame() {
 	ASSET_MANAGER.queueDownload("./img/wizardWalkRight.png");
 	ASSET_MANAGER.queueDownload("./img/SkeletonWalkLeft.png");
 	ASSET_MANAGER.queueDownload("./img/SkeletonWalkRight.png");
-
+    ASSET_MANAGER.queueDownload("./img/characterInfo.png");
 	ASSET_MANAGER.downloadAll(function() {
 		console.log("starting up da sheild");
 		canvas = document.getElementById("viewport");
@@ -1404,7 +1511,9 @@ function startGame() {
 
 		// Creates new entity instances
 		gameEngine = new GameEngine(ctx, ctx.canvas.width, ctx.canvas.height);
-		var bg = new Background(gameEngine, ASSET_MANAGER.getAsset("./img/DungeonBackgroundSpriteSheet.png"));
+        var bg = new Background(gameEngine, ASSET_MANAGER.getAsset("./img/DungeonBackgroundSpriteSheet.png"));
+        var chInfo = new CharacterInfo(gameEngine, ASSET_MANAGER.getAsset("./img/characterInfo.png"));
+        damgeST = new damgeStat(gameEngine);
 		var torches = [];
 		var sKeys = [];
 		var gKeys = [];
@@ -1487,7 +1596,9 @@ function startGame() {
 		var centerthingy = new CenterThingy(gameEngine);
 
 		// Adding the entities
-		gameEngine.addEntity(bg);
+        gameEngine.addEntity(bg);
+        gameEngine.addEntity(chInfo);
+        gameEngine.addEntity(damgeST);
 		for(var i = 0; i < torches.length; i++) {
 			gameEngine.addEntity(torches[i]);
 		}
