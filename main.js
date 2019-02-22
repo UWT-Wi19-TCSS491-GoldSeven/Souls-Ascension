@@ -314,7 +314,9 @@ function damgeStat(game) {
     this.x = 0;
     this.y = 0;
     this.damged = 0;
+    this.exp = 0;
     this.time = new Date().getTime();
+
 }
 damgeStat.prototype = new Entity();
 damgeStat.prototype.constructor = damgeStat;
@@ -326,6 +328,11 @@ damgeStat.prototype.draw = function () {
         ctx.fillStyle = "red";
         ctx.font = "30px Arial";
         ctx.fillText(" - " + this.damged, this.x, this.y);
+    }
+    if (this.exp !== 0) {
+        ctx.fillStyle = "blue";
+        ctx.font = "30px Arial";
+        ctx.fillText(" + " + this.exp + 'Exp', this.x + 10, this.y + 10);
     }
 }
 /*----------------------------------------------Character Information-------------------------------------------------------------------------------- */
@@ -353,16 +360,21 @@ CharacterInfo.prototype.draw = function () {
     ctx.drawImage(this.image, x, y, 100, 100);
     ctx.save();
     ctx.fillStyle = "#0F0";
-    ctx.fillText("Level " + character.level + ' / Soul level ' + character.soul, x + 100, y + 60);
+    ctx.fillText("Level " + character.level + ' / Soul level ' + character.soul, x + 100, y + 50);
     ctx.fillStyle = "#0FF";
-    ctx.fillText("EXP " + character.currentExp + '/' + character.levelExp, x + 100, y + 70);
+    ctx.fillText("EXP " + character.currentExp + '/' + character.levelExp, x + 100, y + 75);
     ctx.fillStyle = "#0CF";
-    ctx.fillText("Soul " + character.currentSoul + '/' + character.levelSoul, x + 100, y + 80);
+    ctx.fillText("Soul " + character.currentSoul + '/' + character.levelSoul, x + 100, y + 90);
     ctx.restore();
     if (character.currentSoul > character.levelSoul) {
         character.currentSoul = character.currentSoul - character.levelSoul;
         character.soul++;
         character.levelSoul *= character.soul; 
+    }
+    if (character.currentExp > character.levelExp) {
+        character.currentExp = character.currentExp - character.levelExp;
+        character.level++;
+        character.levelExp *= character.levelExp;
     }
 };
 /*----------------------------------------------End character information--------------------------------------------------------------------------------- */
@@ -625,7 +637,7 @@ function collisionDetect(characterX, characterY, width) {
 /*----------------------------------------------Health Start------------------------------------------------------------------------------------------------ */
 var bug = 0;
 const drawHPBar = () => {
-    var entity;
+    var entity;    
     for (var i = 0; i < gameEngine.entities.length - 1; i++) {
         entity = gameEngine.entities[i];
         ctx.strokeStyle = "red";
@@ -637,7 +649,14 @@ const drawHPBar = () => {
     ctx.strokeStyle = "red";    
     ctx.strokeRect(character.x, character.y, 40, 3);
     ctx.fillRect(character.x, character.y, 40 * character.currentHealth / character.maxHealth, 3);
-
+    ctx.strokeStyle = "#0FF";
+    ctx.strokeRect(character.x - 280, character.y - 315, 100, 10);
+    ctx.fillStyle = "white";
+    ctx.fillRect(character.x - 280, character.y - 314, 100 * character.currentExp / character.levelExp, 8);
+    ctx.strokeStyle = "#0CF";
+    ctx.strokeRect(character.x - 280, character.y - 300, 100, 10);
+    ctx.fillStyle = "white";
+    ctx.fillRect(character.x - 280, character.y - 299, 100 * character.currentSoul / character.levelSoul, 8);
 }
 
 /*----------------------------------------------Health End------------------------------------------------------------------------------------------------ */
@@ -1373,7 +1392,7 @@ Character.prototype.draw = function (ctx) {
             newY -= currentScale;
         default: break;
     }//SorcererVillain
-    if (new Date().getTime() - damgeST.time > 500) damgeST.damged = 0; //hide
+    if (new Date().getTime() - damgeST.time > 500) { damgeST.damged = 0; damgeST.exp = 0; } //hide
     for (let i = 0; i < gameEngine.entities.length; i++ ) {//
         if (gameEngine.entities[i] instanceof Character == true || typeof gameEngine.entities[i] === 'undefined') continue;
         scaleOf = (gameEngine.entities[i] instanceof Projectile) ? 4 : currentScale - 10;        
@@ -1396,6 +1415,8 @@ Character.prototype.draw = function (ctx) {
             if ((gameEngine.entities[i].currentHealth <= 0 || gameEngine.entities[i].currentHealth == null)
                     && gameEngine.entities[i].killed == null) {                              
                 gameEngine.entities.splice(i, 1);
+                this.currentExp += (this.level + 1) * 20; // may change the formular later 
+                damgeST.exp = (this.level + 1) * 20;
             }
                 //if (gameEngine.entities[i] instanceof Projectile != true)
                     
@@ -1529,7 +1550,7 @@ function startGame() {
 		var wizards = [];
 		var sorcererVillains = [];
 		// generates an array that will generate each entity in the right spots.
-		for (var i = 0; i < slimeDungeonLevelOneEntities.length; i++) {
+        for (var i = 0; i < slimeDungeonLevelOneEntities.length; i++) {            
 			if (slimeDungeonLevelOneEntities[i] == 1) {
 				var torchX = (i % 88) * 48;
 				var torchY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
@@ -1601,8 +1622,7 @@ function startGame() {
 
 		// Adding the entities
         gameEngine.addEntity(bg);
-        gameEngine.addEntity(chInfo);
-        gameEngine.addEntity(damgeST);
+       
 		for(var i = 0; i < torches.length; i++) {
 			gameEngine.addEntity(torches[i]);
 		}
@@ -1643,7 +1663,8 @@ function startGame() {
 
 		gameEngine.addEntity(character);
 		if (gameEngine.debug) gameEngine.addEntity(centerthingy);
-
+        gameEngine.addEntity(chInfo);
+        gameEngine.addEntity(damgeST);
 		gameEngine.debug = false;
 		character.updateViewport();
 
