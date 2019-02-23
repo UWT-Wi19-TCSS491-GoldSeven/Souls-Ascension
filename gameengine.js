@@ -42,6 +42,11 @@ function GameEngine(ctx, width, height) {
     this.viewport = {x: 0, y: 0, sx: 1, sy: 1 };
     this.debug = false; // If true, console output and entity boxes will appear.
     this.screenSize = {width: width, height: height};
+    this.settings = {
+        audio: {
+            muted: false
+        }
+    }
 }
 
 GameEngine.prototype.init = function () {
@@ -74,6 +79,20 @@ GameEngine.prototype.startInput = function () {
         }
         return { x: x, y: y };
     }
+
+    window.addEventListener('keydown', function (e) {
+        switch (e.key) {
+            case '`':
+                let muted = !that.settings.audio.muted;
+                for (let s of that.sounds.values()) {
+                    s._audio.muted = muted;
+                }
+                that.settings.audio.muted = muted;
+                break;
+            default:
+                break;
+        }
+    })
 
     this.ctx.canvas.addEventListener("keydown", function(e) {
         switch(e.keyCode) {
