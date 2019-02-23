@@ -1500,6 +1500,8 @@ var ctx;
 var ASSET_MANAGER = new AssetManager();
 
 function startGame() {
+	document.getElementById('start-game').hidden = true;
+
 	ASSET_MANAGER.queueDownload('./img/spritesheet.png');
 	ASSET_MANAGER.queueDownload("./img/DungeonBackgroundSpriteSheet.png");
 	ASSET_MANAGER.queueDownload("./img/spritesheet.png");
