@@ -373,10 +373,11 @@ CharacterInfo.prototype.draw = function () {
         character.soul++;
         character.levelSoul *= character.soul;
     }
-    if (character.currentExp > character.levelExp) {
+    if (character.currentExp > character.levelExp) {        
         character.currentExp = character.currentExp - character.levelExp;
         character.level++;
         character.levelExp *= character.level;
+        character.currentHealth = character.maxHealth;
     }
 };
 /*----------------------------------------------End character information--------------------------------------------------------------------------------- */
@@ -459,6 +460,7 @@ var Door = function (x, y, position) {
     this.x = x;
     this.y = y;
     this.position = position;
+    this.removed = false;
 }
 //a container prototype.
 var Container = function (x, y, w, h) {
@@ -618,9 +620,6 @@ function collisionDetect(characterX, characterY, width) {
         }
     }
     if (typeof leafs[j] === 'undefined') return true;
-    //console.log('Block Area: ' + j + 'Total target: ' + leafs[j].walls.length);
-    //console.log('x-Area:' + leafs[j].x + '---' + (leafs[j].x + leafs[j].w) + 'y-Area: ' + leafs[j].y + '---' + (leafs[j].y + leafs[j].h));
-    //console.log('Character position X:' + characterX + '-- Y ' + characterY);
     for (var i = 0; i < leafs[j].walls.length; i++) {
         targetX = leafs[j].walls[i].x;
         targetY = leafs[j].walls[i].y;
@@ -631,15 +630,50 @@ function collisionDetect(characterX, characterY, width) {
             characterY < targetY + currentScale &&
             characterY > targetY) {
             if (leafs[j].walls[i] instanceof Door == true && character.inventory['SilverKey'] > 0) {
+                leafs[j].walls[i].removed = true;
                 character.inventory['SilverKey'] -= 1;
                 slimeDungeonLevelOne[leafs[j].walls[i].position] = 24; // center floor.
-                leafs[j].walls.splice(i, 1); //remove opened door
+                removeDoor(characterX, characterY,width); //remove opened door
                 return false;
             }
             return true;
         }
     }
     return false;
+}
+const removeDoor = (characterX, characterY, width) => {
+    var targetX, targetY;
+    var j; // area to check collision
+    for (j = 0; j < leafs.length; j++) {
+
+        for (var i = 0; i < leafs[j].walls.length; i++) {
+            targetX = leafs[j].walls[i].x;
+            targetY = leafs[j].walls[i].y;
+            targetX = leafs[j].walls[i].x;
+            targetY = leafs[j].walls[i].y;
+            if (characterX < targetX + currentScale &&// - width for more percise when work with character
+                characterX + currentScale - width > targetX &&
+                characterY < targetY + currentScale &&
+                characterY > targetY) { leafs[j].walls.splice(i, 1); }
+        }
+    }
+}
+
+Container.prototype.pushWall = function (theX, theY, thePosition, code) {//position #0 is a door
+    let point = new Point(theX, theY);
+    if (code === 15) { //door
+        point = new Door(theX, theY, thePosition);
+    }
+    if (this.x <= theX + currentScale / 2 && theX + currentScale / 2 < this.x + this.w
+        && this.y <= theY + currentScale / 2 && theY + currentScale / 2 < this.y + this.h) {
+        leafs[i].walls.splice(j, 1); //remove opened door
+    } else if (this.x <= theX && theX < this.x + this.w
+        && this.y <= theY && theY < this.y + this.h) {
+        leafs[i].walls.splice(j, 1); //remove opened door
+    } else if (this.x <= theX && theX < this.x + this.w
+        && this.y <= theY + currentScale && theY + currentScale < this.y + this.h) {
+        leafs[i].walls.splice(j, 1); //remove opened door
+    }
 }
 /*----------------------------------------------Collision End------------------------------------------------------------------------------------------------ */
 /*----------------------------------------------Health Start------------------------------------------------------------------------------------------------ */
@@ -793,6 +827,7 @@ function SlimeBehemoth(startingX, startingY) {
     this.slimeBehemothWalkingRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SlimeBehemothWalkingRight.png"), 0, 0, 80, 68, 0.1, 8, true, false);
 	this.slimeBehemothAttackLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SlimeBehemothAttackLeft.png"), 0, 0, 117, 68, 0.1, 8, true, false);
     this.slimeBehemothAttackRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SlimeBehemothAttackRight.png"), 0, 0, 120, 68, 0.1, 8, true, false);
+    this.death = null;
     this.animation = this.slimeBehemothWalkingRightAnimation;
     this.isMovingWest = true;
     this.isMovingEast = false;
@@ -814,30 +849,32 @@ SlimeBehemoth.prototype = new Entity();
 SlimeBehemoth.prototype.constructor = SlimeBehemoth;
 
 SlimeBehemoth.prototype.update = function () {
-    let xOrigC = (character.x + character.animation.frameWidth / 2);
-    let yOrigC = (character.y + character.animation.frameHeight / 2);
-    let xOrigS = (this.x + this.animation.frameWidth / 2)
-    let yOrigS = (this.y + this.animation.frameHeight / 2)
-    let xDiff = xOrigC - xOrigS;
-    let yDiff = yOrigC - yOrigS;
-    let distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+    
+        let xOrigC = (character.x + character.animation.frameWidth / 2);
+        let yOrigC = (character.y + character.animation.frameHeight / 2);
+        let xOrigS = (this.x + this.animation.frameWidth / 2)
+        let yOrigS = (this.y + this.animation.frameHeight / 2)
+        let xDiff = xOrigC - xOrigS;
+        let yDiff = yOrigC - yOrigS;
+        let distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
 
-    if (this.x < 230 && this.isMovingWest) {
-        this.isMovingEast = true;
-        this.isMovingWest = false;
-        this.x += gameEngine.clockTick * this.moveSpeed;
-    }
-    if (this.x > 1210 && this.isMovingEast) {
-        this.isMovingEast = false;
-        this.isMovingWest = true;
-        this.x -= gameEngine.clockTick * this.moveSpeed;
-    }
-    if (this.isMovingEast) {
-        this.x += gameEngine.clockTick * this.moveSpeed;
-    }
-    if (this.isMovingWest) {
-        this.x -= gameEngine.clockTick * this.moveSpeed;
-    }
+        if (this.x < 230 && this.isMovingWest) {
+            this.isMovingEast = true;
+            this.isMovingWest = false;
+            this.x += gameEngine.clockTick * this.moveSpeed;
+        }
+        if (this.x > 1210 && this.isMovingEast) {
+            this.isMovingEast = false;
+            this.isMovingWest = true;
+            this.x -= gameEngine.clockTick * this.moveSpeed;
+        }
+        if (this.isMovingEast) {
+            this.x += gameEngine.clockTick * this.moveSpeed;
+        }
+        if (this.isMovingWest) {
+            this.x -= gameEngine.clockTick * this.moveSpeed;
+        }
+    
     Entity.prototype.update.call(this);
 }
 SlimeBehemoth.prototype.normalAttack = function (xDiff, yDiff, distance, xOrigS, yOrigS) {
@@ -926,7 +963,7 @@ SlimeEnemy.prototype.update = function () {
         this.y += gameEngine.clockTick * velY;
 
     }
-    if (!collisionDetect(this.x + 30, 60 + this.y, 20)) { canMove = true }
+    if (!collisionDetect(this.x + 20, 55 + this.y, 20)) { canMove = true }
     if (!canMove) {
         this.x = origX;
         this.y = origY;
@@ -986,8 +1023,8 @@ SlimeEnemy.prototype.draw = function () {
 function Skeleton(game, startingX, startingY) {
     this.ctx = game.ctx;
     this.skeletonWalkingLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SkeletonWalkLeft.png"), 0, 0, 44, 66, 0.1, 13, true, false);
-    this.animation = this.skeletonWalkingLeftAnimation;
     this.skeletonWalkingRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SkeletonWalkRight.png"), 0, 0, 44, 66, 0.1, 13, true, false);
+    this.death = null;
     this.animation = this.skeletonWalkingRightAnimation;
     this.isMovingWest = true;
     this.isMovingEast = false;
@@ -1057,7 +1094,7 @@ function Wizard(game, startingX, startingY) {
 	this.wizardAttackLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/wizardAttackLeft.png"), 0, 0, 80, 80, 0.1, 6, true, false);
     this.wizardAttackRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/wizardAttackRight.png"), 0, 0, 80, 80, 0.1, 6, true, false);
 	this.wizardIdleAnimation = new Animation(ASSET_MANAGER.getAsset("./img/wizardIdle.png"), 0, 0, 80, 80, 0.1, 10, true, false);
-    this.wizardDeathAnimation = new Animation(ASSET_MANAGER.getAsset("./img/wizardDeath.png"), 0, 0, 80, 80, 0.1, 10, true, false);
+    this.death = new Animation(ASSET_MANAGER.getAsset("./img/wizardDeath.png"), 0, 0, 80, 80, 0.1, 10, true, false);
     this.animation = this.wizardWalkingLeftAnimation;
     this.isMovingWest = false;
     this.isMovingEast = true;
@@ -1071,6 +1108,7 @@ function Wizard(game, startingX, startingY) {
     this.maxHealth = 400;
     this.currentHealth = 400;
     this.killable = true;
+    this.life = 1;
     Entity.call(this, game, startingX - 50, startingY - 25); // where it starts
 
 }
@@ -1109,12 +1147,18 @@ Wizard.prototype.normalAttack = function (xDiff, yDiff, distance, xOrigS, yOrigS
     // to do
 }
 Wizard.prototype.draw = function () {
-    if (this.isMovingWest) {
-        this.animation = this.wizardWalkingLeftAnimation;
-    } else {
-        this.animation = this.wizardWalkingRightAnimation;
+    if (this.animation !== this.death) {
+        if (this.isMovingWest) {
+            this.animation = this.wizardWalkingLeftAnimation;
+        } else {
+            this.animation = this.wizardWalkingRightAnimation;
+        }
     }
     this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    if (this.animation === this.death) {
+        this.life -= gameEngine.clockTick;
+        if (this.life <= 0) this.removeFromWorld = true;
+    }
     Entity.prototype.draw.call(this);
 }
 /*----------------------------------------------Wizard End--------------------------------------------------------------------------------------------------- */
@@ -1123,6 +1167,7 @@ Wizard.prototype.draw = function () {
 function SorcererVillain(game, x, y) {
     this.ctx = game.ctx;
     this.standingAttackAnimation = new Animation(ASSET_MANAGER.getAsset("./img/sorcererVillain.png"), 0, 0, 100, 100, 0.1, 10, true, false);
+    this.death = null;
     this.animation = this.standingAttackAnimation;
     this.moveSpeed = 70;
     this.fleeSpeed = 90;
