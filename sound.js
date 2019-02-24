@@ -42,7 +42,9 @@ Sound.prototype.play = function() {
  */
 Sound.prototype.replay = function() {
     if(this._source && this._audio) {
-        this._audio = new Audio(this._source   );
+        let temp = this._audio;
+        this._audio = new Audio(this._source);
+        this._audio.muted = temp.muted;
         this._audio.play();
     } else {
         console.error("Cannot play audio object.");
