@@ -1648,11 +1648,12 @@ function startGame() {
         }
 
         // Sounds and effects.
-        gameEngine.sounds.set('musicTitle01', new Sound("01_BROKEN_DESTINY.mp3", true));
-        gameEngine.sounds.set('musicTitle02', new Sound("02_BATTLE_CRY.mp3", true));
+        // gameEngine.sounds.set('musicTitle01', new Sound("01_BROKEN_DESTINY.mp3", true));
+        // gameEngine.sounds.set('musicTitle02', new Sound("02_BATTLE_CRY.mp3", true));
+        gameEngine.sounds.set('dungeon1', new Sound('lost_mine.mp3', true));
         gameEngine.sounds.set('characterAttack01', new Sound("player_attack.wav"));
         gameEngine.sounds.set('characterAttack02', new Sound("player_whirlwind_attack.wav"));
-        gameEngine.sounds.get('musicTitle02').play(); // This is the first thing that plays during starting the game.
+        gameEngine.sounds.get('dungeon1').play(); // This is the first thing that plays during starting the game.
 
         gameEngine.addEntity(character);
         if (gameEngine.debug) gameEngine.addEntity(centerthingy);
