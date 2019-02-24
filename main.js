@@ -787,6 +787,8 @@ SoulJar.prototype.draw = function () {
 function SlimeBehemoth(startingX, startingY) {
     this.slimeBehemothWalkingLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SlimeBehemothWalkingLeft.png"), 0, 0, 80, 68, 0.1, 8, true, false);
     this.slimeBehemothWalkingRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SlimeBehemothWalkingRight.png"), 0, 0, 80, 68, 0.1, 8, true, false);
+	this.slimeBehemothAttackLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SlimeBehemothAttackLeft.png"), 0, 0, 117, 68, 0.1, 8, true, false);
+    this.slimeBehemothAttackRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SlimeBehemothAttackRight.png"), 0, 0, 120, 68, 0.1, 8, true, false);
     this.animation = this.slimeBehemothWalkingRightAnimation;
     this.isMovingWest = true;
     this.isMovingEast = false;
@@ -852,6 +854,10 @@ SlimeBehemoth.prototype.draw = function () {
 function SlimeEnemy(startingX, startingY) {
     this.slimeEnemyWalkingLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SlimeWalkLeft.png"), 0, 0, 80, 80, 0.1, 8, true, false);
     this.slimeEnemyWalkingRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SlimeWalkRight.png"), 0, 0, 80, 80, 0.1, 8, true, false);
+	this.slimeEnemyAttackLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SlimeAttackLeft.png"), 0, 0, 80, 80, 0.1, 10, true, false);
+    this.slimeEnemyAttackRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SlimeAttackRight.png"), 0, 0, 80, 80, 0.1, 10, true, false);
+	this.slimeEnemyIdleAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SlimeIdle.png"), 0, 0, 80, 80, 0.1, 8, true, false);
+    this.slimeEnemyDeathAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SlimeDeath.png"), 0, 0, 80, 80, 0.1, 8, true, false);
     this.animation = this.slimeEnemyWalkingRightAnimation;
     this.isMovingWest = false;
     this.isMovingEast = true;
@@ -984,9 +990,10 @@ Skeleton.prototype.draw = function () {
 function Wizard(game, startingX, startingY) {
     this.ctx = game.ctx;
     this.wizardWalkingLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/wizardWalkLeft.png"), 0, 0, 80, 80, 0.1, 6, true, false);
-    this.animation = this.wizardWalkingLeftAnimation;
     this.wizardWalkingRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/wizardWalkRight.png"), 0, 0, 80, 80, 0.1, 6, true, false);
-    this.animation = this.wizardWalkingRightAnimation;
+	this.wizardIdleAnimation = new Animation(ASSET_MANAGER.getAsset("./img/wizardIdle.png"), 0, 0, 80, 80, 0.1, 10, true, false);
+    this.wizardDeathAnimation = new Animation(ASSET_MANAGER.getAsset("./img/wizardDeath.png"), 0, 0, 80, 80, 0.1, 10, true, false);
+    this.animation = this.wizardWalkingLeftAnimation;
     this.isMovingWest = false;
     this.isMovingEast = true;
     this.moveSpeed = 140;
@@ -1327,13 +1334,13 @@ Character.prototype.draw = function (ctx) {
     } else if (this.isWhirlwinding) {
         this.animation = this.whirlwindAttackAnimation;
     } else if (this.isMovingUpLeft) {
-        this.animation = this.walkUpLeftAnimation;
+        this.animation = this.walkLeftAnimation;
     } else if (this.isMovingUpRight) {
-        this.animation = this.walkUpRightAnimation;
+        this.animation = this.walkRightAnimation;
     } else if (this.isMovingDownLeft) {
-        this.animation = this.walkDownLeftAnimation;
+        this.animation = this.walkLeftAnimation;
     } else if (this.isMovingDownRight) {
-        this.animation = this.walkDownRightAnimation;
+        this.animation = this.walkRightAnimation;
     } else if (this.isMovingUp) {
         this.animation = this.walkUpAnimation;
     } else if (this.isMovingDown) {
@@ -1493,10 +1500,10 @@ var ASSET_MANAGER = new AssetManager();
 
 function startGame() {
     document.getElementById('start-game').hidden = true;
-    ASSET_MANAGER.queueDownload('./img/spritesheet.png');
     ASSET_MANAGER.queueDownload("./img/DungeonBackgroundSpriteSheet.png");
     ASSET_MANAGER.queueDownload("./img/spritesheet.png");
     ASSET_MANAGER.queueDownload("./img/characterIdleAnimation.png");
+	ASSET_MANAGER.queueDownload('./img/ChatacterAttackRanged.png');
     ASSET_MANAGER.queueDownload("./img/CharacterForwardRun.png");
     ASSET_MANAGER.queueDownload("./img/characterBackwardRun.png");
     ASSET_MANAGER.queueDownload("./img/characterRightAnimation.png");
@@ -1514,10 +1521,18 @@ function startGame() {
     ASSET_MANAGER.queueDownload("./img/SoulJarAnimation.png");
     ASSET_MANAGER.queueDownload("./img/SlimeBehemothWalkingLeft.png");
     ASSET_MANAGER.queueDownload("./img/SlimeBehemothWalkingRight.png");
+	ASSET_MANAGER.queueDownload("./img/SlimeBehemothAttackLeft.png");
+    ASSET_MANAGER.queueDownload("./img/SlimeBehemothAttackRight.png");
     ASSET_MANAGER.queueDownload("./img/SlimeWalkLeft.png");
     ASSET_MANAGER.queueDownload("./img/SlimeWalkRight.png");
+	ASSET_MANAGER.queueDownload("./img/SlimeAttackLeft.png");
+    ASSET_MANAGER.queueDownload("./img/SlimeAttackRight.png");
+	ASSET_MANAGER.queueDownload("./img/SlimeIdle.png");
+    ASSET_MANAGER.queueDownload("./img/SlimeDeath.png");
     ASSET_MANAGER.queueDownload("./img/wizardWalkLeft.png");
     ASSET_MANAGER.queueDownload("./img/wizardWalkRight.png");
+	ASSET_MANAGER.queueDownload("./img/wizardIdle.png");
+    ASSET_MANAGER.queueDownload("./img/wizardDeath.png");
     ASSET_MANAGER.queueDownload("./img/SkeletonWalkLeft.png");
     ASSET_MANAGER.queueDownload("./img/SkeletonWalkRight.png");
     ASSET_MANAGER.queueDownload("./img/characterInfo.png");
