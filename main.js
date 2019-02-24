@@ -380,7 +380,7 @@ CharacterInfo.prototype.draw = function () {
 /*----------------------------------------------Background for level 1 Start--------------------------------------------------------------------------------- */
 var currentScale = 48; // number of pixels
 var currentWTiles = 88; // number of tiles width wise on the map
-function Background(game, spritesheet) {
+function Background(spritesheet) {
     this.x = 0;
     this.y = 0;
     this.sw = 48;
@@ -388,8 +388,6 @@ function Background(game, spritesheet) {
     this.dw = currentScale;
     this.dh = currentScale;
     this.spritesheet = spritesheet;
-    this.game = game;
-    this.ctx = game.ctx;
 };
 Background.prototype = new Entity();
 Background.prototype.constructor = Background;
@@ -405,7 +403,7 @@ Background.prototype.draw = function () {
     // Loop to generate each tile
     for (var i = 0; i < slimeDungeonLevelOne.length; i++) {
         spriteX = (slimeDungeonLevelOne[i] - 1) * 48; // 32 is the number of pixels per sprite
-        this.ctx.drawImage(this.spritesheet, spriteX, spriteY, this.sw, this.sh, x, y, this.dw, this.dh);
+        ctx.drawImage(this.spritesheet, spriteX, spriteY, this.sw, this.sh, x, y, this.dw, this.dh);
         count++;
         if (count >= currentWTiles) // change the value based on how many tiles you will draw. (88 atm)
         {
@@ -668,12 +666,10 @@ const drawHPBar = () => {
 
 /*----------------------------------------------Health End------------------------------------------------------------------------------------------------ */
 /*----------------------------------------------Torch Start-------------------------------------------------------------------------------------------------- */
-function Torch(game, x, y) {
-    this.ctx = game.ctx;
+function Torch(x, y) {
     this.flameAnimation = new Animation(ASSET_MANAGER.getAsset("./img/torchAnimation.png"), 0, 0, 48, 48, 0.1, 4, true, currentScale);
-    this.animation = this.flameAnimation;
     this.killable = false;
-    Entity.call(this, game, x, y);// where it starts
+    Entity.call(this, gameEngine, x, y);// where it starts
 }
 
 Torch.prototype = new Entity();
@@ -683,18 +679,16 @@ Torch.prototype.update = function () {
     Entity.prototype.update.call(this);
 }
 Torch.prototype.draw = function () {
-    this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    this.flameAnimation.drawFrame(gameEngine.clockTick, ctx, this.x, this.y);
     Entity.prototype.draw.call(this);
 };
 /*----------------------------------------------Torch End---------------------------------------------------------------------------------------------------- */
 
 /*----------------------------------------------Silver Key Start--------------------------------------------------------------------------------------------- */
-function SilverKey(game, x, y) {
-    this.ctx = game.ctx;
+function SilverKey(x, y) {
     this.silverKeyAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SilverKeyAnimation.png"), 0, 0, 48, 48, 0.1, 4, true, currentScale);
-    this.animation = this.silverKeyAnimation;
     this.killable = true;
-    Entity.call(this, game, x, y);// where it starts
+    Entity.call(this, gameEngine, x, y);// where it starts
 }
 
 SilverKey.prototype = new Entity();
@@ -704,18 +698,16 @@ SilverKey.prototype.update = function () {
     Entity.prototype.update.call(this);
 }
 SilverKey.prototype.draw = function () {
-    this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    this.silverKeyAnimation.drawFrame(gameEngine.clockTick, ctx, this.x, this.y);
     Entity.prototype.draw.call(this);
 };
 /*----------------------------------------------Silver Key End----------------------------------------------------------------------------------------------- */
 
 /*----------------------------------------------Gold Key Start----------------------------------------------------------------------------------------------- */
-function GoldKey(game, x, y) {
-    this.ctx = game.ctx;
+function GoldKey(x, y) {
     this.goldKeyAnimation = new Animation(ASSET_MANAGER.getAsset("./img/GoldKeyAnimation.png"), 0, 0, 48, 48, 0.1, 4, true, currentScale);
-    this.animation = this.goldKeyAnimation;
     this.killable = true;
-    Entity.call(this, game, x, y);// where it starts
+    Entity.call(this, gameEngine, x, y);// where it starts
 }
 
 GoldKey.prototype = new Entity();
@@ -725,23 +717,21 @@ GoldKey.prototype.update = function () {
     Entity.prototype.update.call(this);
 }
 GoldKey.prototype.draw = function () {
-    this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    this.goldKeyAnimation.drawFrame(gameEngine.clockTick, ctx, this.x, this.y);
     Entity.prototype.draw.call(this);
 };
 /*----------------------------------------------Gold Key End------------------------------------------------------------------------------------------------- */
 
 /*----------------------------------------------Healing Potion Start----------------------------------------------------------------------------------------- */
-function HealingPotion(game, x, y) {
-    this.ctx = game.ctx;
+function HealingPotion(x, y) {
     this.sparkleAnimation = new Animation(ASSET_MANAGER.getAsset("./img/HealthPotionAnimation.png"), 0, 0, 48, 48, 0.1, 4, true, currentScale);
-    this.animation = this.sparkleAnimation;
     this.killable = true;
     this.health = 100;
     this.toX = 0;
     this.toY = 0;
     this.killed = false;
     this.life = 2;
-    Entity.call(this, game, x, y);// where it starts
+    Entity.call(this, gameEngine, x, y);// where it starts
 }
 
 HealingPotion.prototype = new Entity();
@@ -756,26 +746,22 @@ HealingPotion.prototype.update = function () {
 }
 HealingPotion.prototype.draw = function () {
     if (this.x >= character.x - 280)
-        this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
-    if (!this.killed) this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+        this.sparkleAnimation.drawFrame(gameEngine.clockTick, ctx, this.x, this.y);
+    if (!this.killed) this.sparkleAnimation.drawFrame(gameEngine.clockTick, ctx, this.x, this.y);
     Entity.prototype.draw.call(this);
 };
 /*----------------------------------------------Healing Potion end------------------------------------------------------------------------------------------- */
 
 /*----------------------------------------------Soul Jar Start----------------------------------------------------------------------------------------------- */
-function SoulJar(game, x, y) {
-    this.ctx = game.ctx;
+function SoulJar(x, y) {
     this.sparkleAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SoulJarAnimation.png"), 0, 0, 48, 48, 0.1, 4, true, currentScale);
-    this.animation = this.sparkleAnimation;
     this.killable = true;
     this.jar = 100;
     this.toX = 0;
     this.toY = 0;
     this.killed = false;
     this.life = 2;
-    Entity.call(this, game, x, y);// where it starts
-
-
+    Entity.call(this, gameEngine, x, y);// where it starts
 }
 
 SoulJar.prototype = new Entity();
@@ -790,18 +776,16 @@ SoulJar.prototype.update = function () {
 }
 SoulJar.prototype.draw = function () {
     if (this.x >= character.x - 280)
-        this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
-    if (!this.killed) this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+        this.sparkleAnimation.drawFrame(gameEngine.clockTick, ctx, this.x, this.y);
+    if (!this.killed) this.sparkleAnimation.drawFrame(gameEngine.clockTick, ctx, this.x, this.y);
     Entity.prototype.draw.call(this);
 };
 
 /*----------------------------------------------Soul Jar end------------------------------------------------------------------------------------------------- */
 
 /*----------------------------------------------SlimeBehemoth Start------------------------------------------------------------------------------------------ */
-function SlimeBehemoth(game, startingX, startingY) {
-    this.ctx = game.ctx;
+function SlimeBehemoth(startingX, startingY) {
     this.slimeBehemothWalkingLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SlimeBehemothWalkingLeft.png"), 0, 0, 80, 68, 0.1, 8, true, false);
-    this.animation = this.slimeBehemothWalkingLeftAnimation;
     this.slimeBehemothWalkingRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SlimeBehemothWalkingRight.png"), 0, 0, 80, 68, 0.1, 8, true, false);
     this.animation = this.slimeBehemothWalkingRightAnimation;
     this.isMovingWest = true;
@@ -816,7 +800,7 @@ function SlimeBehemoth(game, startingX, startingY) {
     this.maxHealth = 500;
     this.currentHealth = 500;
     this.killable = true;
-    Entity.call(this, game, startingX, startingY - 30); // where it starts
+    Entity.call(this, gameEngine, startingX, startingY - 30); // where it starts
 
 }
 
@@ -859,16 +843,14 @@ SlimeBehemoth.prototype.draw = function () {
     } else {
         this.animation = this.slimeBehemothWalkingRightAnimation;
     }
-    this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    this.animation.drawFrame(gameEngine.clockTick, ctx, this.x, this.y);
     Entity.prototype.draw.call(this);
 }
 /*----------------------------------------------SlimeBehemoth End-------------------------------------------------------------------------------------------- */
 
 /*----------------------------------------------SlimeEnemy Start--------------------------------------------------------------------------------------------- */
-function SlimeEnemy(game, startingX, startingY) {
-    this.ctx = game.ctx;
+function SlimeEnemy(startingX, startingY) {
     this.slimeEnemyWalkingLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SlimeWalkLeft.png"), 0, 0, 80, 80, 0.1, 8, true, false);
-    this.animation = this.slimeEnemyWalkingLeftAnimation;
     this.slimeEnemyWalkingRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SlimeWalkRight.png"), 0, 0, 80, 80, 0.1, 8, true, false);
     this.animation = this.slimeEnemyWalkingRightAnimation;
     this.isMovingWest = false;
@@ -883,7 +865,7 @@ function SlimeEnemy(game, startingX, startingY) {
     this.maxHealth = 300;
     this.currentHealth = 300;
     this.killable = true;
-    Entity.call(this, game, startingX - 50, startingY - 15); // where it starts
+    Entity.call(this, gameEngine, startingX - 50, startingY - 15); // where it starts
 
 }
 
@@ -926,7 +908,7 @@ SlimeEnemy.prototype.draw = function () {
     } else {
         this.animation = this.slimeEnemyWalkingRightAnimation;
     }
-    this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    this.animation.drawFrame(gameEngine.clockTick, ctx, this.x, this.y);
     Entity.prototype.draw.call(this);
 }
 /*----------------------------------------------SlimeEnemy End---------------------------------------------------------------------------------------------- */
@@ -1204,7 +1186,7 @@ Projectile.prototype.draw = function () {
 
 /*----------------------------------------------Character Start---------------------------------------------------------------------------------------------- */
 // The entity's viewport is determined by its BoundingBox object.
-function Character(game) {                                                                                            //loop  reversed
+function Character() {                                                                                            //loop  reversed
     this.standAnimation = new Animation(ASSET_MANAGER.getAsset("./img/characterIdleAnimation.png"), 0, 0, 42, 42, 0.08, 4, true, false);
     this.walkRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/characterRightAnimation.png"), 0, 0, 42, 42, 0.15, 6, true, false);
     this.walkUpLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"), 32, 32, 33, 32, 1.04, 1, true, false);
@@ -1247,7 +1229,7 @@ function Character(game) {                                                      
     this.scale = 1; // set to 1 if the sprite dimensions are the exact size that should be rendered.
     this.boundingBox = new BoundingBox(0, 0, 20, 40, 10);
     //console.log(this); // Debugging.
-    Entity.call(this, game, 385, 450, false); // Spawn the entity's upper left corner at these coordinates of the world.
+    Entity.call(this, gameEngine, 385, 450, false); // Spawn the entity's upper left corner at these coordinates of the world.
 }
 
 Character.prototype = new Entity();
@@ -1475,9 +1457,9 @@ Character.prototype.draw = function (ctx) {
 /*----------------------------------------------Character End---------------------------------------------------------------------------------------------- */
 
 /*----------------------------------------------Debug Stuff Start------------------------------------------------------------------------------------------ */
-function CenterThingy(game) {
+function CenterThingy() {
     // Displays the center of the canvas/camera.
-    Entity.call(this, game, 390, 390);
+    Entity.call(this, gameEngine, 390, 390);
     this.radius = 200;
 }
 CenterThingy.prototype = new Entity();
@@ -1547,7 +1529,7 @@ function startGame() {
 
         // Creates new entity instances
         gameEngine = new GameEngine(ctx, ctx.canvas.width, ctx.canvas.height);
-        var bg = new Background(gameEngine, ASSET_MANAGER.getAsset("./img/DungeonBackgroundSpriteSheet.png"));
+        var bg = new Background(ASSET_MANAGER.getAsset("./img/DungeonBackgroundSpriteSheet.png"));
         var chInfo = new CharacterInfo(ASSET_MANAGER.getAsset("./img/characterInfo.png"));
         damgeST = new damgeStat();
         var torches = [];
@@ -1565,31 +1547,31 @@ function startGame() {
             if (slimeDungeonLevelOneEntities[i] == 1) {
                 var torchX = (i % 88) * 48;
                 var torchY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
-                var torch = new Torch(gameEngine, torchX, torchY);
+                var torch = new Torch(torchX, torchY);
                 torches.push(torch);
             }
             if (slimeDungeonLevelOneEntities[i] == 2) {
                 var sKeyX = (i % 88) * 48;
                 var sKeyY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
-                var sKey = new SilverKey(gameEngine, sKeyX, sKeyY);
+                var sKey = new SilverKey(sKeyX, sKeyY);
                 sKeys.push(sKey);
             }
             if (slimeDungeonLevelOneEntities[i] == 3) {
                 var gKeyX = (i % 88) * 48;
                 var gKeyY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
-                var gKey = new GoldKey(gameEngine, gKeyX, gKeyY);
+                var gKey = new GoldKey(gKeyX, gKeyY);
                 gKeys.push(gKey);
             }
             if (slimeDungeonLevelOneEntities[i] == 4) {
                 var hPotionX = (i % 88) * 48;
                 var hPotionY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
-                var hPotion = new HealingPotion(gameEngine, hPotionX, hPotionY);
+                var hPotion = new HealingPotion(hPotionX, hPotionY);
                 hPotions.push(hPotion);
             }
             if (slimeDungeonLevelOneEntities[i] == 5) {
                 var sJarX = (i % 88) * 48;
                 var sJarY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
-                var sJar = new SoulJar(gameEngine, sJarX, sJarY);
+                var sJar = new SoulJar(sJarX, sJarY);
                 sJars.push(sJar);
             }
             if (slimeDungeonLevelOneEntities[i] == 11) {
@@ -1601,13 +1583,13 @@ function startGame() {
             if (slimeDungeonLevelOneEntities[i] == 12) {
                 var seX = (i % 88) * 48;
                 var seY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
-                var se = new SlimeEnemy(gameEngine, seX, seY);
+                var se = new SlimeEnemy(seX, seY);
                 slimeEnemies.push(se);
             }
             if (slimeDungeonLevelOneEntities[i] == 13) {
                 var sbX = (i % 88) * 48;
                 var sbY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
-                var sb = new SlimeBehemoth(gameEngine, sbX, sbY);
+                var sb = new SlimeBehemoth(sbX, sbY);
                 slimeBehemoths.push(sb);
             }
             if (slimeDungeonLevelOneEntities[i] == 14) {
@@ -1627,9 +1609,9 @@ function startGame() {
                 var characterStartingY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
             }
         }
-        character = new Character(gameEngine);
+        character = new Character();
 
-        var centerthingy = new CenterThingy(gameEngine);
+        var centerthingy = new CenterThingy();
 
         // Adding the entities
         gameEngine.addEntity(bg);
