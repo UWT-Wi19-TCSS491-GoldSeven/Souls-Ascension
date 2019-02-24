@@ -2,13 +2,13 @@
 
 window.requestAnimFrame = (function () {
     return window.requestAnimationFrame ||
-            window.webkitRequestAnimationFrame ||
-            window.mozRequestAnimationFrame ||
-            window.oRequestAnimationFrame ||
-            window.msRequestAnimationFrame ||
-            function (/* function */ callback, /* DOMElement */ element) {
-                window.setTimeout(callback, 1000 / 60);
-            };
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function (/* function */ callback, /* DOMElement */ element) {
+            window.setTimeout(callback, 1000 / 60);
+        };
 })();
 
 
@@ -36,12 +36,12 @@ function GameEngine(ctx, width, height) {
     this.click = null;
     this.mouse = null;
     this.wheel = null;
-	this.one = null;
+    this.one = null;
     this.surfaceWidth = width;
     this.surfaceHeight = height;
-    this.viewport = {x: 0, y: 0, sx: 1, sy: 1 };
+    this.viewport = { x: 0, y: 0, sx: 1, sy: 1 };
     this.debug = false; // If true, console output and entity boxes will appear.
-    this.screenSize = {width: width, height: height};
+    this.screenSize = { width: width, height: height };
     this.settings = {
         audio: {
             muted: false
@@ -69,7 +69,7 @@ GameEngine.prototype.startInput = function () {
     console.log('Starting input');
     var that = this;
 
-    var getXandY = function(e) {
+    var getXandY = function (e) {
         var x = e.clientX - that.ctx.canvas.getBoundingClientRect().left;
         var y = e.clientY - that.ctx.canvas.getBoundingClientRect().top;
 
@@ -94,13 +94,13 @@ GameEngine.prototype.startInput = function () {
         }
     })
 
-    this.ctx.canvas.addEventListener("keydown", function(e) {
-        switch(e.keyCode) {
+    this.ctx.canvas.addEventListener("keydown", function (e) {
+        switch (e.keyCode) {
             case 49: // 1
                 that.one = true;
                 that.sounds.get('characterAttack02').replay();
                 break;
-			case 32: // ' '
+            case 32: // ' '
                 that.space = true;
                 break;
             case 37: // arrow left
@@ -130,12 +130,12 @@ GameEngine.prototype.startInput = function () {
         //if (String.fromCharCode(e.which) === ' ') that.space = true;
     }, false);
 
-    this.ctx.canvas.addEventListener("keyup", function(e) {
+    this.ctx.canvas.addEventListener("keyup", function (e) {
         switch (e.keyCode) {
             case 49: // 1
                 that.one = false;
                 break;
-			case 32: // ' '
+            case 32: // ' '
                 that.space = false;
                 break;
             case 37: // arrow left
@@ -160,7 +160,7 @@ GameEngine.prototype.startInput = function () {
         }
     }, false);
 
-    this.ctx.canvas.addEventListener("click", function(e) {
+    this.ctx.canvas.addEventListener("click", function (e) {
         that.click = getXandY(e);
         that.sounds.get('characterAttack01').replay();
         if (that.debug) console.log("Clicked at " + e.clientX + "," + e.clientY); // The coordinates on the browser screen.
@@ -243,7 +243,7 @@ GameEngine.prototype.loop = function () {
     this.draw();
     this.space = null;
     this.click = null;
-	this.one = null;
+    this.one = null;
 }
 
 function Entity(game, x, y, genAABB = true) {
@@ -266,18 +266,18 @@ function BoundingBox(theX, theY, width, height, xOffset, yOffset) {
     this.top = theY;
     this.right = this.left + width;
     this.bottom = this.top + height;
-    this._origin = {x: this.left + this.width/2, y: this.top + this.height/2};
+    this._origin = { x: this.left + this.width / 2, y: this.top + this.height / 2 };
 }
 
 BoundingBox.prototype = {
     set x(value) {
         this._x = value + this._xOffset;
-        this._origin.x = this._x - (this.width/2);
+        this._origin.x = this._x - (this.width / 2);
     },
     get x() { return this._x },
     set y(value) {
         this._y = value + this._yOffset;
-        this._origin.y = this._y - (this.height/2);
+        this._origin.y = this._y - (this.height / 2);
     },
     get y() { return this._y },
     get origin() { return this._origin },
@@ -291,10 +291,10 @@ BoundingBox.prototype = {
 
 // Not yet used.
 BoundingBox.prototype.collide = function (oth) {
-    if (    this.right > oth.left 
-        &&   this.left < oth.right 
-        &&    this.top < oth.bottom 
-        && this.bottom > oth.top) 
+    if (this.right > oth.left
+        && this.left < oth.right
+        && this.top < oth.bottom
+        && this.bottom > oth.top)
         return true;
     return false;
 }
