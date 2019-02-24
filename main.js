@@ -360,10 +360,12 @@ CharacterInfo.prototype.draw = function () {
     ctx.drawImage(this.image, x, y, 100, 100);
     ctx.save();
     ctx.fillStyle = "#0F0";
-    ctx.fillText("Level " + character.level + ' / Soul level ' + character.soul, x + 100, y + 50);
-    ctx.fillStyle = "#0FF";
+    ctx.fillText("Level " + character.level + ' / Soul level ' + character.soul, x + 100, y + 40);
+    ctx.fillStyle = "white";
+    ctx.fillText("HP " + character.currentHealth + '/' + character.maxHealth, x + 101, y + 59);
+    ctx.fillStyle = "white";
     ctx.fillText("EXP " + character.currentExp + '/' + character.levelExp, x + 100, y + 75);
-    ctx.fillStyle = "#0CF";
+    ctx.fillStyle = "white";
     ctx.fillText("Soul " + character.currentSoul + '/' + character.levelSoul, x + 100, y + 90);
     ctx.restore();
     if (character.currentSoul > character.levelSoul) {
@@ -374,7 +376,7 @@ CharacterInfo.prototype.draw = function () {
     if (character.currentExp > character.levelExp) {
         character.currentExp = character.currentExp - character.levelExp;
         character.level++;
-        character.levelExp *= character.levelExp;
+        character.levelExp *= character.level;
     }
 };
 /*----------------------------------------------End character information--------------------------------------------------------------------------------- */
@@ -454,7 +456,12 @@ Tree.prototype.getLevel = function (level, queue) {
 }
 var Point = function (x, y) {
     this.x = x;
-    this.y = y; 
+    this.y = y;
+}
+var Door = function (x, y, position) {
+    this.x = x;
+    this.y = y;
+    this.position = position;
 }
 //a container prototype.
 var Container = function (x, y, w, h) {
@@ -468,20 +475,29 @@ var Container = function (x, y, w, h) {
         this.y + (this.h / 2)
     )
 }
-Container.prototype.pushWall = function (theX, theY) {
-   // this.x + (this.w / 2),
-    //    this.y + (this.h / 2)
+Container.prototype.pushWall = function (theX, theY, thePosition, code) {//position #0 is a door
+    let point = new Point(theX, theY);
+    if (code === 15) { //door
+        point = new Door(theX, theY, thePosition);
+    }
     if (this.x <= theX + currentScale / 2 && theX + currentScale / 2 < this.x + this.w
         && this.y <= theY + currentScale / 2 && theY + currentScale / 2 < this.y + this.h) {
-        this.walls.push(new Point(theX, theY));        
-    }
-    if (this.x <= theX  && theX < this.x + this.w
+        this.walls.push(point);  
+        if (code === 15) { //door
+            console.log('added door: ' + point.position);
+        }
+    } else if (this.x <= theX  && theX < this.x + this.w
         && this.y <= theY && theY  < this.y + this.h) {
-        this.walls.push(new Point(theX, theY));
-    }
-    if (this.x <= theX && theX < this.x + this.w
+        this.walls.push(point);
+        if (code === 15) { //door
+            console.log('added door: ' + point.position);
+        }
+    }else if (this.x <= theX && theX < this.x + this.w
         && this.y <= theY + currentScale && theY + currentScale < this.y + this.h) {
-        this.walls.push(new Point(theX, theY));
+        this.walls.push(point);
+        if (code === 15) { //door
+            console.log('added door: ' + point.position);
+        }
     }
 }
 Container.prototype.paint = function (c) {
@@ -571,16 +587,15 @@ function fillBSPTree(target) {//, background) {
             y += currentScale;
             count = 0;
         }
-        if (13 >= target[i] && target[i] >= 0) { //wall code
+        if (15 >= target[i] && target[i] >= 0) { //wall code
             x = count * currentScale;
              //and the wall into property container
-            for (var j = 0; j < leafs.length; j++) leafs[j].pushWall(x, y);
+            for (var j = 0; j < leafs.length; j++) leafs[j].pushWall(x, y, i, target[i]);//i position, target = code
         }
 
         count++;
     };
 }
-var isfilledBSP = false;
 fillBSPTree(slimeDungeonLevelOne);
 /*----------------------------------------------BSP TREE End------------------------------------------------------------------------------------------------- */
 
@@ -604,7 +619,6 @@ function isCollise(targetX, targetY, targetW, targetH, entity, entityW, entityH)
     }
     return false;
 }
-
 //var isColli = false;
 function collisionDetect(characterX, characterY, width) { 
     var targetX, targetY;
@@ -622,12 +636,18 @@ function collisionDetect(characterX, characterY, width) {
     for (var i = 0; i < leafs[j].walls.length; i++) {
         targetX = leafs[j].walls[i].x;
         targetY = leafs[j].walls[i].y;
+        targetX = leafs[j].walls[i].x;
+        targetY = leafs[j].walls[i].y;
         if (characterX < targetX + currentScale &&// - width for more percise when work with character
             characterX + currentScale - width> targetX &&
             characterY < targetY + currentScale &&
-            characterY > targetY) {
-            isColli = true;
-           // console.log('Collision position: X:' + targetX + 'Y: ' + targetY);
+            characterY > targetY) { 
+            if (leafs[j].walls[i] instanceof Door == true && character.SilverKey > 0) {
+                character.SilverKey -= 1;
+                slimeDungeonLevelOne[leafs[j].walls[i].position] = 24; // center floor.
+                leafs[j].walls.splice(i, 1); //remove opened door
+                return false;
+            }
             return true;
         }
     }  
@@ -646,16 +666,17 @@ const drawHPBar = () => {
             ctx.fillRect(entity.x + 15, entity.y, 50*entity.currentHealth / entity.maxHealth, 3);
         }
     }
-    ctx.strokeStyle = "red";    
-    ctx.strokeRect(character.x, character.y, 40, 3);
-    ctx.fillRect(character.x, character.y, 40 * character.currentHealth / character.maxHealth, 3);
+    ctx.strokeStyle = "#b00642";    
+    ctx.strokeRect(character.x - 279, character.y - 330, 100, 10);
+    ctx.fillStyle = "#9a065f";
+    ctx.fillRect(character.x - 279, character.y - 329, 100 * character.currentHealth / character.maxHealth, 8);
     ctx.strokeStyle = "#0FF";
     ctx.strokeRect(character.x - 280, character.y - 315, 100, 10);
-    ctx.fillStyle = "white";
+    ctx.fillStyle = "blue";
     ctx.fillRect(character.x - 280, character.y - 314, 100 * character.currentExp / character.levelExp, 8);
     ctx.strokeStyle = "#0CF";
     ctx.strokeRect(character.x - 280, character.y - 300, 100, 10);
-    ctx.fillStyle = "white";
+    ctx.fillStyle = "blue";
     ctx.fillRect(character.x - 280, character.y - 299, 100 * character.currentSoul / character.levelSoul, 8);
 }
 
@@ -1224,6 +1245,8 @@ function Character(game) {                                                      
     this.isMovingDownLeft = false;
     this.isMovingDownRight = false;
     this.radius = 100;
+    this.SilverKey = 0;
+    this.GoldKey = 0;
     this.level = 1;
     this.soul = 1;
     this.travelSpeed = 2;
@@ -1397,36 +1420,13 @@ Character.prototype.draw = function (ctx) {
         if (gameEngine.entities[i] instanceof Character == true || typeof gameEngine.entities[i] === 'undefined') continue;
         scaleOf = (gameEngine.entities[i] instanceof Projectile) ? 4 : currentScale - 10;        
         if (isCollise(newX + 20, newY - scaleOf + 20, 5 + range, 42 + range, gameEngine.entities[i], scaleOf + range, scaleOf + range)) {
+            if (gameEngine.entities[i] instanceof SilverKey) { this.SilverKey += 1; gameEngine.entities.splice(i, 1); break; }
+            else if (gameEngine.entities[i] instanceof GoldKey) { this.GoldKey += 1; gameEngine.entities.splice(i, 1); break; }
             let heal = (gameEngine.entities[i] instanceof HealingPotion) ? gameEngine.entities[i].health : 0;
             let jar = (gameEngine.entities[i] instanceof SoulJar) ? gameEngine.entities[i].jar : 0;
             let damge = this.baseDamge + this.baseDamge * this.soul;
-            if (this.game.click || this.game.isWhirlwinding || this.game.isAttacking) {
-                this.game.click = false;
-                gameEngine.entities[i].currentHealth -= damge;
-                damgeST.x = gameEngine.entities[i].x;
-                damgeST.y = gameEngine.entities[i].y;
-                damgeST.damged = damge;
-                damgeST.time = new Date().getTime();
-                bug = 0;
-            }
-            if (bug <= 8) {this.currentHealth += 10; bug++;}
-            
-                //if (gameEngine.entities[i].currentHealth > 0) this.currentHealth -= 5;
-            if ((gameEngine.entities[i].currentHealth <= 0 || gameEngine.entities[i].currentHealth == null)
-                    && gameEngine.entities[i].killed == null) {                              
-                gameEngine.entities.splice(i, 1);
-                this.currentExp += (this.level + 1) * 20; // may change the formular later 
-                damgeST.exp = (this.level + 1) * 20;
-            }
-                //if (gameEngine.entities[i] instanceof Projectile != true)
-                    
-            if (gameEngine.entities[i] instanceof Projectile) {
-                gameEngine.entities.splice(i, 1); this.currentHealth -= 5;
-            } else {
-                this.currentHealth -= 10; //console.log('cross by enemy');
-            }
             this.currentSoul += jar;
-            this.currentHealth = Math.min(this.currentHealth + heal, this.maxHealth);  
+            this.currentHealth = Math.min(this.currentHealth + heal, this.maxHealth);
             if (jar > 0 || heal > 0) {
                 gameEngine.entities[i].killed = true;
                 let xOrigC = (character.x + character.animation.frameWidth / 2 - 380 + 100);
@@ -1440,6 +1440,30 @@ Character.prototype.draw = function (ctx) {
                 gameEngine.entities[i].toY = (10 * yDiff) / distance;
                 gameEngine.entities[i].x += (50 * xDiff) / distance;
                 gameEngine.entities[i].y += (50 * yDiff) / distance;
+                break;
+            }
+            if (this.game.click || this.game.isWhirlwinding || this.game.isAttacking) {
+                this.game.click = false;
+                gameEngine.entities[i].currentHealth -= damge;
+                damgeST.x = gameEngine.entities[i].x;
+                damgeST.y = gameEngine.entities[i].y;
+                damgeST.damged = damge;
+                damgeST.time = new Date().getTime();
+                bug = 0;
+            }
+            if (bug <= 8) {this.currentHealth += 10; bug++;}            
+            //if (gameEngine.entities[i] instanceof Projectile != true)                    
+            if (gameEngine.entities[i] instanceof Projectile) {
+                gameEngine.entities.splice(i, 1); this.currentHealth -= 5;
+            } else {
+                this.currentHealth -= 10; //console.log('cross by enemy');
+                if ((gameEngine.entities[i].currentHealth <= 0 || gameEngine.entities[i].currentHealth == null)
+                    && gameEngine.entities[i].killed == null) {
+                    gameEngine.entities.splice(i, 1);
+
+                    this.currentExp += (this.level + 1) * 20; // may change the formular later 
+                    damgeST.exp = (this.level + 1) * 20;
+                }
             }
         }
         
@@ -1455,7 +1479,7 @@ Character.prototype.draw = function (ctx) {
         let cPos = gameEngine.ctx.canvas.getBoundingClientRect();
         let x = cPos.left + (cPos.width - tPos.width) / 2
 		let y = cPos.top + (cPos.height - tPos.height) / 2
-		console.log(tPos);
+		//console.log(tPos);
 		text.style.position = 'absolute';
         text.style.left = x + 'px';
         text.style.top = y + 'px';
@@ -1500,8 +1524,7 @@ var ctx;
 var ASSET_MANAGER = new AssetManager();
 
 function startGame() {
-	document.getElementById('start-game').hidden = true;
-
+    document.getElementById('start-game').hidden = true;
 	ASSET_MANAGER.queueDownload('./img/spritesheet.png');
 	ASSET_MANAGER.queueDownload("./img/DungeonBackgroundSpriteSheet.png");
 	ASSET_MANAGER.queueDownload("./img/spritesheet.png");
