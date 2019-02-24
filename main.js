@@ -218,8 +218,8 @@ var slimeDungeonLevelOne = new Array(
     6, 1, 1, 18, 17, 1, 1, 4, 1, 2, 11, 25, 3, 7, 22, 24, 23, 5, 18, 24, 23, 5, 18, 24, 24, 24, 24, 23, 5, 18, 24, 24, 24, 24, 24, 24, 24, 24, 24, 19, 24, 24, 17, 5, 18, 24, 24, 19, 19, 19, 24, 24, 24, 24, 24, 24, 24, 24, 16, 16, 16, 24, 24, 24, 24, 24, 16, 16, 16, 16, 16, 24, 24, 24, 24, 24, 17, 5, 18, 24, 24, 24, 24, 24, 24, 24, 17, 5,
     5, 20, 16, 24, 24, 16, 16, 16, 16, 21, 5, 18, 21, 4, 7, 24, 6, 2, 18, 17, 6, 1, 18, 24, 24, 24, 23, 6, 3, 18, 24, 24, 24, 24, 24, 24, 24, 24, 23, 5, 18, 24, 17, 5, 18, 24, 17, 1, 1, 7, 18, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 19, 24, 24, 24, 24, 24, 24, 24, 24, 17, 1, 7, 22, 19, 19, 19, 24, 24, 24, 17, 5,
     5, 18, 24, 24, 24, 24, 19, 19, 24, 17, 5, 18, 24, 21, 3, 10, 1, 20, 24, 17, 5, 20, 24, 24, 24, 23, 6, 2, 20, 34, 24, 24, 24, 24, 24, 24, 24, 23, 6, 11, 18, 24, 17, 5, 18, 24, 24, 16, 21, 5, 22, 19, 19, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 17, 5, 22, 24, 24, 24, 24, 24, 24, 24, 24, 21, 1, 4, 2, 1, 7, 18, 24, 24, 17, 5,
-    5, 18, 24, 24, 24, 17, 6, 7, 18, 17, 5, 18, 24, 24, 21, 5, 20, 24, 24, 23, 5, 18, 24, 24, 23, 6, 4, 20, 24, 24, 24, 24, 24, 24, 24, 24, 17, 2, 14, 11, 18, 24, 17, 5, 18, 24, 24, 24, 17, 2, 2, 3, 1, 18, 24, 24, 24, 24, 24, 19, 24, 24, 24, 24, 24, 24, 17, 3, 7, 18, 24, 24, 24, 24, 24, 24, 24, 24, 16, 16, 16, 21, 5, 22, 19, 19, 17, 5,
-    5, 18, 24, 24, 24, 17, 2, 4, 18, 17, 5, 18, 24, 24, 17, 5, 18, 24, 17, 1, 11, 18, 24, 17, 2, 11, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 21, 12, 1, 18, 24, 17, 5, 18, 24, 24, 24, 24, 16, 16, 16, 16, 24, 24, 24, 24, 24, 17, 5, 22, 19, 19, 24, 24, 24, 24, 21, 5, 18, 24, 24, 24, 24, 24, 24, 19, 19, 24, 24, 24, 17, 12, 1, 4, 7, 24, 5,
+    5, 18, 35, 24, 24, 17, 6, 7, 18, 17, 5, 18, 24, 24, 21, 5, 20, 24, 24, 23, 5, 18, 24, 24, 23, 6, 4, 20, 24, 24, 24, 24, 24, 24, 24, 24, 17, 2, 14, 11, 18, 24, 17, 5, 18, 24, 24, 24, 17, 2, 2, 3, 1, 18, 24, 24, 24, 24, 24, 19, 24, 24, 24, 24, 24, 24, 17, 3, 7, 18, 24, 24, 24, 24, 24, 24, 24, 24, 16, 16, 16, 21, 5, 22, 19, 19, 17, 5,
+    5, 18, 24, 24, 24, 17, 2, 4, 18, 17, 5, 18, 35, 24, 17, 5, 18, 24, 17, 1, 11, 18, 24, 17, 2, 11, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 21, 12, 1, 18, 24, 17, 5, 18, 24, 24, 24, 24, 16, 16, 16, 16, 24, 24, 24, 24, 24, 17, 5, 22, 19, 19, 24, 24, 24, 24, 21, 5, 18, 24, 24, 24, 24, 24, 24, 19, 19, 24, 24, 24, 17, 12, 1, 4, 7, 24, 5,
     5, 18, 24, 19, 19, 24, 16, 16, 24, 17, 5, 18, 24, 24, 23, 5, 22, 24, 24, 21, 5, 22, 24, 24, 21, 3, 7, 22, 24, 24, 24, 24, 24, 24, 24, 24, 24, 17, 2, 20, 24, 24, 17, 5, 18, 24, 24, 24, 24, 24, 19, 19, 19, 24, 19, 19, 19, 19, 17, 12, 10, 10, 1, 18, 24, 24, 24, 23, 5, 18, 24, 24, 24, 24, 24, 17, 6, 7, 18, 24, 19, 23, 5, 20, 21, 5, 24, 5,
     5, 18, 17, 6, 7, 18, 24, 24, 24, 17, 5, 18, 24, 17, 1, 14, 4, 18, 24, 17, 2, 7, 18, 24, 24, 21, 12, 1, 18, 24, 24, 24, 24, 24, 24, 24, 24, 24, 16, 24, 24, 24, 17, 5, 18, 24, 24, 24, 24, 23, 6, 1, 7, 24, 6, 2, 4, 7, 24, 12, 3, 4, 20, 24, 24, 24, 17, 6, 2, 18, 24, 24, 24, 24, 24, 17, 4, 1, 18, 17, 1, 2, 3, 18, 17, 2, 10, 9,
     5, 18, 17, 3, 4, 18, 24, 24, 24, 17, 5, 18, 24, 24, 21, 1, 20, 24, 24, 24, 24, 5, 18, 24, 24, 17, 12, 24, 24, 24, 24, 24, 24, 24, 24, 19, 24, 24, 24, 24, 24, 24, 17, 5, 18, 24, 24, 24, 23, 6, 2, 0, 2, 3, 1, 0, 0, 5, 24, 5, 20, 16, 24, 24, 24, 24, 17, 5, 24, 19, 19, 24, 24, 24, 24, 24, 16, 16, 24, 24, 16, 16, 16, 24, 24, 21, 5, 0,
@@ -858,19 +858,27 @@ function SlimeEnemy(startingX, startingY) {
     this.slimeEnemyAttackRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SlimeAttackRight.png"), 0, 0, 80, 80, 0.1, 10, true, false);
 	this.slimeEnemyIdleAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SlimeIdle.png"), 0, 0, 80, 80, 0.1, 8, true, false);
     this.slimeEnemyDeathAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SlimeDeath.png"), 0, 0, 80, 80, 0.1, 8, true, false);
-    this.animation = this.slimeEnemyWalkingRightAnimation;
+    this.animation = this.slimeEnemyIdleAnimation;
     this.isMovingWest = false;
-    this.isMovingEast = true;
+    this.isMovingEast = false;
     this.moveSpeed = 40;
+	this.fleeSpeed = 10;
+    this.cooldown = 0;
+    this.special = 4;
+    this.dangerRange = 1;
+    this.fleeRange = 1;
     this.attackSpeed = 3;
-    this.attackInterval = 0.6;
+    this.attackInterval = 2;
     this.startAttackRange = 80;
     this.stopAttackRange = 300;
     this.startFollowRange = 150;
     this.stopFollowRange = 350;
     this.maxHealth = 300;
     this.currentHealth = 300;
+	this.hasDied = false;
     this.killable = true;
+
+
     Entity.call(this, gameEngine, startingX - 50, startingY - 15); // where it starts
 
 }
@@ -879,6 +887,9 @@ SlimeEnemy.prototype = new Entity();
 SlimeEnemy.prototype.constructor = SlimeEnemy;
 
 SlimeEnemy.prototype.update = function () {
+    if (this.cooldown > 0) this.cooldown -= gameEngine.clockTick;
+    if (this.special > 0) this.cooldown -= gameEngine.clockTick;
+    let canMove = false;
     let xOrigC = (character.x + character.animation.frameWidth / 2);
     let yOrigC = (character.y + character.animation.frameHeight / 2);
     let xOrigS = (this.x + this.animation.frameWidth / 2)
@@ -886,34 +897,75 @@ SlimeEnemy.prototype.update = function () {
     let xDiff = xOrigC - xOrigS;
     let yDiff = yOrigC - yOrigS;
     let distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+    let origX = this.x;
+    let origY = this.y;
 
-    if (this.x < 650 && this.isMovingWest) {
-        this.isMovingEast = true;
-        this.isMovingWest = false;
-        this.x += gameEngine.clockTick * this.moveSpeed;
+
+    if (distance < this.fleeRange) {
+        let velX = (this.fleeSpeed * xDiff) / distance;
+        let velY = (this.fleeSpeed * yDiff) / distance;
+
+        this.x -= gameEngine.clockTick * velX;
+        this.y -= gameEngine.clockTick * velY;
+
+        if (distance < this.dangerRange) this.specialAttack(xDiff, yDiff, distance, xOrigS, yOrigS);
+    } else if (this.startAttackRange <= distance && distance <= this.stopAttackRange) {
+        this.attack(xDiff, yDiff, distance, xOrigS, yOrigS);
     }
-    if (this.x > 860 && this.isMovingEast) {
-        this.isMovingEast = false;
-        this.isMovingWest = true;
-        this.x -= gameEngine.clockTick * this.moveSpeed;
+
+    if (this.startFollowRange <= distance && distance <= this.stopFollowRange) {
+        let velX = (this.moveSpeed * xDiff) / distance;
+        let velY = (this.moveSpeed * yDiff) / distance;
+
+        this.x += gameEngine.clockTick * velX;
+        this.y += gameEngine.clockTick * velY;
+
     }
-    if (this.isMovingEast) {
-        this.x += gameEngine.clockTick * this.moveSpeed;
-    }
-    if (this.isMovingWest) {
-        this.x -= gameEngine.clockTick * this.moveSpeed;
+    if (!collisionDetect(this.x + 30, 90 + this.y, 20)) { canMove = true }
+    if (!canMove) {
+        this.x = origX;
+        this.y = origY;
     }
     Entity.prototype.update.call(this);
 }
+SlimeEnemy.prototype.attack = function (xDiff, yDiff, distance, xOrigS, yOrigS) {
+    if (this.special <= 0) {
+        this.specialAttack(xDiff, yDiff, distance, xOrigS, yOrigS);
+    } else if (this.cooldown <= 0) {
+        this.normalAttack(xDiff, yDiff, distance, xOrigS, yOrigS);
+    }
+}
+
 SlimeEnemy.prototype.normalAttack = function (xDiff, yDiff, distance, xOrigS, yOrigS) {
-    // to do
+    let velX = (this.attackSpeed * xDiff) / distance;
+    let velY = (this.attackSpeed * yDiff) / distance;
+
+    let projectile = new Projectile(gameEngine,
+        xOrigS,
+        yOrigS,
+        velX,
+        velY);
+    gameEngine.addEntity(projectile);
+    this.cooldown = this.attackInterval;
+}
+SlimeEnemy.prototype.specialAttack = function (xDiff, yDiff, distance, xOrigS, yOrigS) {
+    // TODO
 }
 SlimeEnemy.prototype.draw = function () {
     if (this.isMovingWest) {
         this.animation = this.slimeEnemyWalkingLeftAnimation;
-    } else {
+    } else if (this.isMovingEast) {
         this.animation = this.slimeEnemyWalkingRightAnimation;
-    }
+    } else if (this.isAttackingLeft) {
+        this.animation = this.slimeEnemyAttackLeftAnimation;
+    } else if (this.isAttackingRight) {
+        this.animation = this.slimeEnemyAttackRightAnimation;
+    } else if (this.currentHealth == 0 && !this.hasDied) {
+		this.animation = this.slimeEnemyDeathAnimation;
+		this.hasDied = true;
+	} else {
+		this.animation = this.slimeEnemyIdleAnimation;
+	}
     this.animation.drawFrame(gameEngine.clockTick, ctx, this.x, this.y);
     Entity.prototype.draw.call(this);
 }
@@ -991,6 +1043,8 @@ function Wizard(game, startingX, startingY) {
     this.ctx = game.ctx;
     this.wizardWalkingLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/wizardWalkLeft.png"), 0, 0, 80, 80, 0.1, 6, true, false);
     this.wizardWalkingRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/wizardWalkRight.png"), 0, 0, 80, 80, 0.1, 6, true, false);
+	this.wizardAttackLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/wizardAttackLeft.png"), 0, 0, 80, 80, 0.1, 6, true, false);
+    this.wizardAttackRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/wizardAttackRight.png"), 0, 0, 80, 80, 0.1, 6, true, false);
 	this.wizardIdleAnimation = new Animation(ASSET_MANAGER.getAsset("./img/wizardIdle.png"), 0, 0, 80, 80, 0.1, 10, true, false);
     this.wizardDeathAnimation = new Animation(ASSET_MANAGER.getAsset("./img/wizardDeath.png"), 0, 0, 80, 80, 0.1, 10, true, false);
     this.animation = this.wizardWalkingLeftAnimation;
@@ -1190,6 +1244,36 @@ Projectile.prototype.draw = function () {
     ctx.restore();
 }
 /*----------------------------------------------Projectile End----------------------------------------------------------------------------------------------- */
+
+/*----------------------------------------------Slime Projectile Start--------------------------------------------------------------------------------------------- */
+function SlimeProjectile(game, x, y, xs, ys) {
+    this.xs = xs;
+    this.ys = ys;
+    this.scale = 4;
+    this.life = 10;
+    this.killable = true;
+    Entity.call(this, game, x, y);
+}
+
+SlimeProjectile.prototype = new Entity();
+SlimeProjectile.prototype.constructor = SlimeProjectile;
+
+SlimeProjectile.prototype.update = function () {
+    this.x += this.xs;
+    this.y += this.ys;
+    this.life -= gameEngine.clockTick;
+    if (this.life <= 0) this.removeFromWorld = true;
+}
+
+SlimeProjectile.prototype.draw = function () {
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.scale, 0, 2 * Math.PI);
+    ctx.fillStyle = `rgb(35,255,50)`;
+    ctx.fill();
+    ctx.restore();
+}
+/*----------------------------------------------Slime Projectile End----------------------------------------------------------------------------------------------- */
 
 /*----------------------------------------------Character Start---------------------------------------------------------------------------------------------- */
 // The entity's viewport is determined by its BoundingBox object.
@@ -1531,6 +1615,12 @@ function startGame() {
     ASSET_MANAGER.queueDownload("./img/SlimeDeath.png");
     ASSET_MANAGER.queueDownload("./img/wizardWalkLeft.png");
     ASSET_MANAGER.queueDownload("./img/wizardWalkRight.png");
+	ASSET_MANAGER.queueDownload("./img/wizardAttackLeft.png");
+    ASSET_MANAGER.queueDownload("./img/wizardAttackRight.png");
+	ASSET_MANAGER.queueDownload("./img/wizardMagicSpellDown.png");
+	ASSET_MANAGER.queueDownload("./img/wizardMagicSpellUp.png");
+	ASSET_MANAGER.queueDownload("./img/wizardMagicSpellLeft.png");
+	ASSET_MANAGER.queueDownload("./img/wizardMagicSpellRight.png");
 	ASSET_MANAGER.queueDownload("./img/wizardIdle.png");
     ASSET_MANAGER.queueDownload("./img/wizardDeath.png");
     ASSET_MANAGER.queueDownload("./img/SkeletonWalkLeft.png");
