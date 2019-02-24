@@ -1419,51 +1419,50 @@ Character.prototype.draw = function (ctx) {
     for (let i = 0; i < gameEngine.entities.length; i++ ) {//
         if (gameEngine.entities[i] instanceof Character == true || typeof gameEngine.entities[i] === 'undefined') continue;
         scaleOf = (gameEngine.entities[i] instanceof Projectile) ? 4 : currentScale - 10;        
-        if (isCollise(newX + 20, newY - scaleOf + 20, 5 + range, 42 + range, gameEngine.entities[i], scaleOf + range, scaleOf + range)) {
-            if (gameEngine.entities[i] instanceof SilverKey) { this.SilverKey += 1; gameEngine.entities.splice(i, 1); break; }
-            else if (gameEngine.entities[i] instanceof GoldKey) { this.GoldKey += 1; gameEngine.entities.splice(i, 1); break; }
-            let heal = (gameEngine.entities[i] instanceof HealingPotion) ? gameEngine.entities[i].health : 0;
-            let jar = (gameEngine.entities[i] instanceof SoulJar) ? gameEngine.entities[i].jar : 0;
-            let damge = this.baseDamge + this.baseDamge * this.soul;
-            this.currentSoul += jar;
-            this.currentHealth = Math.min(this.currentHealth + heal, this.maxHealth);
-            if (jar > 0 || heal > 0) {
-                gameEngine.entities[i].killed = true;
-                let xOrigC = (character.x + character.animation.frameWidth / 2 - 380 + 100);
-                let yOrigC = (character.y + character.animation.frameHeight / 2 - 380 + 60);
-                let xOrigS = (gameEngine.entities[i].x)
-                let yOrigS = (gameEngine.entities[i].y)
-                let xDiff = xOrigC - xOrigS;
-                let yDiff = yOrigC - yOrigS;
-                let distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
-                gameEngine.entities[i].toX = (10 * xDiff) / distance;
-                gameEngine.entities[i].toY = (10 * yDiff) / distance;
-                gameEngine.entities[i].x += (50 * xDiff) / distance;
-                gameEngine.entities[i].y += (50 * yDiff) / distance;
-                break;
-            }            
-                      
-            //if (gameEngine.entities[i] instanceof Projectile != true)                    
+        if (isCollise(newX + 20, newY - scaleOf + 20, 5 + range, 42 + range, gameEngine.entities[i], scaleOf + range, scaleOf + range)) {                                  
             if (gameEngine.entities[i] instanceof Projectile) {
-                gameEngine.entities.splice(i, 1); this.currentHealth -= 5;
-            } else {
-                if (this.game.click || this.game.isWhirlwinding || this.game.isAttacking) {
-                    this.game.click = false;
-                    gameEngine.entities[i].currentHealth -= damge;
-                    damgeST.x = gameEngine.entities[i].x;
-                    damgeST.y = gameEngine.entities[i].y;
-                    damgeST.damged = damge;
-                    damgeST.time = new Date().getTime();
-                    bug = 0;
+                gameEngine.entities.splice(i, 1); this.currentHealth -= 5; break;
+            }
+            if (gameEngine.entities[i] instanceof SilverKey) { this.SilverKey += 1; gameEngine.entities.splice(i, 1); break; }
+            if (gameEngine.entities[i] instanceof GoldKey) { this.GoldKey += 1; gameEngine.entities.splice(i, 1); break; }
+            if (gameEngine.entities[i] instanceof HealingPotion || gameEngine.entities[i] instanceof SoulJar) {
+                let heal = (gameEngine.entities[i] instanceof HealingPotion) ? gameEngine.entities[i].health : 0;
+                let jar = (gameEngine.entities[i] instanceof SoulJar) ? gameEngine.entities[i].jar : 0;
+                this.currentSoul += jar;
+                this.currentHealth = Math.min(this.currentHealth + heal, this.maxHealth);
+                if (jar > 0 || heal > 0) {
+                    gameEngine.entities[i].killed = true;
+                    let xOrigC = (character.x + character.animation.frameWidth / 2 - 380 + 100);
+                    let yOrigC = (character.y + character.animation.frameHeight / 2 - 380 + 60);
+                    let xOrigS = (gameEngine.entities[i].x)
+                    let yOrigS = (gameEngine.entities[i].y)
+                    let xDiff = xOrigC - xOrigS;
+                    let yDiff = yOrigC - yOrigS;
+                    let distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+                    gameEngine.entities[i].toX = (10 * xDiff) / distance;
+                    gameEngine.entities[i].toY = (10 * yDiff) / distance;
+                    gameEngine.entities[i].x += (50 * xDiff) / distance;
+                    gameEngine.entities[i].y += (50 * yDiff) / distance;
+                    break;
                 }
-                this.currentHealth -= 10; //console.log('cross by enemy');
-                if ((gameEngine.entities[i].currentHealth <= 0 || gameEngine.entities[i].currentHealth == null)
-                    && gameEngine.entities[i].killed == null) {
-                    gameEngine.entities.splice(i, 1);
+            }
+            let damge = 0;
+            if (this.game.click || this.game.isWhirlwinding || this.game.isAttacking) {
+                this.game.click = false;
+                damge = this.baseDamge * (1 + (this.level - 1) * 0.1 + this.soul);
+                gameEngine.entities[i].currentHealth -= damge;
+                damgeST.x = gameEngine.entities[i].x;
+                damgeST.y = gameEngine.entities[i].y;
+                damgeST.damged = damge;
+                damgeST.time = new Date().getTime();
+                bug = 0;
+            }
+            this.currentHealth -= 10; //console.log('cross by enemy');
+            if (gameEngine.entities[i].currentHealth <= 0 || gameEngine.entities[i].currentHealth == null) {
+                gameEngine.entities.splice(i, 1);
 
-                    this.currentExp += (this.level + 1) * 20; // may change the formular later 
-                    damgeST.exp = (this.level + 1) * 20;
-                }
+                this.currentExp += (this.level + 1) * 20; // may change the formular later 
+                damgeST.exp = (this.level + 1) * 20;
             }
             if (bug <= 8) { this.currentHealth += 10; bug++; }  
         }
