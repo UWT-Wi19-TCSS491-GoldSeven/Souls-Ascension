@@ -376,6 +376,7 @@ CharacterInfo.prototype.draw = function () {
     if (character.currentExp > character.levelExp) {        
         character.currentExp = character.currentExp - character.levelExp;
         character.level++;
+        character.maxHealth += character.maxHealth * character.level / 10;
         character.levelExp *= character.level;
         character.currentHealth = character.maxHealth;
     }
