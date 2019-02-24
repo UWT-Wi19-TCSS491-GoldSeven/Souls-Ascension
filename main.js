@@ -336,12 +336,13 @@ damgeStat.prototype.draw = function () {
     }
 }
 /*----------------------------------------------Character Information-------------------------------------------------------------------------------- */
-function CharacterInfo(image) {
+function CharacterInfo(image, hpImage) {
     this.x = 0;
     this.y = 0;
     this.w = 512;
     this.h = 512;
     this.image = image;
+    this.hpImange = hpImage;
 };
 
 CharacterInfo.prototype = new Entity();
@@ -356,10 +357,13 @@ CharacterInfo.prototype.draw = function () {
     //gradient.addColorStop("1.0", "white");
     // Fill with gradient
     ctx.drawImage(this.image, x, y, 100, 100);
+    ctx.drawImage(this.hpImange, x, y + 200, 40, 40);
     ctx.fillStyle = "#0F0";
     ctx.fillText("Level " + character.level + ' / Soul level ' + character.soul, x + 100, y + 40);
     ctx.fillStyle = "white";
     ctx.fillText("HP " + character.currentHealth + '/' + character.maxHealth, x + 101, y + 59);
+    ctx.fillText("H", x + 30, y + 235);
+    ctx.fillText(character.inventory['hp'].quantity, x + 5, y + 210);
     ctx.fillStyle = "white";
     ctx.fillText("EXP " + character.currentExp + '/' + character.levelExp, x + 100, y + 75);
     ctx.fillStyle = "white";
@@ -626,8 +630,8 @@ function collisionDetect(characterX, characterY, width) {
             characterX + currentScale - width > targetX &&
             characterY < targetY + currentScale &&
             characterY > targetY) {
-            if (leafs[j].walls[i] instanceof Door == true && character.SilverKey > 0) {
-                character.SilverKey -= 1;
+            if (leafs[j].walls[i] instanceof Door == true && character.inventory['SilverKey'] > 0) {
+                character.inventory['SilverKey'] -= 1;
                 slimeDungeonLevelOne[leafs[j].walls[i].position] = 24; // center floor.
                 leafs[j].walls.splice(i, 1); //remove opened door
                 return false;
@@ -857,7 +861,7 @@ function SlimeEnemy(startingX, startingY) {
 	this.slimeEnemyAttackLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SlimeAttackLeft.png"), 0, 0, 80, 80, 0.1, 10, true, false);
     this.slimeEnemyAttackRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SlimeAttackRight.png"), 0, 0, 80, 80, 0.1, 10, true, false);
 	this.slimeEnemyIdleAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SlimeIdle.png"), 0, 0, 80, 80, 0.1, 8, true, false);
-    this.slimeEnemyDeathAnimation = new Animation(ASSET_MANAGER.getAsset("./img/SlimeDeath.png"), 0, 0, 80, 80, 0.1, 8, true, false);
+    this.death = new Animation(ASSET_MANAGER.getAsset("./img/SlimeDeath.png"), 0, 0, 80, 80, 0.1, 8, true, false);
     this.animation = this.slimeEnemyIdleAnimation;
     this.isMovingWest = false;
     this.isMovingEast = false;
@@ -875,7 +879,8 @@ function SlimeEnemy(startingX, startingY) {
     this.stopFollowRange = 350;
     this.maxHealth = 300;
     this.currentHealth = 300;
-	this.hasDied = false;
+    this.hasDied = false;
+    this.life = 1;
     this.killable = true;
 
 
@@ -921,7 +926,7 @@ SlimeEnemy.prototype.update = function () {
         this.y += gameEngine.clockTick * velY;
 
     }
-    if (!collisionDetect(this.x + 30, 90 + this.y, 20)) { canMove = true }
+    if (!collisionDetect(this.x + 30, 60 + this.y, 20)) { canMove = true }
     if (!canMove) {
         this.x = origX;
         this.y = origY;
@@ -952,21 +957,27 @@ SlimeEnemy.prototype.specialAttack = function (xDiff, yDiff, distance, xOrigS, y
     // TODO
 }
 SlimeEnemy.prototype.draw = function () {
-    if (this.isMovingWest) {
-        this.animation = this.slimeEnemyWalkingLeftAnimation;
-    } else if (this.isMovingEast) {
-        this.animation = this.slimeEnemyWalkingRightAnimation;
-    } else if (this.isAttackingLeft) {
-        this.animation = this.slimeEnemyAttackLeftAnimation;
-    } else if (this.isAttackingRight) {
-        this.animation = this.slimeEnemyAttackRightAnimation;
-    } else if (this.currentHealth == 0 && !this.hasDied) {
-		this.animation = this.slimeEnemyDeathAnimation;
-		this.hasDied = true;
-	} else {
-		this.animation = this.slimeEnemyIdleAnimation;
-	}
+    if (this.animation !== this.death) {
+        if (this.isMovingWest) {
+            this.animation = this.slimeEnemyWalkingLeftAnimation;
+        } else if (this.isMovingEast) {
+            this.animation = this.slimeEnemyWalkingRightAnimation;
+        } else if (this.isAttackingLeft) {
+            this.animation = this.slimeEnemyAttackLeftAnimation;
+        } else if (this.isAttackingRight) {
+            this.animation = this.slimeEnemyAttackRightAnimation;
+        } else if (this.currentHealth == 0 && !this.hasDied) {
+            this.animation = this.slimeEnemyDeathAnimation;
+            this.hasDied = true;
+        } else {
+            this.animation = this.slimeEnemyIdleAnimation;
+        }
+    }
     this.animation.drawFrame(gameEngine.clockTick, ctx, this.x, this.y);
+    if (this.animation === this.death) {
+        this.life -= gameEngine.clockTick;
+        if (this.life <= 0) this.removeFromWorld = true;
+    }
     Entity.prototype.draw.call(this);
 }
 /*----------------------------------------------SlimeEnemy End---------------------------------------------------------------------------------------------- */
@@ -1277,6 +1288,11 @@ SlimeProjectile.prototype.draw = function () {
 
 /*----------------------------------------------Character Start---------------------------------------------------------------------------------------------- */
 // The entity's viewport is determined by its BoundingBox object.
+let inventory = {
+    hp: { value: 100, quantity: 1 },
+    SilverKey: 1,
+    GoldKey: 0
+};
 function Character() {                                                                                            //loop  reversed
     this.standAnimation = new Animation(ASSET_MANAGER.getAsset("./img/characterIdleAnimation.png"), 0, 0, 42, 42, 0.08, 4, true, false);
     this.walkRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/characterRightAnimation.png"), 0, 0, 42, 42, 0.15, 6, true, false);
@@ -1304,8 +1320,7 @@ function Character() {                                                          
     this.isMovingDownLeft = false;
     this.isMovingDownRight = false;
     this.radius = 100;
-    this.SilverKey = 0;
-    this.GoldKey = 0;
+    this.inventory = inventory;
     this.level = 1;
     this.soul = 1;
     this.travelSpeed = 2;
@@ -1401,6 +1416,11 @@ Character.prototype.update = function () {
             this.isWhirlwinding = false;
         }
     }
+    if (this.game.used === 'hp' && this.inventory['hp'].quantity > 0) {
+        this.currentHealth = Math.min(this.currentHealth + this.inventory['hp'].value, this.maxHealth);
+        this.inventory['hp'].quantity -= 1;
+        this.game.used = null;
+    }
     Entity.prototype.update.call(this);
 }
 
@@ -1482,13 +1502,12 @@ Character.prototype.draw = function (ctx) {
             if (gameEngine.entities[i] instanceof Projectile) {
                 gameEngine.entities.splice(i, 1); this.currentHealth -= 5; break;
             }
-            if (gameEngine.entities[i] instanceof SilverKey) { this.SilverKey += 1; gameEngine.entities.splice(i, 1); break; }
-            if (gameEngine.entities[i] instanceof GoldKey) { this.GoldKey += 1; gameEngine.entities.splice(i, 1); break; }
-            if (gameEngine.entities[i] instanceof HealingPotion || gameEngine.entities[i] instanceof SoulJar) {
-                let heal = (gameEngine.entities[i] instanceof HealingPotion) ? gameEngine.entities[i].health : 0;
+            if (gameEngine.entities[i] instanceof SilverKey) { this.inventory['SilverKey'] += 1; gameEngine.entities.splice(i, 1); break; }
+            if (gameEngine.entities[i] instanceof GoldKey) { this.inventory['GoldKey'] += 1; gameEngine.entities.splice(i, 1); break; }
+            if (gameEngine.entities[i] instanceof HealingPotion) { this.inventory['hp'].quantity += 1; gameEngine.entities.splice(i, 1); break; }
+            if (gameEngine.entities[i] instanceof SoulJar) {
                 let jar = (gameEngine.entities[i] instanceof SoulJar) ? gameEngine.entities[i].jar : 0;
                 this.currentSoul += jar;
-                this.currentHealth = Math.min(this.currentHealth + heal, this.maxHealth);
                 if (jar > 0 || heal > 0) {
                     gameEngine.entities[i].killed = true;
                     let xOrigC = (character.x + character.animation.frameWidth / 2 - 380 + 100);
@@ -1518,8 +1537,12 @@ Character.prototype.draw = function (ctx) {
             }
             this.currentHealth -= 10; //console.log('cross by enemy');
             if (gameEngine.entities[i].currentHealth <= 0 || gameEngine.entities[i].currentHealth == null) {
-                gameEngine.entities.splice(i, 1);
-
+                if (gameEngine.entities[i].death === null)
+                    gameEngine.entities.splice(i, 1);
+                else {
+                    gameEngine.entities[i].animation = gameEngine.entities[i].death;
+                    gameEngine.entities[i].killable = false;
+                }
                 this.currentExp += (this.level + 1) * 20; // may change the formular later 
                 damgeST.exp = (this.level + 1) * 20;
             }
@@ -1626,6 +1649,7 @@ function startGame() {
     ASSET_MANAGER.queueDownload("./img/SkeletonWalkLeft.png");
     ASSET_MANAGER.queueDownload("./img/SkeletonWalkRight.png");
     ASSET_MANAGER.queueDownload("./img/characterInfo.png");
+    ASSET_MANAGER.queueDownload("./img/HP.png");
     ASSET_MANAGER.downloadAll(function () {
         console.log("starting up da sheild");
         canvas = document.getElementById("viewport");
@@ -1635,7 +1659,7 @@ function startGame() {
         // Creates new entity instances
         gameEngine = new GameEngine(ctx, ctx.canvas.width, ctx.canvas.height);
         var bg = new Background(ASSET_MANAGER.getAsset("./img/DungeonBackgroundSpriteSheet.png"));
-        var chInfo = new CharacterInfo(ASSET_MANAGER.getAsset("./img/characterInfo.png"));
+        var chInfo = new CharacterInfo(ASSET_MANAGER.getAsset("./img/characterInfo.png"), ASSET_MANAGER.getAsset("./img/HP.png"));
         damgeST = new damgeStat();
         var torches = [];
         var sKeys = [];

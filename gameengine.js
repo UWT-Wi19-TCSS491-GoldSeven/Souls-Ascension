@@ -89,6 +89,9 @@ GameEngine.prototype.startInput = function () {
                 }
                 that.settings.audio.muted = muted;
                 break;
+            case 'H':
+            case 'h':
+                that.used = 'hp';
             default:
                 break;
         }
