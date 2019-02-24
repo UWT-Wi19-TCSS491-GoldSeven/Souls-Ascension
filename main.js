@@ -1441,21 +1441,21 @@ Character.prototype.draw = function (ctx) {
                 gameEngine.entities[i].x += (50 * xDiff) / distance;
                 gameEngine.entities[i].y += (50 * yDiff) / distance;
                 break;
-            }
-            if (this.game.click || this.game.isWhirlwinding || this.game.isAttacking) {
-                this.game.click = false;
-                gameEngine.entities[i].currentHealth -= damge;
-                damgeST.x = gameEngine.entities[i].x;
-                damgeST.y = gameEngine.entities[i].y;
-                damgeST.damged = damge;
-                damgeST.time = new Date().getTime();
-                bug = 0;
-            }
-            if (bug <= 8) {this.currentHealth += 10; bug++;}            
+            }            
+                      
             //if (gameEngine.entities[i] instanceof Projectile != true)                    
             if (gameEngine.entities[i] instanceof Projectile) {
                 gameEngine.entities.splice(i, 1); this.currentHealth -= 5;
             } else {
+                if (this.game.click || this.game.isWhirlwinding || this.game.isAttacking) {
+                    this.game.click = false;
+                    gameEngine.entities[i].currentHealth -= damge;
+                    damgeST.x = gameEngine.entities[i].x;
+                    damgeST.y = gameEngine.entities[i].y;
+                    damgeST.damged = damge;
+                    damgeST.time = new Date().getTime();
+                    bug = 0;
+                }
                 this.currentHealth -= 10; //console.log('cross by enemy');
                 if ((gameEngine.entities[i].currentHealth <= 0 || gameEngine.entities[i].currentHealth == null)
                     && gameEngine.entities[i].killed == null) {
@@ -1465,6 +1465,7 @@ Character.prototype.draw = function (ctx) {
                     damgeST.exp = (this.level + 1) * 20;
                 }
             }
+            if (bug <= 8) { this.currentHealth += 10; bug++; }  
         }
         
         else if (gameEngine.entities[i] instanceof Projectile == true && collisionDetect(gameEngine.entities[i].x, gameEngine.entities[i].y, currentScale)) {
