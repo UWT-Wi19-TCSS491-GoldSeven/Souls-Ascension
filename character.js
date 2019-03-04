@@ -142,11 +142,11 @@ Character.prototype.update = function () {
 
 Character.prototype.draw = function (ctx) {
     if (this.isAttacking) {
-        if (this.isAttacking && this.isMovingUp) {
+        if (this.isMovingUp) {
             this.animation = this.attackUpAnimation;
-        } else if (this.isAttacking && this.isMovingLeft) {
+        } else if (this.isMovingLeft) {
             this.animation = this.attackLeftAnimation;
-        } else if (this.isAttacking && this.isMovingRight) {
+        } else if (this.isMovingRight) {
             this.animation = this.attackRightAnimation;
         } else {
             this.animation = this.attackDownAnimation;
@@ -172,7 +172,9 @@ Character.prototype.draw = function (ctx) {
     } else {
         this.animation = this.standAnimation;
     }
+
     this.animation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
+
     if (this.game.debug) {
         ctx.strokeStyle = "green";
         ctx.strokeRect(this.boundingBox.x, this.boundingBox.y, this.boundingBox.width, this.boundingBox.height);
@@ -187,6 +189,7 @@ Character.prototype.draw = function (ctx) {
                 ctx.strokeRect(leafs[i].walls[j].x, leafs[i].walls[j].y, 48, 48);
         }
     }
+
     Entity.prototype.draw.call(this);
     let scaleOf = 4;
     let range = (this.isWhirlwinding) ? world.currentScale * 1.5 : (this.isAttacking) ? world.currentScale / 2 : 0;
@@ -210,11 +213,13 @@ Character.prototype.draw = function (ctx) {
             newY -= world.currentScale;
         default: break;
     }//SorcererVillain
+
     if (new Date().getTime() - damageST.time > 500) { damageST.damaged = 0; damageST.exp = 0; } //hide
+
     for (let i = 0; i < gameEngine.entities.length; i++) {//
         if (gameEngine.entities[i] instanceof Character == true || typeof gameEngine.entities[i] === 'undefined') continue;
         scaleOf = (gameEngine.entities[i] instanceof Projectile) ? 4 : world.currentScale - 10;
-        if (isCollise(newX + 20, newY - scaleOf + 20, 5 + range, 42 + range, gameEngine.entities[i], scaleOf + range, scaleOf + range)) {
+        if (isCollide(newX + 20, newY - scaleOf + 20, 5 + range, 42 + range, gameEngine.entities[i], scaleOf + range, scaleOf + range)) {
             if (gameEngine.entities[i] instanceof Projectile) {
                 gameEngine.entities.splice(i, 1); this.currentHealth -= 5; break;
             }
