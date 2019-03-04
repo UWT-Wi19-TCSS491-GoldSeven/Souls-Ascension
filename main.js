@@ -88,24 +88,24 @@ function generateRectangle(minX, maxX, minY, maxY) {
 // Generate world1 object.
 var world1 = new World1();
 
-function damgeStat() {
+function damageStat() {
     this.x = 0;
     this.y = 0;
-    this.damged = 0;
+    this.damaged = 0;
     this.exp = 0;
     this.time = new Date().getTime();
 
 }
-damgeStat.prototype = new Entity();
-damgeStat.prototype.constructor = damgeStat;
-damgeStat.prototype.update = function () {
+damageStat.prototype = new Entity();
+damageStat.prototype.constructor = damageStat;
+damageStat.prototype.update = function () {
     Entity.prototype.update.call(this);
 }
-damgeStat.prototype.draw = function () {
-    if (this.damged !== 0) {
+damageStat.prototype.draw = function () {
+    if (this.damaged !== 0) {
         ctx.fillStyle = "red";
         ctx.font = "30px Arial";
-        ctx.fillText(" - " + this.damged, this.x, this.y);
+        ctx.fillText(" - " + this.damaged, this.x, this.y);
     }
     if (this.exp !== 0) {
         ctx.fillStyle = "blue";
@@ -1091,7 +1091,7 @@ CenterThingy.prototype.draw = function (ctx) {
 /*----------------------------------------------Main Code Start-------------------------------------------------------------------------------------------- */
 // the "main" code begins here
 var gameEngine;
-var damgeST;
+var damageST;
 let character;
 let sorcererVillain;
 let slimeBehemoth;
@@ -1162,7 +1162,7 @@ function startGame() {
         gameEngine = new GameEngine(ctx, ctx.canvas.width, ctx.canvas.height);
         var bg = new world1.Background(ASSET_MANAGER.getAsset("./img/DungeonBackgroundSpriteSheet.png"));
         var chInfo = new CharacterInfo(ASSET_MANAGER.getAsset("./img/characterInfo2.png"), ASSET_MANAGER.getAsset("./img/HP.png"));
-        damgeST = new damgeStat();
+        damageST = new damageStat();
         var torches = [];
         var sKeys = [];
         var gKeys = [];
@@ -1290,7 +1290,7 @@ function startGame() {
         gameEngine.addEntity(character);
         if (gameEngine.debug) gameEngine.addEntity(centerthingy);
         gameEngine.addEntity(chInfo);
-        gameEngine.addEntity(damgeST);
+        gameEngine.addEntity(damageST);
         gameEngine.debug = false;
         character.updateViewport();
 

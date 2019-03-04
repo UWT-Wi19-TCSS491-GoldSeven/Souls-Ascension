@@ -82,7 +82,7 @@ function Events(that) {
                 that.down = that.downing = false;
                 break;
             default:
-                //console.error("Key Down Event - Char: " + e.code + " Code: " + e.keyCode + " Reapeat: " + e.repeat);
+                if (that.debug) console.debug("Key Down Event - Char: " + e.code + " Code: " + e.keyCode + " Reapeat: " + e.repeat);
                 break;
         }
     }, false);
@@ -102,7 +102,7 @@ function Events(that) {
     that.ctx.canvas.addEventListener("click", function (e) {
         that.click = getXandY(e);
         that.sounds.get('characterAttack01').replay();
-        if (that.debug) console.log("Clicked " + e.button +  " button at " + e.clientX + "," + e.clientY); // The coordinates on the browser screen.
+        if (that.debug) console.debug("Clicked " + e.button +  " button at " + e.clientX + "," + e.clientY); // The coordinates on the browser screen.
     }, false);
 
     var getXandY = function (e) {

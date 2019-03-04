@@ -210,7 +210,7 @@ Character.prototype.draw = function (ctx) {
             newY -= world.currentScale;
         default: break;
     }//SorcererVillain
-    if (new Date().getTime() - damgeST.time > 500) { damgeST.damged = 0; damgeST.exp = 0; } //hide
+    if (new Date().getTime() - damageST.time > 500) { damageST.damaged = 0; damageST.exp = 0; } //hide
     for (let i = 0; i < gameEngine.entities.length; i++) {//
         if (gameEngine.entities[i] instanceof Character == true || typeof gameEngine.entities[i] === 'undefined') continue;
         scaleOf = (gameEngine.entities[i] instanceof Projectile) ? 4 : world.currentScale - 10;
@@ -240,15 +240,15 @@ Character.prototype.draw = function (ctx) {
                     break;
                 }
             }
-            let damge = 0;
+            let damage = 0;
             if (this.game.click || this.game.isWhirlwinding || this.game.isAttacking) {
                 this.game.click = false;
-                damge = this.baseDamge * (1 + (this.level - 1) * 0.1 + this.soul);
-                gameEngine.entities[i].currentHealth -= damge;
-                damgeST.x = gameEngine.entities[i].x;
-                damgeST.y = gameEngine.entities[i].y;
-                damgeST.damged = damge;
-                damgeST.time = new Date().getTime();
+                damage = this.baseDamge * (1 + (this.level - 1) * 0.1 + this.soul);
+                gameEngine.entities[i].currentHealth -= damage;
+                damageST.x = gameEngine.entities[i].x;
+                damageST.y = gameEngine.entities[i].y;
+                damageST.damaged = damage;
+                damageST.time = new Date().getTime();
                 bug = 0;
             }
             this.currentHealth -= 10; //console.log('cross by enemy');
@@ -260,7 +260,7 @@ Character.prototype.draw = function (ctx) {
                     gameEngine.entities[i].killable = false;
                 }
                 this.currentExp += (this.level + 1) * 20; // may change the formular later
-                damgeST.exp = (this.level + 1) * 20;
+                damageST.exp = (this.level + 1) * 20;
             }
             if (bug <= 8) { this.currentHealth += 10; bug++; }
         }
