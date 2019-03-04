@@ -89,6 +89,7 @@ function Events(that) {
 
     // Right click only.
     window.oncontextmenu = function (e) {
+        that.click = getXandY(e); // Enables inflicting damage on the enemy.
         e.preventDefault(); // cancels default context menu when right clicked.
         that.one = true;
         that.sounds.get('characterAttack02').replay();
@@ -100,7 +101,7 @@ function Events(that) {
 
     // Left click only.
     that.ctx.canvas.addEventListener("click", function (e) {
-        that.click = getXandY(e);
+        that.click = getXandY(e); // Enables inflicting damage on the enemy.
         that.sounds.get('characterAttack01').replay();
         if (that.debug) console.debug("Clicked " + e.button +  " button at " + e.clientX + "," + e.clientY); // The coordinates on the browser screen.
     }, false);

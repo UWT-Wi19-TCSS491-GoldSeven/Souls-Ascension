@@ -216,7 +216,8 @@ Character.prototype.draw = function (ctx) {
 
     if (new Date().getTime() - damageST.time > 500) { damageST.damaged = 0; damageST.exp = 0; } //hide
 
-    for (let i = 0; i < gameEngine.entities.length; i++) {//
+    // Iterate through all entities to check if anyone has collided with another, and take appropriate action.
+    for (let i = 0; i < gameEngine.entities.length; i++) {
         if (gameEngine.entities[i] instanceof Character == true || typeof gameEngine.entities[i] === 'undefined') continue;
         scaleOf = (gameEngine.entities[i] instanceof Projectile) ? 4 : world.currentScale - 10;
         if (isCollide(newX + 20, newY - scaleOf + 20, 5 + range, 42 + range, gameEngine.entities[i], scaleOf + range, scaleOf + range)) {
@@ -245,6 +246,8 @@ Character.prototype.draw = function (ctx) {
                     break;
                 }
             }
+
+            // Inflict damage on the enemy. Kick the Satan! Punch the Devil!
             let damage = 0;
             if (this.game.click || this.game.isWhirlwinding || this.game.isAttacking) {
                 this.game.click = false;
@@ -256,7 +259,9 @@ Character.prototype.draw = function (ctx) {
                 damageST.time = new Date().getTime();
                 bug = 0;
             }
+
             this.currentHealth -= 10; //console.log('cross by enemy');
+
             if (gameEngine.entities[i].currentHealth <= 0 || gameEngine.entities[i].currentHealth == null) {
                 if (gameEngine.entities[i].death === null)
                     gameEngine.entities.splice(i, 1);
@@ -268,13 +273,12 @@ Character.prototype.draw = function (ctx) {
                 damageST.exp = (this.level + 1) * 20;
             }
             if (bug <= 8) { this.currentHealth += 10; bug++; }
-        }
 
-        else if (gameEngine.entities[i] instanceof Projectile == true && collisionDetect(gameEngine.entities[i].x, gameEngine.entities[i].y, world.currentScale)) {
+        } else if (gameEngine.entities[i] instanceof Projectile == true && collisionDetect(gameEngine.entities[i].x, gameEngine.entities[i].y, world.currentScale)) {
             gameEngine.entities.splice(i, 1);
         }
     }
-    
+
     if (this.currentHealth <= 0) {//check here if got bug
         gameEngine.entities.splice(gameEngine.entities.length - 1, 1);
         let text = document.getElementById('gameover');
