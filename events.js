@@ -3,7 +3,6 @@
  * Author: Sam Brendel
  */
 function Events(that) {
-
     window.addEventListener('keydown', function (e) {
         switch (e.key) {
             case '`':

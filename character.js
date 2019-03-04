@@ -142,6 +142,7 @@ Character.prototype.update = function () {
 
 Character.prototype.draw = function (ctx) {
     if (this.isAttacking) {
+        //console.debug("Character isAttacking");
         if (this.isMovingUp) {
             this.animation = this.attackUpAnimation;
         } else if (this.isMovingLeft) {
@@ -152,6 +153,7 @@ Character.prototype.draw = function (ctx) {
             this.animation = this.attackDownAnimation;
         }
     } else if (this.isWhirlwinding) {
+        //console.debug("Character isWhirlwinding");
         this.animation = this.whirlwindAttackAnimation;
     } else if (this.isMovingUpLeft) {
         this.animation = this.walkLeftAnimation;
@@ -249,9 +251,16 @@ Character.prototype.draw = function (ctx) {
 
             // Inflict damage on the enemy. Kick the Satan! Punch the Devil!
             let damage = 0;
-            if (this.game.click || this.game.isWhirlwinding || this.game.isAttacking) {
+            if (this.game.click) {
+                if (this.game.debug) console.debug("Clicked!");
                 this.game.click = false;
-                damage = this.baseDamge * (1 + (this.level - 1) * 0.1 + this.soul);
+                if (this.isAttacking) {
+                    damage = this.baseDamge * (1 + (this.level - 1) * 0.1 + this.soul);
+                    if (this.game.debug) console.debug("Attacking!");
+                } else if (this.isWhirlwinding) {
+                    damage = this.baseDamge * (1 + (this.level - 1) * 0.1 + this.soul); // TODO Is this where to adjust damage amount?
+                    if (this.game.debug) console.debug("Whirlwinding!");
+                }
                 gameEngine.entities[i].currentHealth -= damage;
                 damageST.x = gameEngine.entities[i].x;
                 damageST.y = gameEngine.entities[i].y;
