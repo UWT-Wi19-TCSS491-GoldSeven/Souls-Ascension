@@ -1,0 +1,6 @@
+SlimeEnemy
+Skeleton
+Wizard
+SorcererVillain
+Projectile
+SlimeProjectile
