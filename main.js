@@ -1150,7 +1150,7 @@ function startGame() {
     ASSET_MANAGER.queueDownload("./img/wizardDeath.png");
     ASSET_MANAGER.queueDownload("./img/SkeletonWalkLeft.png");
     ASSET_MANAGER.queueDownload("./img/SkeletonWalkRight.png");
-    ASSET_MANAGER.queueDownload("./img/characterInfo.png");
+    ASSET_MANAGER.queueDownload("./img/characterInfo2.png");
     ASSET_MANAGER.queueDownload("./img/HP.png");
     ASSET_MANAGER.downloadAll(function () {
         console.log("starting up da sheild");
@@ -1161,7 +1161,7 @@ function startGame() {
         // Creates new entity instances
         gameEngine = new GameEngine(ctx, ctx.canvas.width, ctx.canvas.height);
         var bg = new world1.Background(ASSET_MANAGER.getAsset("./img/DungeonBackgroundSpriteSheet.png"));
-        var chInfo = new CharacterInfo(ASSET_MANAGER.getAsset("./img/characterInfo.png"), ASSET_MANAGER.getAsset("./img/HP.png"));
+        var chInfo = new CharacterInfo(ASSET_MANAGER.getAsset("./img/characterInfo2.png"), ASSET_MANAGER.getAsset("./img/HP.png"));
         damgeST = new damgeStat();
         var torches = [];
         var sKeys = [];
