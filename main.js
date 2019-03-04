@@ -348,7 +348,7 @@ function isCollise(targetX, targetY, targetW, targetH, entity, entityW, entityH)
     return false;
 }
 //var isColli = false;
-function collisionDetect(characterX, characterY, width) {
+function collisionDetect(characterX, characterY, width, isCharacter) {
     var targetX, targetY;
     var j; // area to check collision
     for (j = 0; j < leafs.length; j++) {
@@ -367,7 +367,7 @@ function collisionDetect(characterX, characterY, width) {
             characterX + world1.currentScale - width > targetX &&
             characterY < targetY + world1.currentScale &&
             characterY > targetY) {
-            if (leafs[j].walls[i] instanceof Door == true && character.inventory['SilverKey'] > 0) {
+            if (isCharacter && leafs[j].walls[i] instanceof Door == true && character.inventory['SilverKey'] > 0) {
                 leafs[j].walls[i].removed = true;
                 character.inventory['SilverKey'] -= 1;
                 world1.slimeDungeonLevelOne[leafs[j].walls[i].position] = 24; // center floor.
