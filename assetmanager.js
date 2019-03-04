@@ -1,26 +1,27 @@
 function AssetManager() {
     this.successCount = 0;
     this.errorCount = 0;
-    this.cache = [];
-    this.downloadQueue = [];
+    this.cache = {};
+    this.downloadQueue = {};
 }
 
-AssetManager.prototype.queueDownload = function (path) {
+AssetManager.prototype.queueDownload = function (key, path = key) {
     console.log("Queueing " + path);
-    this.downloadQueue.push(path);
+    this.downloadQueue[key] = path;
 }
 
 AssetManager.prototype.isDone = function () {
-    return this.downloadQueue.length === this.successCount + this.errorCount;
+    let length = 0;
+    for (let prop in this.downloadQueue) length += 1;
+
+    return length === this.successCount + this.errorCount;
 }
 
 AssetManager.prototype.downloadAll = function (callback) {
-    for (var i = 0; i < this.downloadQueue.length; i++) {
-        var img = new Image();
-        var that = this;
+    var that = this;
 
-        var path = this.downloadQueue[i];
-        console.log(path);
+    for (let property in this.downloadQueue) {
+        let img = new Image();
 
         img.addEventListener("load", function () {
             console.log("Loaded " + this.src);
@@ -34,9 +35,11 @@ AssetManager.prototype.downloadAll = function (callback) {
             if (that.isDone()) callback();
         });
 
-        img.src = path;
-        this.cache[path] = img;
+        img.src = this.downloadQueue[property];
+        this.cache[property] = img;
     }
+
+    if (this.isDone()) callback();
 }
 
 AssetManager.prototype.getAsset = function (path) {
