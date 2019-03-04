@@ -1,0 +1,8 @@
+This folder should contain all enemy objects.
+
+SlimeEnemy
+Skeleton
+Wizard
+SorcererVillain
+Projectile
+SlimeProjectile

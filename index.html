@@ -2,11 +2,17 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Game Project Shell</title>
+    <title>Soul Ascension Shell</title>
+    <!-- THE ORDER OF THESE FILES MUST BE IN THE ORDER OF MOST DEPENDENT TO LEAST DEPENDENT. -->
+    <script type="text/javascript" src="./world1.js"></script>
+    <script type="text/javascript" src="./sound.js"></script>
+    <script type="text/javascript" src="./boundingBox.js"></script>
+    <script type="text/javascript" src="./entity.js"></script>
+    <script type="text/javascript" src="./character.js"></script>
     <script type="text/javascript" src="./gameengine.js"></script>
     <script type="text/javascript" src="./assetmanager.js"></script>
     <script type="text/javascript" src="./main.js"></script>
-    <script type="text/javascript" src="./sound.js"></script>
+    <script type="text/javascript" src="./events.js"></script>
     <link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
 <body>
@@ -14,15 +20,15 @@
     <div class="row">
         <div class="column">
             <div class="row">
+                <button id="start-game" onclick="startGame()">Press to Play</button>
+            </div>
+            <div class="row">
                 <canvas id="viewport" tabindex="1" width="800" height="800"></canvas>
                 <script>
                     window.onload = function () {
                         document.getElementById('viewport').focus();
                     };
                 </script>
-            </div>
-            <div class="row">
-                <button id="start-game" onclick="startGame()">Press to Play</button>
             </div>
         </div>
         <div class="column">
@@ -32,9 +38,10 @@
             <div class="row">
                 <p>
                     Movement keys: W A S D or arrow keys<br>
-                    Attack 1: left clicking will attack in the direction you are currently facing.<br>
-                    Attack 2: Pressing the 1 key will attack in a circle around the character.<br>
-                    Mute Sound: Pressing the back quote (tilde ~) key will mute and unmute audio.
+                    Attack 1: Left clicking will attack in the direction you are currently facing.<br>
+                    Attack 2: Right clicking or pressing the 1 key will attack in a circle around the character.<br>
+                    Mute Sound: Pressing the back quote (tilde ~) key will mute and unmute audio.<br>
+                    H key: use accumulated health to recover your health level.
                 </p>
             </div>
             <div class="row">
