@@ -6,7 +6,7 @@ function AssetManager() {
 }
 
 AssetManager.prototype.queueDownload = function (key, path = key) {
-    console.log("Queueing " + path);
+    // console.log("Queueing " + path);
     this.downloadQueue[key] = path;
 }
 
@@ -24,7 +24,7 @@ AssetManager.prototype.downloadAll = function (callback) {
         let img = new Image();
 
         img.addEventListener("load", function () {
-            console.log("Loaded " + this.src);
+            // console.log("Loaded " + this.src);
             that.successCount++;
             if(that.isDone()) callback();
         });
