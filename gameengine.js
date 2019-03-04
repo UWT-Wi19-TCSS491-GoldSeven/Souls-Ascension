@@ -100,14 +100,11 @@ GameEngine.prototype.draw = function () {
     }
 
     if (this.debug) {
-
         // Calculates the width and height of a scaled window.
         let sw = cw / sx;
         let sh = ch / sy;
-
         // ctx.fillStyle = 'blue';
         // ctx.fillRect(tx, ty, sw / 2, sh / 2);
-
         ctx.strokeStyle = 'blue';
         ctx.beginPath();
         ctx.moveTo(tx, ty + sh / 2);;
@@ -116,14 +113,12 @@ GameEngine.prototype.draw = function () {
         ctx.lineTo(tx + sw / 2, ty + sh);
         ctx.stroke();
     }
-
     this.ctx.restore();
 }
 
 GameEngine.prototype.update = function () {
     // Makes the viewport zoom in and out.
     // this.viewport.sx = this.viewport.sy = 1 + (Math.sin(performance.now() / 1000) + 1) / 2;
-
     var entitiesCount = this.entities.length;
 
     for (var i = 0; i < entitiesCount; i++) {

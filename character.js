@@ -8,8 +8,8 @@ let inventory = {
 
 var world;
 
-function Character(theCurrentWorld) {                                                                                              //loop  reversed
-    world = theCurrentWorld;
+function Character(theCurrentWorld) {
+    world = theCurrentWorld;                                                                                             //loop  reversed
     this.standAnimation = new Animation(ASSET_MANAGER.getAsset("./img/characterIdleAnimation.png"), 0, 0, 42, 42, 0.08, 4, true, false);
     this.walkRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/characterRightAnimation.png"), 0, 0, 42, 42, 0.15, 6, true, false);
     this.walkUpLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"), 32, 32, 33, 32, 1.04, 1, true, false);
@@ -274,6 +274,7 @@ Character.prototype.draw = function (ctx) {
             gameEngine.entities.splice(i, 1);
         }
     }
+    
     if (this.currentHealth <= 0) {//check here if got bug
         gameEngine.entities.splice(gameEngine.entities.length - 1, 1);
         let text = document.getElementById('gameover');

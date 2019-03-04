@@ -1138,7 +1138,7 @@ function startGame() {
     ASSET_MANAGER.queueDownload("./img/SlimeBehemothAttackRight.png");
     ASSET_MANAGER.queueDownload("./img/SlimeWalkLeft.png");
     ASSET_MANAGER.queueDownload("./img/SlimeWalkRight.png");
-	ASSET_MANAGER.queueDownload("./img/SlimeAttackLeft.png");``
+	ASSET_MANAGER.queueDownload("./img/SlimeAttackLeft.png");
     ASSET_MANAGER.queueDownload("./img/SlimeAttackRight.png");
 	ASSET_MANAGER.queueDownload("./img/SlimeIdle.png");
     ASSET_MANAGER.queueDownload("./img/SlimeDeath.png");
