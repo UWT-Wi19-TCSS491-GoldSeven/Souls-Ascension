@@ -12,6 +12,7 @@ function Animation(spriteSheet, startX, startY, frameWidth, frameHeight, frameDu
     this.loop = loop;
     this.reverse = reverse;
 }
+
 Animation.prototype.drawFrame = function (tick, ctx, x, y, scaleBy) {
     var scaleBy = scaleBy || 1; //The size of the sprite. 1 = 100%
     this.elapsedTime += tick;
@@ -43,9 +44,11 @@ Animation.prototype.drawFrame = function (tick, ctx, x, y, scaleBy) {
         this.frameWidth * scaleBy,
         this.frameHeight * scaleBy);
 }
+
 Animation.prototype.currentFrame = function () {
     return Math.floor(this.elapsedTime / this.frameDuration);
 }
+
 Animation.prototype.isDone = function () {
     return (this.elapsedTime >= this.totalTime);
 }
@@ -88,24 +91,24 @@ function generateRectangle(minX, maxX, minY, maxY) {
 // Generate world1 object.
 var world1 = new World1();
 
-function damgeStat() {
+function damageStat() {
     this.x = 0;
     this.y = 0;
-    this.damged = 0;
+    this.damaged = 0;
     this.exp = 0;
     this.time = new Date().getTime();
 
 }
-damgeStat.prototype = new Entity();
-damgeStat.prototype.constructor = damgeStat;
-damgeStat.prototype.update = function () {
+damageStat.prototype = new Entity();
+damageStat.prototype.constructor = damageStat;
+damageStat.prototype.update = function () {
     Entity.prototype.update.call(this);
 }
-damgeStat.prototype.draw = function () {
-    if (this.damged !== 0) {
+damageStat.prototype.draw = function () {
+    if (this.damaged !== 0) {
         ctx.fillStyle = "red";
         ctx.font = "30px Arial";
-        ctx.fillText(" - " + this.damged, this.x, this.y);
+        ctx.fillText(" - " + this.damaged, this.x, this.y);
     }
     if (this.exp !== 0) {
         ctx.fillStyle = "blue";
@@ -113,6 +116,7 @@ damgeStat.prototype.draw = function () {
         ctx.fillText(" + " + this.exp + 'Exp', this.x + 10, this.y + 10);
     }
 }
+
 /*----------------------------------------------Character Information-------------------------------------------------------------------------------- */
 function CharacterInfo(image, hpImage) {
     this.x = 0;
@@ -302,9 +306,7 @@ var container_tree = split_container(main_container, N_ITERATIONS);
 
 var leafs = container_tree.getLeafs();
 
-
 function fillBSPTree(target) {//, background) {
-
     var x = 0;
     var y = 0;
     var count = 0;
@@ -320,7 +322,6 @@ function fillBSPTree(target) {//, background) {
             //and the wall into property container
             for (var j = 0; j < leafs.length; j++) leafs[j].pushWall(x, y, i, target[i]);//i position, target = code
         }
-
         count++;
     };
 }
@@ -334,9 +335,10 @@ var Collision = function (entity, killable, width, height) {
     this.w = width;
     this.h = height;
 };
-// if enemies got kill (empty health) override
-//entityPosition  is position in array of entities
-function isCollise(targetX, targetY, targetW, targetH, entity, entityW, entityH) {
+
+// If enemies have been killed (empty health) override
+// entityPosition is position in array of entities.
+function isCollide(targetX, targetY, targetW, targetH, entity, entityW, entityH) {
     if (!entity.killable) return false;
 
     if (entity.x < targetX + targetW &&
@@ -347,6 +349,7 @@ function isCollise(targetX, targetY, targetW, targetH, entity, entityW, entityH)
     }
     return false;
 }
+
 //var isColli = false;
 function collisionDetect(characterX, characterY, width, isCharacter) {
     var targetX, targetY;
@@ -379,11 +382,11 @@ function collisionDetect(characterX, characterY, width, isCharacter) {
     }
     return false;
 }
+
 const removeDoor = (characterX, characterY, width) => {
     var targetX, targetY;
     var j; // area to check collision
     for (j = 0; j < leafs.length; j++) {
-
         for (var i = 0; i < leafs[j].walls.length; i++) {
             targetX = leafs[j].walls[i].x;
             targetY = leafs[j].walls[i].y;
@@ -414,6 +417,7 @@ Container.prototype.pushWall = function (theX, theY, thePosition, code) {//posit
     }
 }
 /*----------------------------------------------Collision End------------------------------------------------------------------------------------------------ */
+
 /*----------------------------------------------Health Start------------------------------------------------------------------------------------------------ */
 var bug = 0;
 const drawHPBar = () => {
@@ -1091,7 +1095,7 @@ CenterThingy.prototype.draw = function (ctx) {
 /*----------------------------------------------Main Code Start-------------------------------------------------------------------------------------------- */
 // the "main" code begins here
 var gameEngine;
-var damgeST;
+var damageST;
 let character;
 let sorcererVillain;
 let slimeBehemoth;
@@ -1134,7 +1138,7 @@ function startGame() {
     ASSET_MANAGER.queueDownload("./img/SlimeBehemothAttackRight.png");
     ASSET_MANAGER.queueDownload("./img/SlimeWalkLeft.png");
     ASSET_MANAGER.queueDownload("./img/SlimeWalkRight.png");
-	ASSET_MANAGER.queueDownload("./img/SlimeAttackLeft.png");``
+	ASSET_MANAGER.queueDownload("./img/SlimeAttackLeft.png");
     ASSET_MANAGER.queueDownload("./img/SlimeAttackRight.png");
 	ASSET_MANAGER.queueDownload("./img/SlimeIdle.png");
     ASSET_MANAGER.queueDownload("./img/SlimeDeath.png");
@@ -1162,7 +1166,7 @@ function startGame() {
         gameEngine = new GameEngine(ctx, ctx.canvas.width, ctx.canvas.height);
         var bg = new world1.Background(ASSET_MANAGER.getAsset("./img/DungeonBackgroundSpriteSheet.png"));
         var chInfo = new CharacterInfo(ASSET_MANAGER.getAsset("./img/characterInfo2.png"), ASSET_MANAGER.getAsset("./img/HP.png"));
-        damgeST = new damgeStat();
+        damageST = new damageStat();
         var torches = [];
         var sKeys = [];
         var gKeys = [];
@@ -1290,7 +1294,7 @@ function startGame() {
         gameEngine.addEntity(character);
         if (gameEngine.debug) gameEngine.addEntity(centerthingy);
         gameEngine.addEntity(chInfo);
-        gameEngine.addEntity(damgeST);
+        gameEngine.addEntity(damageST);
         gameEngine.debug = false;
         character.updateViewport();
 

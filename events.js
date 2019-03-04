@@ -3,7 +3,6 @@
  * Author: Sam Brendel
  */
 function Events(that) {
-
     window.addEventListener('keydown', function (e) {
         switch (e.key) {
             case '`':
@@ -82,13 +81,14 @@ function Events(that) {
                 that.down = that.downing = false;
                 break;
             default:
-                //console.error("Key Down Event - Char: " + e.code + " Code: " + e.keyCode + " Reapeat: " + e.repeat);
+                if (that.debug) console.debug("Key Down Event - Char: " + e.code + " Code: " + e.keyCode + " Reapeat: " + e.repeat);
                 break;
         }
     }, false);
 
     // Right click only.
     window.oncontextmenu = function (e) {
+        that.click = getXandY(e); // Enables inflicting damage on the enemy.
         e.preventDefault(); // cancels default context menu when right clicked.
         that.one = true;
         that.sounds.get('characterAttack02').replay();
@@ -100,9 +100,9 @@ function Events(that) {
 
     // Left click only.
     that.ctx.canvas.addEventListener("click", function (e) {
-        that.click = getXandY(e);
+        that.click = getXandY(e); // Enables inflicting damage on the enemy.
         that.sounds.get('characterAttack01').replay();
-        if (that.debug) console.log("Clicked " + e.button +  " button at " + e.clientX + "," + e.clientY); // The coordinates on the browser screen.
+        if (that.debug) console.debug("Clicked " + e.button +  " button at " + e.clientX + "," + e.clientY); // The coordinates on the browser screen.
     }, false);
 
     var getXandY = function (e) {

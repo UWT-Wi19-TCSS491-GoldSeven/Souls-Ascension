@@ -8,8 +8,8 @@ let inventory = {
 
 var world;
 
-function Character(theCurrentWorld) {                                                                                              //loop  reversed
-    world = theCurrentWorld;
+function Character(theCurrentWorld) {
+    world = theCurrentWorld;                                                                                             //loop  reversed
     this.standAnimation = new Animation(ASSET_MANAGER.getAsset("./img/characterIdleAnimation.png"), 0, 0, 42, 42, 0.08, 4, true, false);
     this.walkRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/characterRightAnimation.png"), 0, 0, 42, 42, 0.15, 6, true, false);
     this.walkUpLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"), 32, 32, 33, 32, 1.04, 1, true, false);
@@ -142,16 +142,18 @@ Character.prototype.update = function () {
 
 Character.prototype.draw = function (ctx) {
     if (this.isAttacking) {
-        if (this.isAttacking && this.isMovingUp) {
+        //console.debug("Character isAttacking");
+        if (this.isMovingUp) {
             this.animation = this.attackUpAnimation;
-        } else if (this.isAttacking && this.isMovingLeft) {
+        } else if (this.isMovingLeft) {
             this.animation = this.attackLeftAnimation;
-        } else if (this.isAttacking && this.isMovingRight) {
+        } else if (this.isMovingRight) {
             this.animation = this.attackRightAnimation;
         } else {
             this.animation = this.attackDownAnimation;
         }
     } else if (this.isWhirlwinding) {
+        //console.debug("Character isWhirlwinding");
         this.animation = this.whirlwindAttackAnimation;
     } else if (this.isMovingUpLeft) {
         this.animation = this.walkLeftAnimation;
@@ -172,7 +174,9 @@ Character.prototype.draw = function (ctx) {
     } else {
         this.animation = this.standAnimation;
     }
+
     this.animation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
+
     if (this.game.debug) {
         ctx.strokeStyle = "green";
         ctx.strokeRect(this.boundingBox.x, this.boundingBox.y, this.boundingBox.width, this.boundingBox.height);
@@ -187,6 +191,7 @@ Character.prototype.draw = function (ctx) {
                 ctx.strokeRect(leafs[i].walls[j].x, leafs[i].walls[j].y, 48, 48);
         }
     }
+
     Entity.prototype.draw.call(this);
     let scaleOf = 4;
     let range = (this.isWhirlwinding) ? world.currentScale * 1.5 : (this.isAttacking) ? world.currentScale / 2 : 0;
@@ -210,11 +215,14 @@ Character.prototype.draw = function (ctx) {
             newY -= world.currentScale;
         default: break;
     }//SorcererVillain
-    if (new Date().getTime() - damgeST.time > 500) { damgeST.damged = 0; damgeST.exp = 0; } //hide
-    for (let i = 0; i < gameEngine.entities.length; i++) {//
+
+    if (new Date().getTime() - damageST.time > 500) { damageST.damaged = 0; damageST.exp = 0; } //hide
+
+    // Iterate through all entities to check if anyone has collided with another, and take appropriate action.
+    for (let i = 0; i < gameEngine.entities.length; i++) {
         if (gameEngine.entities[i] instanceof Character == true || typeof gameEngine.entities[i] === 'undefined') continue;
         scaleOf = (gameEngine.entities[i] instanceof Projectile) ? 4 : world.currentScale - 10;
-        if (isCollise(newX + 20, newY - scaleOf + 20, 5 + range, 42 + range, gameEngine.entities[i], scaleOf + range, scaleOf + range)) {
+        if (isCollide(newX + 20, newY - scaleOf + 20, 5 + range, 42 + range, gameEngine.entities[i], scaleOf + range, scaleOf + range)) {
             if (gameEngine.entities[i] instanceof Projectile) {
                 gameEngine.entities.splice(i, 1); this.currentHealth -= 5; break;
             }
@@ -240,18 +248,29 @@ Character.prototype.draw = function (ctx) {
                     break;
                 }
             }
-            let damge = 0;
-            if (this.game.click || this.game.isWhirlwinding || this.game.isAttacking) {
+
+            // Inflict damage on the enemy. Kick the Satan! Punch the Devil!
+            let damage = 0;
+            if (this.game.click) {
+                if (this.game.debug) console.debug("Clicked!");
                 this.game.click = false;
-                damge = this.baseDamge * (1 + (this.level - 1) * 0.1 + this.soul);
-                gameEngine.entities[i].currentHealth -= damge;
-                damgeST.x = gameEngine.entities[i].x;
-                damgeST.y = gameEngine.entities[i].y;
-                damgeST.damged = damge;
-                damgeST.time = new Date().getTime();
+                if (this.isAttacking) {
+                    damage = this.baseDamge * (1 + (this.level - 1) * 0.1 + this.soul);
+                    if (this.game.debug) console.debug("Attacking!");
+                } else if (this.isWhirlwinding) {
+                    damage = this.baseDamge * (1 + (this.level - 1) * 0.1 + this.soul); // TODO Is this where to adjust damage amount?
+                    if (this.game.debug) console.debug("Whirlwinding!");
+                }
+                gameEngine.entities[i].currentHealth -= damage;
+                damageST.x = gameEngine.entities[i].x;
+                damageST.y = gameEngine.entities[i].y;
+                damageST.damaged = damage;
+                damageST.time = new Date().getTime();
                 bug = 0;
             }
+
             this.currentHealth -= 10; //console.log('cross by enemy');
+
             if (gameEngine.entities[i].currentHealth <= 0 || gameEngine.entities[i].currentHealth == null) {
                 if (gameEngine.entities[i].death === null)
                     gameEngine.entities.splice(i, 1);
@@ -260,15 +279,15 @@ Character.prototype.draw = function (ctx) {
                     gameEngine.entities[i].killable = false;
                 }
                 this.currentExp += (this.level + 1) * 20; // may change the formular later
-                damgeST.exp = (this.level + 1) * 20;
+                damageST.exp = (this.level + 1) * 20;
             }
             if (bug <= 8) { this.currentHealth += 10; bug++; }
-        }
 
-        else if (gameEngine.entities[i] instanceof Projectile == true && collisionDetect(gameEngine.entities[i].x, gameEngine.entities[i].y, world.currentScale)) {
+        } else if (gameEngine.entities[i] instanceof Projectile == true && collisionDetect(gameEngine.entities[i].x, gameEngine.entities[i].y, world.currentScale)) {
             gameEngine.entities.splice(i, 1);
         }
     }
+
     if (this.currentHealth <= 0) {//check here if got bug
         gameEngine.entities.splice(gameEngine.entities.length - 1, 1);
         let text = document.getElementById('gameover');
