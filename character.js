@@ -79,12 +79,12 @@ Character.prototype.update = function () {
     if (this.game.up && this.game.right) this.isMovingUpRight = true;
     if (this.game.down && this.game.left) this.isMovingDownLeft = true;
     if (this.game.down && this.game.right) this.isMovingDownRight = true;
-    if (this.game.left && !collisionDetect(this.x + 8 - this.travelSpeed, world.currentScale - 5 + this.y, 25)) { this.isMovingLeft = true }//
-    if (this.game.right && !collisionDetect(this.x + 8 + this.travelSpeed, world.currentScale - 5 + this.y, 25)) { this.isMovingRight = true }
-    if (this.game.up && !collisionDetect(this.x + 8, 25 + this.y - this.travelSpeed, 25)) {
+    if (this.game.left && !collisionDetect(this.x + 8 - this.travelSpeed, world.currentScale - 5 + this.y, 25, true)) { this.isMovingLeft = true }//
+    if (this.game.right && !collisionDetect(this.x + 8 + this.travelSpeed, world.currentScale - 5 + this.y, 25, true)) { this.isMovingRight = true }
+    if (this.game.up && !collisionDetect(this.x + 8, 25 + this.y - this.travelSpeed, 25, true)) {
         this.isMovingUp = true;
     }
-    if (this.game.down && !collisionDetect(this.x + 8, world.currentScale + this.y, 25)) {
+    if (this.game.down && !collisionDetect(this.x + 8, world.currentScale + this.y, 25, true)) {
         this.isMovingDown = true;
     }
     if (this.game.debug && (this.isMovingLeft || this.isMovingRight || this.isMovingUp || this.isMovingDown)) {
