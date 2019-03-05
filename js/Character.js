@@ -10,20 +10,20 @@ var world;
 
 function Character(theCurrentWorld) {
     world = theCurrentWorld;                                                                                             //loop  reversed
-    this.standAnimation = new Animation(ASSET_MANAGER.getAsset("./img/characterIdleAnimation.png"), 0, 0, 42, 42, 0.08, 4, true, false);
-    this.walkRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/characterRightAnimation.png"), 0, 0, 42, 42, 0.15, 6, true, false);
-    this.walkUpLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"), 32, 32, 33, 32, 1.04, 1, true, false);
-    this.walkLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/characterLeftAnimation.png"), 0, 0, 42, 42, 0.15, 6, true, false);
-    this.walkUpRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"), 32, 64, 33, 32, 1.04, 1, true, false);
-    this.walkUpAnimation = new Animation(ASSET_MANAGER.getAsset("./img/characterBackwardRun.png"), 0, 0, 42, 42, 0.15, 5, true, false);
-    this.walkDownLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"), 32, 96, 32, 32, 1.04, 1, true, false);
-    this.walkDownAnimation = new Animation(ASSET_MANAGER.getAsset("./img/CharacterForwardRun.png"), 0, 0, 42, 42, 0.15, 5, true, false);
-    this.walkDownRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spritesheet.png"), 32, 128, 32, 32, 1.04, 1, true, false);
-    this.attackUpAnimation = new Animation(ASSET_MANAGER.getAsset("./img/characterUpAttack.png"), 0, 0, 42, 42, 0.04, 3, false, false);
-    this.attackDownAnimation = new Animation(ASSET_MANAGER.getAsset("./img/characterDownAttack.png"), 0, 0, 42, 42, 0.04, 3, false, false);
-    this.attackLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/characterLeftAttack.png"), 0, 0, 42, 42, 0.04, 3, false, false);
-    this.attackRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/characterRightAttack.png"), 0, 0, 42, 42, 0.04, 3, false, false);
-    this.whirlwindAttackAnimation = new Animation(ASSET_MANAGER.getAsset("./img/characterWhirlWindAttackAnimation.png"), 0, 0, 42, 42, 0.04, 4, false, false);
+    this.standAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/characterIdleAnimation.png"), 0, 0, 42, 42, 0.08, 4, true, false);
+    this.walkRightAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/characterRightAnimation.png"), 0, 0, 42, 42, 0.15, 6, true, false);
+    this.walkUpLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/spritesheet.png"), 32, 32, 33, 32, 1.04, 1, true, false);
+    this.walkLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/characterLeftAnimation.png"), 0, 0, 42, 42, 0.15, 6, true, false);
+    this.walkUpRightAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/spritesheet.png"), 32, 64, 33, 32, 1.04, 1, true, false);
+    this.walkUpAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/characterBackwardRun.png"), 0, 0, 42, 42, 0.15, 5, true, false);
+    this.walkDownLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/spritesheet.png"), 32, 96, 32, 32, 1.04, 1, true, false);
+    this.walkDownAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/CharacterForwardRun.png"), 0, 0, 42, 42, 0.15, 5, true, false);
+    this.walkDownRightAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/spritesheet.png"), 32, 128, 32, 32, 1.04, 1, true, false);
+    this.attackUpAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/characterUpAttack.png"), 0, 0, 42, 42, 0.04, 3, false, false);
+    this.attackDownAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/characterDownAttack.png"), 0, 0, 42, 42, 0.04, 3, false, false);
+    this.attackLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/characterLeftAttack.png"), 0, 0, 42, 42, 0.04, 3, false, false);
+    this.attackRightAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/characterRightAttack.png"), 0, 0, 42, 42, 0.04, 3, false, false);
+    this.whirlwindAttackAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/characterWhirlWindAttackAnimation.png"), 0, 0, 42, 42, 0.04, 4, false, false);
     this.animation = this.standAnimation; // initial animation.
     this.isAttacking = false;
     this.isWhirlwinding = false;

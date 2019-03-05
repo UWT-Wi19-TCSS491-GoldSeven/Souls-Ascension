@@ -7,7 +7,7 @@
  * @param {*} sourceFileName 
  */
 function Sound(sourceFileName, repeat) {
-    this._source = (sourceFileName) ? "sounds\\" + sourceFileName : null;
+    this._source = sourceFileName;
     this._audio = (this._source) ? new Audio(this._source) : null;
     if(this._audio && repeat) {
         this._audio.loop = repeat;
