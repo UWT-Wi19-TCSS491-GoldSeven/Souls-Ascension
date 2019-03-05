@@ -44,16 +44,16 @@ function World1() {
 
 
     // generate first room and get dimensions
-    let  vDirection;
-    let  hDirection;
-    let  startingPosition = generateRandomNumber(0, 524);
-    let  currentPosition = startingPosition;
-    let  firstRoom = generateRectangle(6, 50, 6, 50);
-    let  xDimension = firstRoom[firstRoom.length - 2];
-    let  yDimension = firstRoom[firstRoom.length - 1]
-    let  roomArea = xDimension * yDimension;
-    let  offset = 25 - xDimension;
-    let  tileCount = 0;
+    let vDirection;
+    let hDirection;
+    let startingPosition = generateRandomNumber(0, 524);
+    let currentPosition = startingPosition;
+    let firstRoom = generateRectangle(6, 50, 6, 50);
+    let xDimension = firstRoom[firstRoom.length - 2];
+    let yDimension = firstRoom[firstRoom.length - 1]
+    let roomArea = xDimension * yDimension;
+    let offset = 25 - xDimension;
+    let tileCount = 0;
     // correct starting position for copy
     if (startingPosition % 25 >= xDimension) {
         hDirection = "left";
@@ -75,7 +75,7 @@ function World1() {
         // do nothing
     }
     // copy room to game world
-    for (let  i = 0; i < roomArea; i++) {
+    for (let i = 0; i < roomArea; i++) {
         if (tileCount < xDimension && firstRoom[i] != 0) {
             worldGeneration[currentPosition] = firstRoom[i];
             currentPosition++;
@@ -104,7 +104,7 @@ function World1() {
     * 33 = player starting Position floor, 34 = sorcererVillain starting position floor, 35 = slimeEnemy starting position floor,
     * 36 = slimeBehemoth starting position floor, 37 = wizard starting position, 38 = skeleton starting position.
     */
-    let  slimeDungeonLevelOne = new Array(
+    let slimeDungeonLevelOne = new Array(
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 1, 2, 1, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 1, 2, 1, 7, 0, 0, 0, 0, 6, 3, 4, 7, 0, 0, 0, 0, 6, 1, 1, 2, 1, 4, 1, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 20, 16, 21, 12, 1, 2, 1, 2, 1, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 2, 20, 16, 21, 3, 7, 0, 6, 2, 1, 20, 21, 2, 1, 7, 0, 6, 3, 20, 16, 16, 16, 16, 25, 12, 1, 2, 2, 2, 2, 1, 7, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 6, 1, 2, 1, 1, 2, 2, 1, 3, 4, 1, 1, 1, 2, 2, 1, 1, 1, 3, 1, 1, 2, 1, 11, 18, 28, 17, 5, 20, 16, 16, 16, 21, 1, 7, 0, 0, 0, 6, 1, 2, 1, 10, 10, 4, 1, 20, 24, 24, 24, 21, 2, 10, 1, 20, 16, 24, 24, 16, 21, 1, 2, 11, 20, 24, 24, 19, 19, 19, 23, 5, 20, 16, 16, 16, 16, 21, 1, 3, 1, 4, 7, 0, 0,
@@ -144,7 +144,7 @@ function World1() {
     * Slime Dungeon Level 1 entity array (88x33) each number is a 48x48 pixel space
     *
     */
-    let  slimeDungeonLevelOneEntities = new Array(
+    let slimeDungeonLevelOneEntities = new Array(
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -244,10 +244,10 @@ function World1() {
             let count = 0;
             let torchCounter = 0;
             let x = this.x;
-            let  y = this.y;
+            let y = this.y;
 
             // Loop to generate each tile
-            for (let  i = 0; i < slimeDungeonLevelOne.length; i++) {
+            for (let i = 0; i < slimeDungeonLevelOne.length; i++) {
                 spriteX = (slimeDungeonLevelOne[i] - 1) * 48; // 32 is the number of pixels per sprite
                 ctx.drawImage(this.spritesheet, spriteX, spriteY, this.sw, this.sh, x, y, this.dw, this.dh);
                 count++;

@@ -342,7 +342,6 @@ function fillBSPTree(target) {//, background) {
         }
         count++;
     }
-    ;
 }
 
 fillBSPTree(world1.slimeDungeonLevelOne);
