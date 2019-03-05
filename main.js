@@ -752,6 +752,9 @@ SlimeEnemy.prototype.draw = function () {
             this.animation = this.slimeEnemyIdleAnimation;
         }
     }
+
+    if (this.animation == null) return;
+
     this.animation.drawFrame(gameEngine.clockTick, ctx, this.x, this.y);
     if (this.animation === this.death) {
         this.life -= gameEngine.clockTick;
@@ -1027,6 +1030,11 @@ Projectile.prototype = new Entity();
 Projectile.prototype.constructor = Projectile;
 
 Projectile.prototype.update = function () {
+    if (collisionDetect(this.x, this.y, world.currentScale)) {
+        this.removeFromWorld = true;
+        return;
+    }
+
     this.x += this.xs;
     this.y += this.ys;
     this.life -= gameEngine.clockTick;
@@ -1042,39 +1050,6 @@ Projectile.prototype.draw = function () {
     ctx.restore();
 }
 /*----------------------------------------------Projectile End----------------------------------------------------------------------------------------------- */
-
-/*----------------------------------------------Slime Projectile Start--------------------------------------------------------------------------------------------- */
-function SlimeProjectile(game, x, y, xs, ys) {
-    this.xs = xs;
-    this.ys = ys;
-    this.scale = 4;
-    this.life = 10;
-    this.killable = true;
-    Entity.call(this, game, x, y);
-}
-
-SlimeProjectile.prototype = new Entity();
-SlimeProjectile.prototype.constructor = SlimeProjectile;
-
-SlimeProjectile.prototype.update = function () {
-    this.x += this.xs;
-    this.y += this.ys;
-    this.life -= gameEngine.clockTick;
-    if (this.life <= 0) this.removeFromWorld = true;
-}
-
-SlimeProjectile.prototype.draw = function () {
-    ctx.save();
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.scale, 0, 2 * Math.PI);
-    ctx.fillStyle = `rgb(35,255,50)`;
-    ctx.fill();
-    ctx.restore();
-}
-/*----------------------------------------------Slime Projectile End----------------------------------------------------------------------------------------------- */
-
-
-
 
 /*----------------------------------------------Debug Stuff Start------------------------------------------------------------------------------------------ */
 function CenterThingy() {

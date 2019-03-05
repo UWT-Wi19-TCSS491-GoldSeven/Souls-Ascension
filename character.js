@@ -1,7 +1,7 @@
 /*----------------------------------------------Character Start---------------------------------------------------------------------------------------------- */
 // The entity's viewport is determined by its BoundingBox object.
 let inventory = {
-    hp: { value: 100, quantity: 1 },
+    hp: {value: 100, quantity: 1},
     SilverKey: 1,
     GoldKey: 0
 };
@@ -73,14 +73,22 @@ Character.prototype.update = function () {
     this.isMovingUpRight = false;
     this.isMovingDownLeft = false;
     this.isMovingDownRight = false;
-    if (this.game.one) { this.isWhirlwinding = true; }
-    if (this.game.click) { this.isAttacking = true; }
+    if (this.game.one) {
+        this.isWhirlwinding = true;
+    }
+    if (this.game.click) {
+        this.isAttacking = true;
+    }
     if (this.game.up && this.game.left) this.isMovingUpLeft = true;
     if (this.game.up && this.game.right) this.isMovingUpRight = true;
     if (this.game.down && this.game.left) this.isMovingDownLeft = true;
     if (this.game.down && this.game.right) this.isMovingDownRight = true;
-    if (this.game.left && !collisionDetect(this.x + 8 - this.travelSpeed, world.currentScale - 5 + this.y, 25, true)) { this.isMovingLeft = true }//
-    if (this.game.right && !collisionDetect(this.x + 8 + this.travelSpeed, world.currentScale - 5 + this.y, 25, true)) { this.isMovingRight = true }
+    if (this.game.left && !collisionDetect(this.x + 8 - this.travelSpeed, world.currentScale - 5 + this.y, 25, true)) {
+        this.isMovingLeft = true
+    }//
+    if (this.game.right && !collisionDetect(this.x + 8 + this.travelSpeed, world.currentScale - 5 + this.y, 25, true)) {
+        this.isMovingRight = true
+    }
     if (this.game.up && !collisionDetect(this.x + 8, 25 + this.y - this.travelSpeed, 25, true)) {
         this.isMovingUp = true;
     }
@@ -137,10 +145,8 @@ Character.prototype.update = function () {
         this.inventory['hp'].quantity -= 1;
         this.game.used = null;
     }
-    Entity.prototype.update.call(this);
-}
 
-Character.prototype.draw = function (ctx) {
+    // Animation Selection Start
     if (this.isAttacking) {
         //console.debug("Character isAttacking");
         if (this.isMovingUp) {
@@ -174,7 +180,127 @@ Character.prototype.draw = function (ctx) {
     } else {
         this.animation = this.standAnimation;
     }
+    // Animation Selection End
 
+    // Attack Start
+    let scaleOf = 4;
+    let range = (this.isWhirlwinding) ? world.currentScale * 1.5 : (this.isAttacking) ? world.currentScale / 2 : 0;
+    let newXY = this.getNewXY();
+    let newX = newXY.x;
+    let newY = newXY.y;
+
+    if (new Date().getTime() - damageST.time > 500) {
+        damageST.damaged = 0;
+        damageST.exp = 0;
+    } //hide
+
+    // Iterate through all entities to check if anyone has collided with another, and take appropriate action.
+    for (let i = 0; i < gameEngine.entities.length; i++) {
+        let other = gameEngine.entities[i];
+        if (other == this || typeof other === 'undefined') continue;
+        scaleOf = (other instanceof Projectile) ? 4 : world.currentScale - 10;
+        if (isCollide(newX + 20, newY - scaleOf + 20, 5 + range, 42 + range, other, scaleOf + range, scaleOf + range)) {
+            // TODO: This should really be handled by individual enemies/entities and updated in their update methods.
+            if (other instanceof Projectile) {
+                other.removeFromWorld = true;
+                this.currentHealth -= 5;
+                break;
+            }
+            if (other instanceof SilverKey) {
+                this.inventory['SilverKey'] += 1;
+                other.removeFromWorld = true;
+                break;
+            }
+            if (other instanceof GoldKey) {
+                this.inventory['GoldKey'] += 1;
+                other.removeFromWorld = true;
+                break;
+            }
+            if (other instanceof HealingPotion) {
+                this.inventory['hp'].quantity += 1;
+                other.removeFromWorld = true;
+                break;
+            }
+            if (other instanceof SoulJar) {
+                let jar = other.jar || 0;
+                this.currentSoul += jar;
+                if (jar > 0 || heal > 0) {
+                    other.killed = true;
+                    let xOrigC = (character.x + character.animation.frameWidth / 2 - 380 + 100);
+                    let yOrigC = (character.y + character.animation.frameHeight / 2 - 380 + 60);
+                    let xOrigS = (other.x)
+                    let yOrigS = (other.y)
+                    let xDiff = xOrigC - xOrigS;
+                    let yDiff = yOrigC - yOrigS;
+                    let distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+                    other.toX = (10 * xDiff) / distance;
+                    other.toY = (10 * yDiff) / distance;
+                    other.x += (50 * xDiff) / distance;
+                    other.y += (50 * yDiff) / distance;
+                    break;
+                }
+            }
+
+            // Inflict damage on the enemy. Kick the Satan! Punch the Devil!
+            let damage = 0;
+            if (this.isAttacking && this.game.click) {
+                this.game.click = false;
+
+                damage = this.baseDamge * (1 + (this.level - 1) * 0.1 + this.soul);
+                if (this.game.debug) console.debug("Attacking!");
+            }
+
+            if (this.isWhirlwinding && this.game.one) {
+                damage = this.baseDamge * (1 + (this.level - 1) * 0.1 + this.soul); // TODO Is this where to adjust damage amount?
+                if (this.game.debug) console.debug("Whirlwinding!");
+            }
+
+            if (damage > 0) {
+                other.currentHealth -= damage;
+                damageST.x = other.x;
+                damageST.y = other.y;
+                damageST.damaged = damage;
+                damageST.time = new Date().getTime();
+                bug = 0;
+            }
+
+            if (other.currentHealth <= 0 || other.currentHealth == null) {
+                if (!other.killed) {
+                    other.killed = true;
+
+                    if (other.death === null) {
+                        other.removeFromWorld;
+                    } else {
+                        gameEngine.entities[i].animation = gameEngine.entities[i].death;
+                        gameEngine.entities[i].killable = false;
+                    }
+
+                    this.currentExp += (this.level + 1) * 20; // may change the formular later
+                    damageST.exp = (this.level + 1) * 20;
+                }
+            }
+        }
+    }
+
+    if (this.currentHealth <= 0) {//check here if got bug
+        this.removeFromWorld = true;
+        let text = document.getElementById('gameover');
+        text.style.display = 'inline';
+        let tPos = text.getBoundingClientRect();
+        let cPos = gameEngine.ctx.canvas.getBoundingClientRect();
+        let x = cPos.left + (cPos.width - tPos.width) / 2
+        let y = cPos.top + (cPos.height - tPos.height) / 2
+        //console.log(tPos);
+        text.style.position = 'absolute';
+        text.style.left = x + 'px';
+        text.style.top = y + 'px';
+    }
+    // Attack End
+
+    Entity.prototype.update.call(this);
+}
+
+Character.prototype.draw = function (ctx) {
     this.animation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
 
     if (this.game.debug) {
@@ -193,6 +319,7 @@ Character.prototype.draw = function (ctx) {
     }
 
     Entity.prototype.draw.call(this);
+
     let scaleOf = 4;
     let range = (this.isWhirlwinding) ? world.currentScale * 1.5 : (this.isAttacking) ? world.currentScale / 2 : 0;
     let newX = this.x;
@@ -213,94 +340,45 @@ Character.prototype.draw = function (ctx) {
         case this.whirlwindAttackAnimation:
             newX -= world.currentScale;
             newY -= world.currentScale;
-        default: break;
+        default:
+            break;
     }//SorcererVillain
 
-    if (new Date().getTime() - damageST.time > 500) { damageST.damaged = 0; damageST.exp = 0; } //hide
+    if (new Date().getTime() - damageST.time > 500) {
+        damageST.damaged = 0;
+        damageST.exp = 0;
+    } //hide
 
-    // Iterate through all entities to check if anyone has collided with another, and take appropriate action.
-    for (let i = 0; i < gameEngine.entities.length; i++) {
-        if (gameEngine.entities[i] instanceof Character == true || typeof gameEngine.entities[i] === 'undefined') continue;
-        scaleOf = (gameEngine.entities[i] instanceof Projectile) ? 4 : world.currentScale - 10;
-        if (isCollide(newX + 20, newY - scaleOf + 20, 5 + range, 42 + range, gameEngine.entities[i], scaleOf + range, scaleOf + range)) {
-            if (gameEngine.entities[i] instanceof Projectile) {
-                gameEngine.entities.splice(i, 1); this.currentHealth -= 5; break;
-            }
-            if (gameEngine.entities[i] instanceof SilverKey) { this.inventory['SilverKey'] += 1; gameEngine.entities.splice(i, 1); break; }
-            if (gameEngine.entities[i] instanceof GoldKey) { this.inventory['GoldKey'] += 1; gameEngine.entities.splice(i, 1); break; }
-            if (gameEngine.entities[i] instanceof HealingPotion) { this.inventory['hp'].quantity += 1; gameEngine.entities.splice(i, 1); break; }
-            if (gameEngine.entities[i] instanceof SoulJar) {
-                let jar = (gameEngine.entities[i] instanceof SoulJar) ? gameEngine.entities[i].jar : 0;
-                this.currentSoul += jar;
-                if (jar > 0 || heal > 0) {
-                    gameEngine.entities[i].killed = true;
-                    let xOrigC = (character.x + character.animation.frameWidth / 2 - 380 + 100);
-                    let yOrigC = (character.y + character.animation.frameHeight / 2 - 380 + 60);
-                    let xOrigS = (gameEngine.entities[i].x)
-                    let yOrigS = (gameEngine.entities[i].y)
-                    let xDiff = xOrigC - xOrigS;
-                    let yDiff = yOrigC - yOrigS;
-                    let distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
-                    gameEngine.entities[i].toX = (10 * xDiff) / distance;
-                    gameEngine.entities[i].toY = (10 * yDiff) / distance;
-                    gameEngine.entities[i].x += (50 * xDiff) / distance;
-                    gameEngine.entities[i].y += (50 * yDiff) / distance;
-                    break;
-                }
-            }
-
-            // Inflict damage on the enemy. Kick the Satan! Punch the Devil!
-            let damage = 0;
-            if (this.game.click) {
-                if (this.game.debug) console.debug("Clicked!");
-                this.game.click = false;
-                if (this.isAttacking) {
-                    damage = this.baseDamge * (1 + (this.level - 1) * 0.1 + this.soul);
-                    if (this.game.debug) console.debug("Attacking!");
-                } else if (this.isWhirlwinding) {
-                    damage = this.baseDamge * (1 + (this.level - 1) * 0.1 + this.soul); // TODO Is this where to adjust damage amount?
-                    if (this.game.debug) console.debug("Whirlwinding!");
-                }
-                gameEngine.entities[i].currentHealth -= damage;
-                damageST.x = gameEngine.entities[i].x;
-                damageST.y = gameEngine.entities[i].y;
-                damageST.damaged = damage;
-                damageST.time = new Date().getTime();
-                bug = 0;
-            }
-
-            this.currentHealth -= 10; //console.log('cross by enemy');
-
-            if (gameEngine.entities[i].currentHealth <= 0 || gameEngine.entities[i].currentHealth == null) {
-                if (gameEngine.entities[i].death === null)
-                    gameEngine.entities.splice(i, 1);
-                else {
-                    gameEngine.entities[i].animation = gameEngine.entities[i].death;
-                    gameEngine.entities[i].killable = false;
-                }
-                this.currentExp += (this.level + 1) * 20; // may change the formular later
-                damageST.exp = (this.level + 1) * 20;
-            }
-            if (bug <= 8) { this.currentHealth += 10; bug++; }
-
-        } else if (gameEngine.entities[i] instanceof Projectile == true && collisionDetect(gameEngine.entities[i].x, gameEngine.entities[i].y, world.currentScale)) {
-            gameEngine.entities.splice(i, 1);
-        }
-    }
-
-    if (this.currentHealth <= 0) {//check here if got bug
-        gameEngine.entities.splice(gameEngine.entities.length - 1, 1);
-        let text = document.getElementById('gameover');
-        text.style.display = 'inline';
-        let tPos = text.getBoundingClientRect();
-        let cPos = gameEngine.ctx.canvas.getBoundingClientRect();
-        let x = cPos.left + (cPos.width - tPos.width) / 2
-        let y = cPos.top + (cPos.height - tPos.height) / 2
-        //console.log(tPos);
-        text.style.position = 'absolute';
-        text.style.left = x + 'px';
-        text.style.top = y + 'px';
-    }
     drawHPBar();
 }
+
+Character.prototype.getNewXY = function () {
+    let newX = this.x;
+    let newY = this.y;
+    switch (this.animation) {
+        case this.attackLeftAnimation:
+            newX -= world.currentScale / 2;
+            break;
+        case this.attackRightAnimation:
+            newX += world.currentScale / 10;
+            break;
+        case this.attackDownAnimation:
+            newY -= world.currentScale / 5;
+            break;
+        case this.attackUpAnimation:
+            newY += world.currentScale / 5;
+            break;
+        case this.whirlwindAttackAnimation:
+            newX -= world.currentScale;
+            newY -= world.currentScale;
+        default:
+            break;
+    }
+
+    return {
+        x: newX,
+        y: newY
+    }
+}
+
 /*----------------------------------------------Character End---------------------------------------------------------------------------------------------- */
