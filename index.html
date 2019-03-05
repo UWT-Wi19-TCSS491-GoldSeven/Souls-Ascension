@@ -25,7 +25,7 @@
             <button id="start-game" onclick="startGame()">Press to Play</button>
         </div>
         <div class="row">
-            <canvas id="viewport" tabindex="1" width="800" height="800"></canvas>
+            <canvas id="viewport" tabindex="1" width="800" height="800" oncontextmenu="return false;"></canvas>
             <script>
                 window.onload = function () {
                     document.getElementById('viewport').focus();
