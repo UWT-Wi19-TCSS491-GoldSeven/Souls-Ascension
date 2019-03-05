@@ -35,6 +35,17 @@ SlimeBehemoth.prototype.update = function () {
     let yDiff = yOrigC - yOrigS;
     let distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
 
+    if (this.killed) {
+        if (this.death && this.animation == this.death) {
+            this.life -= gameEngine.clockTick;
+            if (this.life <= 0) this.removeFromWorld = true;
+        } else {
+            this.removeFromWorld = true;
+        }
+
+        return;
+    }
+
     if (this.x < 230 && this.isMovingWest) {
         this.isMovingEast = true;
         this.isMovingWest = false;
@@ -63,7 +74,9 @@ SlimeBehemoth.prototype.draw = function () {
     } else {
         this.animation = this.slimeBehemothWalkingRightAnimation;
     }
+
     this.animation.drawFrame(gameEngine.clockTick, ctx, this.x, this.y);
+
     Entity.prototype.draw.call(this);
 }
 /*----------------------------------------------SlimeBehemoth End-------------------------------------------------------------------------------------------- */
@@ -75,7 +88,7 @@ function SlimeEnemy(startingX, startingY) {
     this.slimeEnemyAttackLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/SlimeAttackLeft.png"), 0, 0, 80, 80, 0.1, 10, true, false);
     this.slimeEnemyAttackRightAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/SlimeAttackRight.png"), 0, 0, 80, 80, 0.1, 10, true, false);
     this.slimeEnemyIdleAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/SlimeIdle.png"), 0, 0, 80, 80, 0.1, 8, true, false);
-    this.death = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/SlimeDeath.png"), 0, 0, 80, 80, 0.1, 8, true, false);
+    this.death = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/SlimeDeath.png"), 0, 0, 80, 80, 0.1, 8, false, false);
     this.animation = this.slimeEnemyIdleAnimation;
     this.isMovingWest = false;
     this.isMovingEast = false;
@@ -119,6 +132,16 @@ SlimeEnemy.prototype.update = function () {
     let origX = this.x;
     let origY = this.y;
 
+    if (this.killed) {
+        if (this.death && this.animation == this.death) {
+            this.life -= gameEngine.clockTick;
+            if (this.life <= 0) this.removeFromWorld = true;
+        } else {
+            this.removeFromWorld = true;
+        }
+
+        return;
+    }
 
     if (distance < this.fleeRange) {
         let velX = (this.fleeSpeed * xDiff) / distance;
@@ -191,10 +214,7 @@ SlimeEnemy.prototype.draw = function () {
     if (this.animation == null) return;
 
     this.animation.drawFrame(gameEngine.clockTick, ctx, this.x, this.y);
-    if (this.animation === this.death) {
-        this.life -= gameEngine.clockTick;
-        if (this.life <= 0) this.removeFromWorld = true;
-    }
+
     Entity.prototype.draw.call(this);
 }
 /*----------------------------------------------SlimeEnemy End---------------------------------------------------------------------------------------------- */
@@ -233,6 +253,17 @@ Skeleton.prototype.update = function () {
     let xDiff = xOrigC - xOrigS;
     let yDiff = yOrigC - yOrigS;
     let distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+
+    if (this.killed) {
+        if (this.death && this.animation == this.death) {
+            this.life -= gameEngine.clockTick;
+            if (this.life <= 0) this.removeFromWorld = true;
+        } else {
+            this.removeFromWorld = true;
+        }
+
+        return;
+    }
 
     if (this.x < 2550 && this.isMovingWest) {
         this.isMovingEast = true;
@@ -274,7 +305,7 @@ function Wizard(game, startingX, startingY) {
     this.wizardAttackLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/wizardAttackLeft.png"), 0, 0, 80, 80, 0.1, 6, true, false);
     this.wizardAttackRightAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/wizardAttackRight.png"), 0, 0, 80, 80, 0.1, 6, true, false);
     this.wizardIdleAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/wizardIdle.png"), 0, 0, 80, 80, 0.1, 10, true, false);
-    this.death = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/wizardDeath.png"), 0, 0, 80, 80, 0.1, 10, true, false);
+    this.death = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/wizardDeath.png"), 0, 0, 80, 80, 0.1, 10, false, false);
     this.animation = this.wizardWalkingLeftAnimation;
     this.isMovingWest = false;
     this.isMovingEast = true;
@@ -304,6 +335,17 @@ Wizard.prototype.update = function () {
     let xDiff = xOrigC - xOrigS;
     let yDiff = yOrigC - yOrigS;
     let distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+
+    if (this.killed) {
+        if (this.death && this.animation == this.death) {
+            this.life -= gameEngine.clockTick;
+            if (this.life <= 0) this.removeFromWorld = true;
+        } else {
+            this.removeFromWorld = true;
+        }
+
+        return;
+    }
 
     if (this.x < 1050 && this.isMovingWest) {
         this.isMovingEast = true;
@@ -385,6 +427,16 @@ SorcererVillain.prototype.update = function () {
     let origX = this.x;
     let origY = this.y;
 
+    if (this.killed) {
+        if (this.death && this.animation == this.death) {
+            this.life -= gameEngine.clockTick;
+            if (this.life <= 0) this.removeFromWorld = true;
+        } else {
+            this.removeFromWorld = true;
+        }
+
+        return;
+    }
 
     if (distance < this.fleeRange) {
         let velX = (this.fleeSpeed * xDiff) / distance;
