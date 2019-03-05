@@ -90,7 +90,7 @@ function Events(engine) {
         engine.click = getXandY(e); // Enables inflicting damage on the enemy.
         e.preventDefault(); // cancels default context menu when right clicked.
         engine.one = true;
-        setTimeout(function() {
+        setTimeout(function () {
             engine.one = false
         }, 400);
         //return false;  // cancels default context menu when right clicked.
@@ -99,17 +99,17 @@ function Events(engine) {
     // Left click only.
     engine.ctx.canvas.addEventListener("click", function (e) {
         engine.click = getXandY(e); // Enables inflicting damage on the enemy.
-        if (engine.debug) console.debug("Clicked " + e.button +  " button at " + e.clientX + "," + e.clientY); // The coordinates on the browser screen.
+        if (engine.debug) console.debug("Clicked " + e.button + " button at " + e.clientX + "," + e.clientY); // The coordinates on the browser screen.
     }, false);
 
-    var getXandY = function (e) {
-        var x = e.clientX - engine.ctx.canvas.getBoundingClientRect().left;
-        var y = e.clientY - engine.ctx.canvas.getBoundingClientRect().top;
+    let getXandY = function (e) {
+        let x = e.clientX - engine.ctx.canvas.getBoundingClientRect().left;
+        let y = e.clientY - engine.ctx.canvas.getBoundingClientRect().top;
 
         if (x < 1024) {
             x = Math.floor(x / 32);
             y = Math.floor(y / 32);
         }
-        return { x: x, y: y };
+        return {x: x, y: y};
     }
 }

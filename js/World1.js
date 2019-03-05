@@ -6,7 +6,7 @@ function World1() {
     // create half cirular room
 
     // level Generation (88x33)
-    var worldGeneration = new Array(
+    let worldGeneration = new Array(
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -44,49 +44,43 @@ function World1() {
 
 
     // generate first room and get dimensions
-    var vDirection;
-    var hDirection;
-    var startingPosition = generateRandomNumber(0, 524);
-    var currentPosition = startingPosition;
-    var firstRoom = generateRectangle(6, 50, 6, 50);
-    var xDimension = firstRoom[firstRoom.length - 2];
-    var yDimension = firstRoom[firstRoom.length - 1]
-    var roomArea = xDimension * yDimension;
-    var offset = 25 - xDimension;
-    var tileCount = 0;
+    let  vDirection;
+    let  hDirection;
+    let  startingPosition = generateRandomNumber(0, 524);
+    let  currentPosition = startingPosition;
+    let  firstRoom = generateRectangle(6, 50, 6, 50);
+    let  xDimension = firstRoom[firstRoom.length - 2];
+    let  yDimension = firstRoom[firstRoom.length - 1]
+    let  roomArea = xDimension * yDimension;
+    let  offset = 25 - xDimension;
+    let  tileCount = 0;
     // correct starting position for copy
     if (startingPosition % 25 >= xDimension) {
         hDirection = "left";
-    }
-    else {
+    } else {
         hDirection = "right";
     }
     if (Math.ceil(startingPosition / 25) >= yDimension) {
         vDirection = "up";
-    }
-    else {
+    } else {
         vDirection = "down";
     }
     if (hDirection == "left" && vDirection == "up") {
         startingPosition = startingPosition - (xDimension + (yDimension * 25));
-    }
-    else if (hDirection == "left" && vDirection == "down") {
+    } else if (hDirection == "left" && vDirection == "down") {
         startingPosition = (startingPosition - xDimension) + (yDimension * 25);
-    }
-    else if (hDirection == "right" && vDirection == "up") {
+    } else if (hDirection == "right" && vDirection == "up") {
         startingPosition = (startingPosition + xDimension) - (yDimension * 25);
-    }
-    else {
+    } else {
         // do nothing
     }
     // copy room to game world
-    for (var i = 0; i < roomArea; i++) {
+    for (let  i = 0; i < roomArea; i++) {
         if (tileCount < xDimension && firstRoom[i] != 0) {
             worldGeneration[currentPosition] = firstRoom[i];
             currentPosition++;
             tileCount++;
-        }
-        else if (tileCount < xDimension && firstRoom[i] == 0) { // skipping the blank tiles
+        } else if (tileCount < xDimension && firstRoom[i] == 0) { // skipping the blank tiles
             currentPosition++;
             tileCount++;
         }
@@ -110,7 +104,7 @@ function World1() {
     * 33 = player starting Position floor, 34 = sorcererVillain starting position floor, 35 = slimeEnemy starting position floor,
     * 36 = slimeBehemoth starting position floor, 37 = wizard starting position, 38 = skeleton starting position.
     */
-    var slimeDungeonLevelOne = new Array(
+    let  slimeDungeonLevelOne = new Array(
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 1, 2, 1, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 1, 2, 1, 7, 0, 0, 0, 0, 6, 3, 4, 7, 0, 0, 0, 0, 6, 1, 1, 2, 1, 4, 1, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 20, 16, 21, 12, 1, 2, 1, 2, 1, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 2, 20, 16, 21, 3, 7, 0, 6, 2, 1, 20, 21, 2, 1, 7, 0, 6, 3, 20, 16, 16, 16, 16, 25, 12, 1, 2, 2, 2, 2, 1, 7, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 6, 1, 2, 1, 1, 2, 2, 1, 3, 4, 1, 1, 1, 2, 2, 1, 1, 1, 3, 1, 1, 2, 1, 11, 18, 28, 17, 5, 20, 16, 16, 16, 21, 1, 7, 0, 0, 0, 6, 1, 2, 1, 10, 10, 4, 1, 20, 24, 24, 24, 21, 2, 10, 1, 20, 16, 24, 24, 16, 21, 1, 2, 11, 20, 24, 24, 19, 19, 19, 23, 5, 20, 16, 16, 16, 16, 21, 1, 3, 1, 4, 7, 0, 0,
@@ -150,7 +144,7 @@ function World1() {
     * Slime Dungeon Level 1 entity array (88x33) each number is a 48x48 pixel space
     *
     */
-    var slimeDungeonLevelOneEntities = new Array(
+    let  slimeDungeonLevelOneEntities = new Array(
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -186,7 +180,7 @@ function World1() {
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
     );
     // Loop to generate each entity
-    for (var i = 0; i < slimeDungeonLevelOne.length; i++) {
+    for (let i = 0; i < slimeDungeonLevelOne.length; i++) {
         // Generates the position of each torch within the entity array
         if (slimeDungeonLevelOne[i] >= 1 && slimeDungeonLevelOne[i] <= 4) {
             slimeDungeonLevelOneEntities[i] = 1; // adds a torch to the entities array
@@ -222,50 +216,55 @@ function World1() {
             slimeDungeonLevelOneEntities[i] = 15; // adds a skeleton to the entities array
         }
 
-    };
+    }
+    ;
     /*----------------------------------------------Dungeon Array for level 1 End-------------------------------------------------------------------------------- */
 
 
-/*----------------------------------------------Background for level 1 Start--------------------------------------------------------------------------------- */
-var currentScale = 48; // number of pixels
-var currentWTiles = 88; // number of tiles width wise on the map
-function Background(spritesheet) {
-    this.x = 0;
-    this.y = 0;
-    this.sw = 48;
-    this.sh = 48;
-    this.dw = currentScale;
-    this.dh = currentScale;
-    this.spritesheet = spritesheet;
-};
-Background.prototype = new Entity();
-Background.prototype.constructor = Background;
-Background.prototype.update = function () { }
-Background.prototype.draw = function () {
-    var spriteX = 0;
-    var spriteY = 0;
-    var count = 0;
-    var torchCounter = 0;
-    var x = this.x;
-    var y = this.y;
+    /*----------------------------------------------Background for level 1 Start--------------------------------------------------------------------------------- */
+    let currentScale = 48; // number of pixels
+    let currentWTiles = 88; // number of tiles width wise on the map
 
-    // Loop to generate each tile
-    for (var i = 0; i < slimeDungeonLevelOne.length; i++) {
-        spriteX = (slimeDungeonLevelOne[i] - 1) * 48; // 32 is the number of pixels per sprite
-        ctx.drawImage(this.spritesheet, spriteX, spriteY, this.sw, this.sh, x, y, this.dw, this.dh);
-        count++;
-        if (count >= currentWTiles) // change the value based on how many tiles you will draw. (88 atm)
-        {
-            x = this.x;
-            y += currentScale;
-            count = 0;
+
+    class Background extends Entity {
+        constructor(spritesheet) {
+            super(gameEngine, 0, 0, false);
+            this.x = 0;
+            this.y = 0;
+            this.sw = 48;
+            this.sh = 48;
+            this.dw = currentScale;
+            this.dh = currentScale;
+            this.spritesheet = spritesheet;
         }
-        else {
-            x += currentScale;
+
+        draw() {
+            let spriteX = 0;
+            let spriteY = 0;
+            let count = 0;
+            let torchCounter = 0;
+            let x = this.x;
+            let  y = this.y;
+
+            // Loop to generate each tile
+            for (let  i = 0; i < slimeDungeonLevelOne.length; i++) {
+                spriteX = (slimeDungeonLevelOne[i] - 1) * 48; // 32 is the number of pixels per sprite
+                ctx.drawImage(this.spritesheet, spriteX, spriteY, this.sw, this.sh, x, y, this.dw, this.dh);
+                count++;
+                if (count >= currentWTiles) // change the value based on how many tiles you will draw. (88 atm)
+                {
+                    x = this.x;
+                    y += currentScale;
+                    count = 0;
+                } else {
+                    x += currentScale;
+                }
+            }
+            ;
         }
-    };
-};
-/*----------------------------------------------Background for level 1 End----------------------------------------------------------------------------------- */
+    }
+
+    /*----------------------------------------------Background for level 1 End----------------------------------------------------------------------------------- */
 
 
     return {slimeDungeonLevelOne, slimeDungeonLevelOneEntities, currentWTiles, currentScale, Background};

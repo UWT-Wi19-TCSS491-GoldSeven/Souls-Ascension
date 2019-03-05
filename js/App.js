@@ -1,81 +1,86 @@
 /*----------------------------------------------Boiler Code Start-------------------------------------------------------------------------------------------- */
-function Animation(spriteSheet, startX, startY, frameWidth, frameHeight, frameDuration, frames, loop, reverse) {
-    this.spriteSheet = spriteSheet;
-    this.startX = startX;
-    this.startY = startY;
-    this.frameWidth = frameWidth;
-    this.frameDuration = frameDuration;
-    this.frameHeight = frameHeight;
-    this.frames = frames;
-    this.totalTime = frameDuration * frames;
-    this.elapsedTime = 0;
-    this.loop = loop;
-    this.reverse = reverse;
-}
 
-Animation.prototype.drawFrame = function (tick, ctx, x, y, scaleBy) {
-    var scaleBy = scaleBy || 1; //The size of the sprite. 1 = 100%
-    this.elapsedTime += tick;
-    if (this.loop) {
-        if (this.isDone()) {
-            this.elapsedTime = 0;
+class Animation {
+    constructor(spriteSheet, startX, startY, frameWidth, frameHeight, frameDuration, frames, loop, reverse) {
+        this.spriteSheet = spriteSheet;
+        this.startX = startX;
+        this.startY = startY;
+        this.frameWidth = frameWidth;
+        this.frameDuration = frameDuration;
+        this.frameHeight = frameHeight;
+        this.frames = frames;
+        this.totalTime = frameDuration * frames;
+        this.elapsedTime = 0;
+        this.loop = loop;
+        this.reverse = reverse;
+    }
+
+    drawFrame(tick, ctx, x, y, scaleBy = 1) {
+        this.elapsedTime += tick;
+        if (this.loop) {
+            if (this.isDone()) {
+                this.elapsedTime = 0;
+            }
+        } else if (this.isDone()) {
+            return;
         }
-    } else if (this.isDone()) {
-        return;
-    }
-    var index = this.reverse ? this.frames - this.currentFrame() - 1 : this.currentFrame();
-    var vindex = 0;
-    if ((index + 1) * this.frameWidth + this.startX > this.spriteSheet.width) {
-        index -= Math.floor((this.spriteSheet.width - this.startX) / this.frameWidth);
-        vindex++;
-    }
-    while ((index + 1) * this.frameWidth > this.spriteSheet.width) {
-        index -= Math.floor(this.spriteSheet.width / this.frameWidth);
-        vindex++;
+        if (this.spriteSheet == null)
+            return;
+        let index = this.reverse ? this.frames - this.currentFrame() - 1 : this.currentFrame();
+        let vindex = 0;
+        if ((index + 1) * this.frameWidth + this.startX > this.spriteSheet.width) {
+            index -= Math.floor((this.spriteSheet.width - this.startX) / this.frameWidth);
+            vindex++;
+        }
+        while ((index + 1) * this.frameWidth > this.spriteSheet.width) {
+            index -= Math.floor(this.spriteSheet.width / this.frameWidth);
+            vindex++;
+        }
+
+        let locX = x;
+        let locY = y;
+        let offset = vindex === 0 ? this.startX : 0;
+        ctx.drawImage(this.spriteSheet,
+            index * this.frameWidth + offset, vindex * this.frameHeight + this.startY, // source from sheet
+            this.frameWidth, this.frameHeight,
+            locX, locY,
+            this.frameWidth * scaleBy,
+            this.frameHeight * scaleBy);
     }
 
-    var locX = x;
-    var locY = y;
-    var offset = vindex === 0 ? this.startX : 0;
-    ctx.drawImage(this.spriteSheet,
-        index * this.frameWidth + offset, vindex * this.frameHeight + this.startY, // source from sheet
-        this.frameWidth, this.frameHeight,
-        locX, locY,
-        this.frameWidth * scaleBy,
-        this.frameHeight * scaleBy);
+    currentFrame() {
+        return Math.floor(this.elapsedTime / this.frameDuration);
+    }
+
+    isDone() {
+        return (this.elapsedTime >= this.totalTime);
+    }
 }
 
-Animation.prototype.currentFrame = function () {
-    return Math.floor(this.elapsedTime / this.frameDuration);
-}
-
-Animation.prototype.isDone = function () {
-    return (this.elapsedTime >= this.totalTime);
-}
 /*----------------------------------------------Boiler Code End---------------------------------------------------------------------------------------------- */
 
 /*----------------------------------------------Dungeon Procedural Generation Start-------------------------------------------------------------------------- */
+
 // random number generator
 function generateRandomNumber(minValue, maxValue) {
     let randomNumber = Math.random() * (maxValue - minValue) + minValue;
     return Math.floor(randomNumber);
 }
+
 // Base shapes
 // create rectangle room
 function generateRectangle(minX, maxX, minY, maxY) {
-    var x = generateRandomNumber(minX, maxX);
-    var y = generateRandomNumber(minY, maxY);
-    var recArea = x * y;
-    var rectangle = new Array(recArea);
-    var currentLevel = 1;
-    for (var i = 0; i < recArea; i++) {
+    let x = generateRandomNumber(minX, maxX);
+    let y = generateRandomNumber(minY, maxY);
+    let recArea = x * y;
+    let rectangle = new Array(recArea);
+    let currentLevel = 1;
+    for (let i = 0; i < recArea; i++) {
         if (((i > recArea - x - 1) && i != recArea - 1) || (i < x && i != 0)) {
             rectangle[i] = 2;
-        }
-        else if ((i % x == 0) || ((i + 1) % x == 0)) {
+        } else if ((i % x == 0) || ((i + 1) % x == 0)) {
             rectangle[i] = 1;
-        }
-        else {
+        } else {
             rectangle[i] = 7;
         }
     }
@@ -89,86 +94,84 @@ function generateRectangle(minX, maxX, minY, maxY) {
 }
 
 // Generate world1 object.
-var world1 = new World1();
+let world1 = new World1();
 
-function damageStat() {
-    this.x = 0;
-    this.y = 0;
-    this.damaged = 0;
-    this.exp = 0;
-    this.time = new Date().getTime();
-
-}
-damageStat.prototype = new Entity();
-damageStat.prototype.constructor = damageStat;
-damageStat.prototype.update = function () {
-    Entity.prototype.update.call(this);
-}
-damageStat.prototype.draw = function () {
-    if (this.damaged !== 0) {
-        ctx.fillStyle = "red";
-        ctx.font = "30px Arial";
-        ctx.fillText(" - " + this.damaged, this.x, this.y);
+class TextIndicator extends Entity {
+    constructor() {
+        super(gameEngine, 0, 0, false);
+        this.damaged = 0;
+        this.exp = 0;
+        this.time = new Date().getTime();
     }
-    if (this.exp !== 0) {
-        ctx.fillStyle = "blue";
-        ctx.font = "30px Arial";
-        ctx.fillText(" + " + this.exp + 'Exp', this.x + 10, this.y + 10);
+
+    draw() {
+        if (this.damaged !== 0) {
+            ctx.fillStyle = "red";
+            ctx.font = "30px Arial";
+            ctx.fillText(" - " + this.damaged, this.x, this.y);
+        }
+        if (this.exp !== 0) {
+            ctx.fillStyle = "blue";
+            ctx.font = "30px Arial";
+            ctx.fillText(" + " + this.exp + 'Exp', this.x + 10, this.y + 10);
+        }
     }
 }
 
 /*----------------------------------------------Character Information-------------------------------------------------------------------------------- */
-function CharacterInfo(image, hpImage) {
-    this.x = 0;
-    this.y = 0;
-    this.w = 512;
-    this.h = 512;
-    this.image = image;
-    this.hpImange = hpImage;
-};
 
-CharacterInfo.prototype = new Entity();
-CharacterInfo.prototype.constructor = CharacterInfo;
-CharacterInfo.prototype.update = function () { }
-CharacterInfo.prototype.draw = function () {
-    var x = character.x - 380;
-    var y = character.y - 380;
-    //var gradient = this.ctx.createLinearGradient(0, 0, 100, 0);
-    //gradient.addColorStop("0", " magenta");
-    //gradient.addColorStop("0.5", "blue");
-    //gradient.addColorStop("1.0", "white");
-    // Fill with gradient
-    ctx.drawImage(this.image, x, y, 100, 100);
-    ctx.drawImage(this.hpImange, x, y + 200, 40, 40);
-    ctx.fillStyle = "#0F0";
-    ctx.fillText("Level " + character.level + ' / Soul level ' + character.soul, x + 100, y + 40);
-    ctx.fillStyle = "white";
-    ctx.fillText("HP " + character.currentHealth + '/' + character.maxHealth, x + 101, y + 59);
-    ctx.fillText("H", x + 30, y + 235);
-    ctx.fillText(character.inventory['hp'].quantity, x + 5, y + 210);
-    ctx.fillStyle = "white";
-    ctx.fillText("EXP " + character.currentExp + '/' + character.levelExp, x + 100, y + 75);
-    ctx.fillStyle = "white";
-    ctx.fillText("Soul " + character.currentSoul + '/' + character.levelSoul, x + 100, y + 90);
-    if (character.currentSoul > character.levelSoul) {
-        character.currentSoul = character.currentSoul - character.levelSoul;
-        character.soul++;
-        character.levelSoul *= character.soul;
+class CharacterInfo extends Entity {
+    constructor(image, hpImage) {
+        super(gameEngine, 0, 0);
+        this.x = 0;
+        this.y = 0;
+        this.w = 512;
+        this.h = 512;
+        this.image = image;
+        this.hpImange = hpImage;
     }
-    if (character.currentExp > character.levelExp) {
-        character.currentExp = character.currentExp - character.levelExp;
-        character.level++;
-        character.maxHealth += character.maxHealth * character.level / 10;
-        character.levelExp *= character.level;
-        character.currentHealth = character.maxHealth;
+
+    draw() {
+        let x = character.x - 380;
+        let y = character.y - 380;
+        //let gradient = this.ctx.createLinearGradient(0, 0, 100, 0);
+        //gradient.addColorStop("0", " magenta");
+        //gradient.addColorStop("0.5", "blue");
+        //gradient.addColorStop("1.0", "white");
+        // Fill with gradient
+        ctx.drawImage(this.image, x, y, 100, 100);
+        ctx.drawImage(this.hpImange, x, y + 200, 40, 40);
+        ctx.fillStyle = "#0F0";
+        ctx.fillText("Level " + character.level + ' / Soul level ' + character.soul, x + 100, y + 40);
+        ctx.fillStyle = "white";
+        ctx.fillText("HP " + character.currentHealth + '/' + character.maxHealth, x + 101, y + 59);
+        ctx.fillText("H", x + 30, y + 235);
+        ctx.fillText(character.inventory['hp'].quantity, x + 5, y + 210);
+        ctx.fillStyle = "white";
+        ctx.fillText("EXP " + character.currentExp + '/' + character.levelExp, x + 100, y + 75);
+        ctx.fillStyle = "white";
+        ctx.fillText("Soul " + character.currentSoul + '/' + character.levelSoul, x + 100, y + 90);
+        if (character.currentSoul > character.levelSoul) {
+            character.currentSoul = character.currentSoul - character.levelSoul;
+            character.soul++;
+            character.levelSoul *= character.soul;
+        }
+        if (character.currentExp > character.levelExp) {
+            character.currentExp = character.currentExp - character.levelExp;
+            character.level++;
+            character.maxHealth += character.maxHealth * character.level / 10;
+            character.levelExp *= character.level;
+            character.currentHealth = character.maxHealth;
+        }
     }
-};
+}
+
 /*----------------------------------------------End character information--------------------------------------------------------------------------------- */
 
 
 /*----------------------------------------------BSP TREE Start----------------------------------------------------------------------------------------------- */
 
-var Tree = function (leaf) {
+let Tree = function (leaf) {
     this.leaf = leaf
     this.lchild = undefined
     this.rchild = undefined
@@ -194,18 +197,18 @@ Tree.prototype.getLevel = function (level, queue) {
     }
     return queue
 }
-var Point = function (x, y) {
+let Point = function (x, y) {
     this.x = x;
     this.y = y;
 }
-var Door = function (x, y, position) {
+let Door = function (x, y, position) {
     this.x = x;
     this.y = y;
     this.position = position;
     this.removed = false;
 }
 //a container prototype.
-var Container = function (x, y, w, h) {
+let Container = function (x, y, w, h) {
     this.x = x
     this.y = y
     this.w = w
@@ -238,21 +241,24 @@ Container.prototype.paint = function (c) {
     c.strokeRect(this.x * SQUARE, this.y * SQUARE,
         this.w * SQUARE, this.h * SQUARE)
 }
+
 // build this tree
 function split_container(container, iter) {
-    var root = new Tree(container)
+    let root = new Tree(container)
     if (iter != 0) {
-        var sr = random_split(container)
+        let sr = random_split(container)
         root.lchild = split_container(sr[0], iter - 1)
         root.rchild = split_container(sr[1], iter - 1)
     }
     return root
 }
+
 function random(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min)
 }
+
 function random_split(container) {
-    var r1, r2
+    let r1, r2
     if (random(0, 1) == 0) {
         // Vertical
         r1 = new Container(
@@ -265,8 +271,8 @@ function random_split(container) {
         )
 
         if (DISCARD_BY_RATIO) {
-            var r1_w_ratio = r1.w / r1.h
-            var r2_w_ratio = r2.w / r2.h
+            let r1_w_ratio = r1.w / r1.h
+            let r2_w_ratio = r2.w / r2.h
             if (r1_w_ratio < W_RATIO || r2_w_ratio < W_RATIO) {
                 return random_split(container)
             }
@@ -283,8 +289,8 @@ function random_split(container) {
         )
 
         if (DISCARD_BY_RATIO) {
-            var r1_h_ratio = r1.h / r1.w
-            var r2_h_ratio = r2.h / r2.w
+            let r1_h_ratio = r1.h / r1.w
+            let r2_h_ratio = r2.h / r2.w
             if (r1_h_ratio < H_RATIO || r2_h_ratio < H_RATIO) {
                 return random_split(container)
             }
@@ -295,22 +301,22 @@ function random_split(container) {
 
 const mapWidth = world1.currentWTiles * world1.currentScale + world1.currentScale;
 const mapHeight = (world1.slimeDungeonLevelOne.length / world1.currentWTiles) * world1.currentScale;
-var MAP_SIZE = world1.currentScale;
-var SQUARE = world1.currentWTiles;
-var N_ITERATIONS = 6;
-var DISCARD_BY_RATIO = true;
-var H_RATIO = 0.45;
-var W_RATIO = 0.45;
-var main_container = new Container(0, 0, mapWidth, mapHeight);
-var container_tree = split_container(main_container, N_ITERATIONS);
+let MAP_SIZE = world1.currentScale;
+let SQUARE = world1.currentWTiles;
+let N_ITERATIONS = 6;
+let DISCARD_BY_RATIO = true;
+let H_RATIO = 0.45;
+let W_RATIO = 0.45;
+let main_container = new Container(0, 0, mapWidth, mapHeight);
+let container_tree = split_container(main_container, N_ITERATIONS);
 
-var leafs = container_tree.getLeafs();
+let leafs = container_tree.getLeafs();
 
 function fillBSPTree(target) {//, background) {
-    var x = 0;
-    var y = 0;
-    var count = 0;
-    for (var i = 0; i <= target.length; i++) {
+    let x = 0;
+    let y = 0;
+    let count = 0;
+    for (let i = 0; i <= target.length; i++) {
         if (count >= world1.currentWTiles) // change the value based on how many tiles you will draw. (88 atm)
         {
             x = 0;
@@ -320,16 +326,18 @@ function fillBSPTree(target) {//, background) {
         if (15 >= target[i] && target[i] >= 0) { //wall code
             x = count * world1.currentScale;
             //and the wall into property container
-            for (var j = 0; j < leafs.length; j++) leafs[j].pushWall(x, y, i, target[i]);//i position, target = code
+            for (let j = 0; j < leafs.length; j++) leafs[j].pushWall(x, y, i, target[i]);//i position, target = code
         }
         count++;
-    };
+    }
+    ;
 }
+
 fillBSPTree(world1.slimeDungeonLevelOne);
 /*----------------------------------------------BSP TREE End------------------------------------------------------------------------------------------------- */
 
 /*----------------------------------------------Collision Start---------------------------------------------------------------------------------------------- */
-var Collision = function (entity, killable, width, height) {
+let Collision = function (entity, killable, width, height) {
     this.Entity = entity;
     this.killable = false;
     this.w = width;
@@ -350,10 +358,10 @@ function isCollide(targetX, targetY, targetW, targetH, entity, entityW, entityH)
     return false;
 }
 
-//var isColli = false;
+//let isColli = false;
 function collisionDetect(characterX, characterY, width, isCharacter) {
-    var targetX, targetY;
-    var j; // area to check collision
+    let targetX, targetY;
+    let j; // area to check collision
     for (j = 0; j < leafs.length; j++) {
         if (leafs[j].x <= characterX && characterX <= leafs[j].x + leafs[j].w
             && leafs[j].y <= characterY && characterY <= leafs[j].y + leafs[j].h) {
@@ -361,7 +369,7 @@ function collisionDetect(characterX, characterY, width, isCharacter) {
         }
     }
     if (typeof leafs[j] === 'undefined') return true;
-    for (var i = 0; i < leafs[j].walls.length; i++) {
+    for (let i = 0; i < leafs[j].walls.length; i++) {
         targetX = leafs[j].walls[i].x;
         targetY = leafs[j].walls[i].y;
         targetX = leafs[j].walls[i].x;
@@ -374,7 +382,7 @@ function collisionDetect(characterX, characterY, width, isCharacter) {
                 leafs[j].walls[i].removed = true;
                 character.inventory['SilverKey'] -= 1;
                 world1.slimeDungeonLevelOne[leafs[j].walls[i].position] = 24; // center floor.
-                removeDoor(characterX, characterY,width); //remove opened door
+                removeDoor(characterX, characterY, width); //destroy opened door
                 return false;
             }
             return true;
@@ -384,10 +392,10 @@ function collisionDetect(characterX, characterY, width, isCharacter) {
 }
 
 const removeDoor = (characterX, characterY, width) => {
-    var targetX, targetY;
-    var j; // area to check collision
+    let targetX, targetY;
+    let j; // area to check collision
     for (j = 0; j < leafs.length; j++) {
-        for (var i = 0; i < leafs[j].walls.length; i++) {
+        for (let i = 0; i < leafs[j].walls.length; i++) {
             targetX = leafs[j].walls[i].x;
             targetY = leafs[j].walls[i].y;
             targetX = leafs[j].walls[i].x;
@@ -395,7 +403,9 @@ const removeDoor = (characterX, characterY, width) => {
             if (characterX < targetX + world1.currentScale &&// - width for more percise when work with character
                 characterX + world1.currentScale - width > targetX &&
                 characterY < targetY + world1.currentScale &&
-                characterY > targetY) { leafs[j].walls.splice(i, 1); }
+                characterY > targetY) {
+                leafs[j].walls.splice(i, 1);
+            }
         }
     }
 }
@@ -407,22 +417,22 @@ Container.prototype.pushWall = function (theX, theY, thePosition, code) {//posit
     }
     if (this.x <= theX + world1.currentScale / 2 && theX + world1.currentScale / 2 < this.x + this.w
         && this.y <= theY + world1.currentScale / 2 && theY + world1.currentScale / 2 < this.y + this.h) {
-        leafs[i].walls.splice(j, 1); //remove opened door
+        leafs[i].walls.splice(j, 1); //destroy opened door
     } else if (this.x <= theX && theX < this.x + this.w
         && this.y <= theY && theY < this.y + this.h) {
-        leafs[i].walls.splice(j, 1); //remove opened door
+        leafs[i].walls.splice(j, 1); //destroy opened door
     } else if (this.x <= theX && theX < this.x + this.w
         && this.y <= theY + world1.currentScale && theY + world1.currentScale < this.y + this.h) {
-        leafs[i].walls.splice(j, 1); //remove opened door
+        leafs[i].walls.splice(j, 1); //destroy opened door
     }
 }
 /*----------------------------------------------Collision End------------------------------------------------------------------------------------------------ */
 
 /*----------------------------------------------Health Start------------------------------------------------------------------------------------------------ */
-var bug = 0;
+let bug = 0;
 const drawHPBar = () => {
-    var entity;
-    for (var i = 0; i < gameEngine.entities.length - 1; i++) {
+    let entity;
+    for (let i = 0; i < gameEngine.entities.length - 1; i++) {
         entity = gameEngine.entities[i];
         ctx.strokeStyle = "red";
         if (entity.maxHealth > 0 && gameEngine.entities[i] instanceof Character != true) {
@@ -445,45 +455,27 @@ const drawHPBar = () => {
 }
 
 /*----------------------------------------------Health End------------------------------------------------------------------------------------------------ */
+
 /*----------------------------------------------Torch Start-------------------------------------------------------------------------------------------------- */
-function Torch(x, y) {
-    this.flameAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/torchAnimation.png"), 0, 0, 48, 48, 0.1, 4, true, world1.currentScale);
-    this.killable = false;
-    Entity.call(this, gameEngine, x, y);// where it starts
+class Torch extends Entity {
+    constructor(x, y) {
+        super(gameEngine, x, y);
+
+        this.flameAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/torchAnimation.png"), 0, 0, 48, 48, 0.1, 4, true, world1.currentScale);
+        this.killable = false;
+    }
+
+    draw() {
+        this.flameAnimation.drawFrame(gameEngine.clockTick, ctx, this.x, this.y);
+    }
 }
 
-Torch.prototype = new Entity();
-Torch.prototype.constructor = Torch;
-
-Torch.prototype.update = function () {
-    Entity.prototype.update.call(this);
-}
-Torch.prototype.draw = function () {
-    this.flameAnimation.drawFrame(gameEngine.clockTick, ctx, this.x, this.y);
-    Entity.prototype.draw.call(this);
-};
 /*----------------------------------------------Torch End---------------------------------------------------------------------------------------------------- */
-
-/*----------------------------------------------Debug Stuff Start------------------------------------------------------------------------------------------ */
-function CenterThingy() {
-    // Displays the center of the canvas/camera.
-    Entity.call(this, gameEngine, 390, 390);
-    this.radius = 200;
-}
-CenterThingy.prototype = new Entity();
-CenterThingy.prototype.constructor = world1.Background;
-CenterThingy.prototype.update = function () { }
-CenterThingy.prototype.draw = function (ctx) {
-    ctx.fillStyle = "blue";
-    ctx.fillRect(395, 395, 10, 10);
-    Entity.prototype.draw.call(this);
-}
-/*----------------------------------------------Debug Stuff End-------------------------------------------------------------------------------------------- */
 
 /*----------------------------------------------Main Code Start-------------------------------------------------------------------------------------------- */
 // the "main" code begins here
-var gameEngine;
-var damageST;
+let gameEngine;
+let damageST;
 let character;
 let sorcererVillain;
 let slimeBehemoth;
@@ -496,15 +488,15 @@ let gKey;
 let hPotion;
 let sJar;
 let canvas;
-var ctx;
-var ASSET_MANAGER = new AssetManager();
+let ctx;
+let ASSET_MANAGER = new AssetManager();
 
 function startGame() {
     document.getElementById('start-game').hidden = true;
     ASSET_MANAGER.queueDownload("./assets/sprites/DungeonBackgroundSpriteSheet.png");
     ASSET_MANAGER.queueDownload("./assets/sprites/spritesheet.png");
     ASSET_MANAGER.queueDownload("./assets/sprites/characterIdleAnimation.png");
-	ASSET_MANAGER.queueDownload('./assets/sprites/ChatacterAttackRanged.png');
+    ASSET_MANAGER.queueDownload('./assets/sprites/ChatacterAttackRanged.png');
     ASSET_MANAGER.queueDownload("./assets/sprites/CharacterForwardRun.png");
     ASSET_MANAGER.queueDownload("./assets/sprites/characterBackwardRun.png");
     ASSET_MANAGER.queueDownload("./assets/sprites/characterRightAnimation.png");
@@ -522,23 +514,23 @@ function startGame() {
     ASSET_MANAGER.queueDownload("./assets/sprites/SoulJarAnimation.png");
     ASSET_MANAGER.queueDownload("./assets/sprites/SlimeBehemothWalkingLeft.png");
     ASSET_MANAGER.queueDownload("./assets/sprites/SlimeBehemothWalkingRight.png");
-	ASSET_MANAGER.queueDownload("./assets/sprites/SlimeBehemothAttackLeft.png");
+    ASSET_MANAGER.queueDownload("./assets/sprites/SlimeBehemothAttackLeft.png");
     ASSET_MANAGER.queueDownload("./assets/sprites/SlimeBehemothAttackRight.png");
     ASSET_MANAGER.queueDownload("./assets/sprites/SlimeWalkLeft.png");
     ASSET_MANAGER.queueDownload("./assets/sprites/SlimeWalkRight.png");
-	ASSET_MANAGER.queueDownload("./assets/sprites/SlimeAttackLeft.png");
+    ASSET_MANAGER.queueDownload("./assets/sprites/SlimeAttackLeft.png");
     ASSET_MANAGER.queueDownload("./assets/sprites/SlimeAttackRight.png");
-	ASSET_MANAGER.queueDownload("./assets/sprites/SlimeIdle.png");
+    ASSET_MANAGER.queueDownload("./assets/sprites/SlimeIdle.png");
     ASSET_MANAGER.queueDownload("./assets/sprites/SlimeDeath.png");
     ASSET_MANAGER.queueDownload("./assets/sprites/wizardWalkLeft.png");
     ASSET_MANAGER.queueDownload("./assets/sprites/wizardWalkRight.png");
-	ASSET_MANAGER.queueDownload("./assets/sprites/wizardAttackLeft.png");
+    ASSET_MANAGER.queueDownload("./assets/sprites/wizardAttackLeft.png");
     ASSET_MANAGER.queueDownload("./assets/sprites/wizardAttackRight.png");
-	ASSET_MANAGER.queueDownload("./assets/sprites/wizardMagicSpellDown.png");
-	ASSET_MANAGER.queueDownload("./assets/sprites/wizardMagicSpellUp.png");
-	ASSET_MANAGER.queueDownload("./assets/sprites/wizardMagicSpellLeft.png");
-	ASSET_MANAGER.queueDownload("./assets/sprites/wizardMagicSpellRight.png");
-	ASSET_MANAGER.queueDownload("./assets/sprites/wizardIdle.png");
+    ASSET_MANAGER.queueDownload("./assets/sprites/wizardMagicSpellDown.png");
+    ASSET_MANAGER.queueDownload("./assets/sprites/wizardMagicSpellUp.png");
+    ASSET_MANAGER.queueDownload("./assets/sprites/wizardMagicSpellLeft.png");
+    ASSET_MANAGER.queueDownload("./assets/sprites/wizardMagicSpellRight.png");
+    ASSET_MANAGER.queueDownload("./assets/sprites/wizardIdle.png");
     ASSET_MANAGER.queueDownload("./assets/sprites/wizardDeath.png");
     ASSET_MANAGER.queueDownload("./assets/sprites/SkeletonWalkLeft.png");
     ASSET_MANAGER.queueDownload("./assets/sprites/SkeletonWalkRight.png");
@@ -552,122 +544,125 @@ function startGame() {
 
         // Creates new entity instances
         gameEngine = new GameEngine(ctx, ctx.canvas.width, ctx.canvas.height);
-        var bg = new world1.Background(ASSET_MANAGER.getAsset("./assets/sprites/DungeonBackgroundSpriteSheet.png"));
-        var chInfo = new CharacterInfo(ASSET_MANAGER.getAsset("./assets/sprites/characterInfo2.png"), ASSET_MANAGER.getAsset("./assets/sprites/HP.png"));
-        damageST = new damageStat();
-        var torches = [];
-        var sKeys = [];
-        var gKeys = [];
-        var hPotions = [];
-        var sJars = [];
-        var slimeBehemoths = [];
-        var slimeEnemies = [];
-        var skeletons = [];
-        var wizards = [];
-        var sorcererVillains = [];
+        let bg = new world1.Background(ASSET_MANAGER.getAsset("./assets/sprites/DungeonBackgroundSpriteSheet.png"));
+        let chInfo = new CharacterInfo(ASSET_MANAGER.getAsset("./assets/sprites/characterInfo2.png"), ASSET_MANAGER.getAsset("./assets/sprites/HP.png"));
+        damageST = new TextIndicator();
+        let torches = [];
+        let sKeys = [];
+        let gKeys = [];
+        let hPotions = [];
+        let sJars = [];
+        let slimeBehemoths = [];
+        let slimeEnemies = [];
+        let skeletons = [];
+        let wizards = [];
+        let sorcererVillains = [];
         // generates an array that will generate each entity in the right spots.
-        for (var i = 0; i < world1.slimeDungeonLevelOneEntities.length; i++) {
+        for (let i = 0; i < world1.slimeDungeonLevelOneEntities.length; i++) {
             if (world1.slimeDungeonLevelOneEntities[i] == 1) {
-                var torchX = (i % 88) * 48;
-                var torchY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
-                var torch = new Torch(torchX, torchY);
+                let torchX = (i % 88) * 48;
+                let torchY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
+                let torch = new Torch(torchX, torchY);
                 torches.push(torch);
             }
             if (world1.slimeDungeonLevelOneEntities[i] == 2) {
-                var sKeyX = (i % 88) * 48;
-                var sKeyY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
-                var sKey = new SilverKey(sKeyX, sKeyY);
+                let sKeyX = (i % 88) * 48;
+                let sKeyY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
+                let sKey = new SilverKey(sKeyX, sKeyY);
                 sKeys.push(sKey);
             }
             if (world1.slimeDungeonLevelOneEntities[i] == 3) {
-                var gKeyX = (i % 88) * 48;
-                var gKeyY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
-                var gKey = new GoldKey(gKeyX, gKeyY);
+                let gKeyX = (i % 88) * 48;
+                let gKeyY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
+                let gKey = new GoldKey(gKeyX, gKeyY);
                 gKeys.push(gKey);
             }
             if (world1.slimeDungeonLevelOneEntities[i] == 4) {
-                var hPotionX = (i % 88) * 48;
-                var hPotionY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
-                var hPotion = new HealingPotion(hPotionX, hPotionY);
+                let hPotionX = (i % 88) * 48;
+                let hPotionY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
+                let hPotion = new HealingPotion(hPotionX, hPotionY);
                 hPotions.push(hPotion);
             }
             if (world1.slimeDungeonLevelOneEntities[i] == 5) {
-                var sJarX = (i % 88) * 48;
-                var sJarY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
-                var sJar = new SoulJar(sJarX, sJarY);
+                let sJarX = (i % 88) * 48;
+                let sJarY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
+                let sJar = new SoulJar(sJarX, sJarY);
                 sJars.push(sJar);
             }
             if (world1.slimeDungeonLevelOneEntities[i] == 11) {
-                var svX = (i % 88) * 48;
-                var svY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
-                var sv = new SorcererVillain(gameEngine, svX, svY);
+                let svX = (i % 88) * 48;
+                let svY = (Math.floor(i / 88)) * 48 - 50; // (i / number of blocks long - 1) * scale
+                let sv = new Sorcerer(svX, svY);
                 sorcererVillains.push(sv);
             }
             if (world1.slimeDungeonLevelOneEntities[i] == 12) {
-                var seX = (i % 88) * 48;
-                var seY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
-                var se = new Slime(seX, seY);
+                let seX = (i % 88) * 48;
+                let seY = (Math.floor(i / 88)) * 48 - 15; // (i / number of blocks long - 1) * scale
+                let se = new Slime(seX, seY);
                 slimeEnemies.push(se);
             }
             if (world1.slimeDungeonLevelOneEntities[i] == 13) {
-                var sbX = (i % 88) * 48;
-                var sbY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
-                var sb = new SlimeBehemoth(sbX, sbY);
+                let sbX = (i % 88) * 48;
+                let sbY = (Math.floor(i / 88)) * 48 - 30; // (i / number of blocks long - 1) * scale
+                let sb = new SlimeBehemoth(sbX, sbY);
                 slimeBehemoths.push(sb);
             }
             if (world1.slimeDungeonLevelOneEntities[i] == 14) {
-                var wizardX = (i % 88) * 48;
-                var wizardY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
-                var wizard = new Wraith(gameEngine, wizardX, wizardY);
+                let wizardX = (i % 88) * 48;
+                let wizardY = (Math.floor(i / 88)) * 48 - 25; // (i / number of blocks long - 1) * scale
+                let wizard = new Wraith(wizardX, wizardY);
                 wizards.push(wizard);
             }
             if (world1.slimeDungeonLevelOneEntities[i] == 15) {
-                var skeletonX = (i % 88) * 48;
-                var skeletonY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
-                var skeleton = new Skeleton(gameEngine, skeletonX, skeletonY);
+                let skeletonX = (i % 88) * 48;
+                let skeletonY = (Math.floor(i / 88)) * 48 - 25; // (i / number of blocks long - 1) * scale
+                let skeleton = new Skeleton(skeletonX, skeletonY);
                 skeletons.push(skeleton);
             }
             if (world1.slimeDungeonLevelOneEntities[i] == 10) { // for the player character
-                var characterStartingX = (i % 88) * 48;
-                var characterStartingY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
+                let characterStartingX = (i % 88) * 48;
+                let characterStartingY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
             }
         }
 
-        character = new Character(world1); // For other worlds, the character object must be update with the new world, or just recreate the character object with the new world.
-
-        var centerthingy = new CenterThingy();
+        character = new Character(385, 450, world1); // For other worlds, the character object must be update with the new world, or just recreate the character object with the new world.
 
         // Adding the entities
         gameEngine.addEntity(bg);
 
-        for (var i = 0; i < torches.length; i++) {
+        for (let i = 0; i < torches.length; i++) {
             gameEngine.addEntity(torches[i]);
         }
-        for (var i = 0; i < sKeys.length; i++) {
+        for (let i = 0; i < sKeys.length; i++) {
             gameEngine.addEntity(sKeys[i]);
         }
-        for (var i = 0; i < gKeys.length; i++) {
+        for (let i = 0; i < gKeys.length; i++) {
             gameEngine.addEntity(gKeys[i]);
         }
-        for (var i = 0; i < hPotions.length; i++) {
+        for (let i = 0; i < hPotions.length; i++) {
             gameEngine.addEntity(hPotions[i]);
         }
-        for (var i = 0; i < sJars.length; i++) {
+        for (let i = 0; i < sJars.length; i++) {
             gameEngine.addEntity(sJars[i]);
         }
-        for (var i = 0; i < slimeEnemies.length; i++) {
+        for (let i = 0; i < slimeEnemies.length; i++) {
             gameEngine.addEntity(slimeEnemies[i]);
         }
-        for (var i = 0; i < slimeBehemoths.length; i++) {
+        for (let i = 0; i < slimeBehemoths.length; i++) {
             gameEngine.addEntity(slimeBehemoths[i]);
         }
-        for (var i = 0; i < wizards.length; i++) {
+        for (let i = 0; i < wizards.length; i++) {
             gameEngine.addEntity(wizards[i]);
         }
-        for (var i = 0; i < skeletons.length; i++) {
-            gameEngine.addEntity(skeletons[i]);
+        for (let i = 0; i < skeletons.length;
+        i++
+    )
+        {
+            gameEngine.addEntity(skeletons[i]
+        )
+            ;
         }
-        for (var i = 0; i < sorcererVillains.length; i++) {
+        for (let i = 0; i < sorcererVillains.length; i++) {
             gameEngine.addEntity(sorcererVillains[i]);
         }
 
@@ -680,7 +675,6 @@ function startGame() {
         gameEngine.sounds.get('dungeon1').play(); // This is the first thing that plays during starting the game.
 
         gameEngine.addEntity(character);
-        if (gameEngine.debug) gameEngine.addEntity(centerthingy);
         gameEngine.addEntity(chInfo);
         gameEngine.addEntity(damageST);
         gameEngine.debug = false;
