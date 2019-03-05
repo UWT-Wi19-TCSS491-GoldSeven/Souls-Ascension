@@ -216,12 +216,6 @@ class Slime extends LivingEntity {
         this.animation.drawFrame(gameEngine.clockTick, ctx, this.x, this.y);
 
         super.draw();
-
-        ctx.save();
-        ctx.fillStyle = 'red';
-        ctx.fillRect(this.x, this.y, 2, 2);
-        ctx.fillRect(this.x + this.slimeEnemyIdleAnimation.frameWidth, this.y + this.slimeEnemyIdleAnimation.frameHeight, 2, 2);
-        ctx.restore();
     }
 }
 

@@ -658,7 +658,7 @@ function startGame() {
         gameEngine.addEntity(character);
         gameEngine.addEntity(chInfo);
         gameEngine.addEntity(damageST);
-        gameEngine.debug = true;
+        gameEngine.debug = false;
         character.updateViewport();
 
         // Starting up the game
