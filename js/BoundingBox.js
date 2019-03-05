@@ -8,15 +8,15 @@
  * @param {*} yOffset
  */
 class BoundingBox {
-    constructor(theX, theY, width, height, xOffset, yOffset) {
+    constructor(theX, theY, width, height, xOffset = 0, yOffset = 0) {
         this._xOffset = xOffset || 0;
         this._yOffset = yOffset || 0;
         this._x;
         this._y;
         this._width = width;
         this._height = height;
-        this.left = theX;
-        this.top = theY;
+        this.left = theX + xOffset;
+        this.top = theY + yOffset;
         this.right = this.left + width;
         this.bottom = this.top + height;
         /**
@@ -71,7 +71,7 @@ class BoundingBox {
         return this._height
     }
 
-    collide(other) {
+    hasCollided(other) {
         if (this.right > other.left
             && this.left < other.right
             && this.top < other.bottom
@@ -81,11 +81,25 @@ class BoundingBox {
     }
 
     setPos(x, y) {
-        this.left = x;
-        this.top = y;
+        this.left = x + this._xOffset;
+        this.top = y + this._yOffset;
         this.right = this.left + this.width;
-        this.bottom = this.top + this.height
+        this.bottom = this.top + this.height;
         this.origin.x = this.left + this.width / 2;
         this.origin.y = this.top + this.height / 2;
+    }
+
+    draw(ctx) {
+        ctx.save();
+        // ctx.resetTransform();
+        ctx.strokeStyle = 'green';
+        ctx.beginPath();
+        ctx.moveTo(this.left, this.top);
+        ctx.lineTo(this.right, this.top);
+        ctx.lineTo(this.right, this.bottom);
+        ctx.lineTo(this.left, this.bottom);
+        ctx.lineTo(this.left, this.top);
+        ctx.stroke();
+        ctx.restore();
     }
 }

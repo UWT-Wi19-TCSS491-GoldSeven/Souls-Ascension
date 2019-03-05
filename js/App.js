@@ -347,28 +347,7 @@ function fillBSPTree(target) {//, background) {
 fillBSPTree(world1.slimeDungeonLevelOne);
 /*----------------------------------------------BSP TREE End------------------------------------------------------------------------------------------------- */
 
-/*----------------------------------------------Collider Start---------------------------------------------------------------------------------------------- */
-
-class Collider {
-    constructor(entity, killable, width, height) {
-        this.Entity = entity;
-        this.killable = false;
-        this.w = width;
-        this.h = height;
-    }
-
-    static hasCollided(targetX, targetY, targetW, targetH, entity, entityW, entityH) {
-        if (!entity.killable) return false;
-
-        if (entity.x < targetX + targetW &&
-            entity.x + entityW > targetX &&
-            entity.y < targetY + targetH &&
-            entity.y + entityH > targetY) {
-            return true;
-        }
-        return false;
-    }
-}
+/*----------------------------------------------Collision Start---------------------------------------------------------------------------------------------- */
 
 class Collision {
     static hasCollidedWithWalls(characterX, characterY, width, isCharacter) {
@@ -429,7 +408,7 @@ function removeDoor(characterX, characterY, width) {
     }
 }
 
-/*----------------------------------------------Collider End------------------------------------------------------------------------------------------------ */
+/*----------------------------------------------Collision End------------------------------------------------------------------------------------------------ */
 
 /*----------------------------------------------Health Start------------------------------------------------------------------------------------------------ */
 let bug = 0;
@@ -462,7 +441,7 @@ const drawHPBar = () => {
 /*----------------------------------------------Torch Start-------------------------------------------------------------------------------------------------- */
 class Torch extends Entity {
     constructor(x, y) {
-        super(gameEngine, x, y);
+        super(gameEngine, x, y, false);
 
         this.flameAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/torchAnimation.png"), 0, 0, 48, 48, 0.1, 4, true, world1.currentScale);
         this.killable = false;
@@ -679,7 +658,7 @@ function startGame() {
         gameEngine.addEntity(character);
         gameEngine.addEntity(chInfo);
         gameEngine.addEntity(damageST);
-        gameEngine.debug = false;
+        gameEngine.debug = true;
         character.updateViewport();
 
         // Starting up the game

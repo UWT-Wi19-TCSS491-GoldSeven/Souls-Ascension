@@ -110,9 +110,7 @@ class GameEngine {
             ctx.strokeStyle = 'blue';
             ctx.beginPath();
             ctx.moveTo(tx, ty + sh / 2);
-            ;
             ctx.lineTo(tx + sw, ty + sh / 2);
-            ;
             ctx.moveTo(tx + sw / 2, ty);
             ctx.lineTo(tx + sw / 2, ty + sh);
             ctx.stroke();

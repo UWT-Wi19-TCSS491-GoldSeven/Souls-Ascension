@@ -1,5 +1,6 @@
 class Entity {
     constructor(game, x, y, genAABB = true) {
+        this.game = game;
         this.x = x;
         this.y = y;
         this.isDestroyed = false;
@@ -7,12 +8,28 @@ class Entity {
     }
 
     update() {
+        if (this.boundingBox) {
+            this.boundingBox.setPos(this.x, this.y);
+        }
     }
 
     draw() {
+        if (this.game.debug) {
+            if (this.boundingBox) {
+                this.boundingBox.draw(this.game.ctx);
+            }
+        }
     }
 
     destroy() {
         this.isDestroyed = true;
+    }
+}
+
+class LivingEntity extends Entity {
+    constructor(game, x, y, genAABB = true) {
+        super(game, x, y, genAABB);
+        this.invulnerable = false;
+        this.alive = true;
     }
 }

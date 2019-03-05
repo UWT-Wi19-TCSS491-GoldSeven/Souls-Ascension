@@ -1,8 +1,9 @@
 /*----------------------------------------------SlimeBehemoth Start------------------------------------------------------------------------------------------ */
 
-class SlimeBehemoth extends Entity {
+class SlimeBehemoth extends LivingEntity {
     constructor(x, y) {
         super(gameEngine, x, y);
+        this.boundingBox = new BoundingBox(x, y, 40, 60, 20, 5);
         this.slimeBehemothWalkingLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/SlimeBehemothWalkingLeft.png"), 0, 0, 80, 68, 0.1, 8, true, false);
         this.slimeBehemothWalkingRightAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/SlimeBehemothWalkingRight.png"), 0, 0, 80, 68, 0.1, 8, true, false);
         this.slimeBehemothAttackLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/SlimeBehemothAttackLeft.png"), 0, 0, 117, 68, 0.1, 8, true, false);
@@ -59,6 +60,8 @@ class SlimeBehemoth extends Entity {
         if (this.isMovingWest) {
             this.x -= gameEngine.clockTick * this.moveSpeed;
         }
+
+        super.update();
     }
 
     draw() {
@@ -69,6 +72,8 @@ class SlimeBehemoth extends Entity {
         }
 
         this.animation.drawFrame(gameEngine.clockTick, ctx, this.x, this.y);
+
+        super.draw();
     }
 }
 
@@ -76,9 +81,9 @@ class SlimeBehemoth extends Entity {
 
 /*----------------------------------------------Slime Start--------------------------------------------------------------------------------------------- */
 
-class Slime extends Entity {
+class Slime extends LivingEntity {
     constructor(x, y) {
-        super(gameEngine, x, y);
+        super(gameEngine, x, y, false);
         this.slimeEnemyWalkingLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/SlimeWalkLeft.png"), 0, 0, 80, 80, 0.1, 8, true, false);
         this.slimeEnemyWalkingRightAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/SlimeWalkRight.png"), 0, 0, 80, 80, 0.1, 8, true, false);
         this.slimeEnemyAttackLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/SlimeAttackLeft.png"), 0, 0, 80, 80, 0.1, 10, true, false);
@@ -86,6 +91,7 @@ class Slime extends Entity {
         this.slimeEnemyIdleAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/SlimeIdle.png"), 0, 0, 80, 80, 0.1, 8, true, false);
         this.death = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/SlimeDeath.png"), 0, 0, 80, 80, 0.1, 8, false, false);
         this.animation = this.slimeEnemyIdleAnimation;
+        this.boundingBox = new BoundingBox(x, y, 35, 20, 25, 35);
         this.isMovingWest = false;
         this.isMovingEast = false;
         this.moveSpeed = 40;
@@ -152,13 +158,17 @@ class Slime extends Entity {
             this.y += gameEngine.clockTick * velY;
 
         }
+
         if (!Collision.hasCollidedWithWalls(this.x + 20, 55 + this.y, 20)) {
             canMove = true
         }
+
         if (!canMove) {
             this.x = origX;
             this.y = origY;
         }
+
+        super.update();
     }
 
     attack(xDiff, yDiff, distance, xOrigS, yOrigS) {
@@ -203,9 +213,15 @@ class Slime extends Entity {
             }
         }
 
-        if (this.animation == null) return;
-
         this.animation.drawFrame(gameEngine.clockTick, ctx, this.x, this.y);
+
+        super.draw();
+
+        ctx.save();
+        ctx.fillStyle = 'red';
+        ctx.fillRect(this.x, this.y, 2, 2);
+        ctx.fillRect(this.x + this.slimeEnemyIdleAnimation.frameWidth, this.y + this.slimeEnemyIdleAnimation.frameHeight, 2, 2);
+        ctx.restore();
     }
 }
 
@@ -213,9 +229,10 @@ class Slime extends Entity {
 
 /*----------------------------------------------skeleton Start---------------------------------------------------------------------------------------------- */
 
-class Skeleton extends Entity {
+class Skeleton extends LivingEntity {
     constructor(x, y) {
-        super(gameEngine, x, y);
+        super(gameEngine, x, y, false);
+        this.boundingBox = new BoundingBox(x, y, 30, 50, 10, 15);
         this.skeletonWalkingLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/SkeletonWalkLeft.png"), 0, 0, 44, 66, 0.1, 13, true, false);
         this.skeletonWalkingRightAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/SkeletonWalkRight.png"), 0, 0, 44, 66, 0.1, 13, true, false);
         this.death = null;
@@ -270,6 +287,8 @@ class Skeleton extends Entity {
         if (this.isMovingWest) {
             this.x -= gameEngine.clockTick * this.moveSpeed;
         }
+
+        super.update();
     }
 
     draw() {
@@ -278,7 +297,10 @@ class Skeleton extends Entity {
         } else {
             this.animation = this.skeletonWalkingRightAnimation;
         }
+
         this.animation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
+
+        super.draw();
     }
 }
 
@@ -286,9 +308,10 @@ class Skeleton extends Entity {
 
 /*----------------------------------------------Wraith Start------------------------------------------------------------------------------------------------ */
 
-class Wraith extends Entity {
+class Wraith extends LivingEntity {
     constructor(x, y) {
-        super(gameEngine, x, y);
+        super(gameEngine, x, y, false);
+        this.boundingBox = new BoundingBox(x, y, 30, 50, 25, 15);
         this.wizardWalkingLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/wizardWalkLeft.png"), 0, 0, 80, 80, 0.1, 6, true, false);
         this.wizardWalkingRightAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/wizardWalkRight.png"), 0, 0, 80, 80, 0.1, 6, true, false);
         this.wizardAttackLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/wizardAttackLeft.png"), 0, 0, 80, 80, 0.1, 6, true, false);
@@ -347,6 +370,8 @@ class Wraith extends Entity {
         if (this.isMovingWest) {
             this.x -= gameEngine.clockTick * this.moveSpeed;
         }
+
+        super.update();
     }
 
     draw() {
@@ -357,11 +382,15 @@ class Wraith extends Entity {
                 this.animation = this.wizardWalkingRightAnimation;
             }
         }
+
         this.animation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
+
         if (this.animation === this.death) {
             this.life -= gameEngine.clockTick;
             if (this.life <= 0) this.isDestroyed = true;
         }
+
+        super.draw();
     }
 }
 
@@ -369,9 +398,10 @@ class Wraith extends Entity {
 
 /*----------------------------------------------Sorcerer Start---------------------------------------------------------------------------------------- */
 
-class Sorcerer extends Entity {
+class Sorcerer extends LivingEntity {
     constructor(x, y) {
-        super(gameEngine, x, y);
+        super(gameEngine, x, y, false);
+        this.boundingBox = new BoundingBox(x, y, 20, 60, 35, 30);
         this.standingAttackAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/sorcererVillain.png"), 0, 0, 100, 100, 0.1, 10, true, false);
         this.death = null;
         this.animation = this.standingAttackAnimation;
@@ -446,6 +476,8 @@ class Sorcerer extends Entity {
             this.x = origX;
             this.y = origY;
         }
+
+        super.update();
     }
 
     attack(xDiff, yDiff, distance, xOrigS, yOrigS) {
@@ -474,12 +506,8 @@ class Sorcerer extends Entity {
 
     draw() {
         this.animation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
-        if (this.game.debug) {
-            ctx.strokeStyle = "green";
-            ctx.strokeRect(this.x, this.y, 100, 100);
-            ctx.strokeStyle = "yellow";
-            ctx.strokeRect(this.x + 30, this.y + 30, 30, 100);
-        }
+
+        super.draw();
     }
 }
 
@@ -487,14 +515,15 @@ class Sorcerer extends Entity {
 
 /*----------------------------------------------Projectile Start--------------------------------------------------------------------------------------------- */
 
-class Projectile extends Entity {
+class Projectile extends LivingEntity {
     constructor(x, y, xs, ys) {
-        super(gameEngine, x, y);
+        super(gameEngine, x, y, false);
         this.xs = xs;
         this.ys = ys;
         this.scale = 4;
         this.life = 10;
         this.killable = true;
+        this.boundingBox = new BoundingBox(this.x, this.y, this.scale * 2, this.scale * 2);
     }
 
     update() {
@@ -507,6 +536,8 @@ class Projectile extends Entity {
         this.y += this.ys;
         this.life -= gameEngine.clockTick;
         if (this.life <= 0) this.isDestroyed = true;
+
+        super.update();
     }
 
     draw() {
@@ -515,7 +546,9 @@ class Projectile extends Entity {
         ctx.arc(this.x, this.y, this.scale, 0, 2 * Math.PI);
         ctx.fillStyle = `rgb(253,208,157)`;
         ctx.fill();
-        ctx.restore();
+        ctx.restore()
+
+        this.update();
     }
 }
 

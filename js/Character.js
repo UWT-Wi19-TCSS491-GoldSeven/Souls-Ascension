@@ -120,8 +120,7 @@ class Character extends Entity {
             this.x += this.travelSpeed; // Moves the entity.
         }
         // The boundingBox follows the entity.
-        this.boundingBox.x = this.x;
-        this.boundingBox.y = this.y;
+        super.update();
 
         this.updateViewport();
 
@@ -234,7 +233,12 @@ class Character extends Entity {
             let other = gameEngine.entities[i];
             if (other == this || typeof other === 'undefined') continue;
             scaleOf = (other instanceof Projectile) ? 4 : world.currentScale - 10;
-            if (Collider.hasCollided(newX + 20, newY - scaleOf + 20, 5 + range, 42 + range, other, scaleOf + range, scaleOf + range)) {
+
+            let collided = false;
+            if (other.boundingBox && this.boundingBox.hasCollided(other.boundingBox))
+                collided = true;
+
+            if (collided) {
                 // TODO: This should really be handled by individual enemies/entities and updated in their update methods.
                 if (other instanceof Projectile) {
                     other.isDestroyed = true;
@@ -361,8 +365,6 @@ class Character extends Entity {
             }
         }
 
-        Entity.prototype.draw.call(this);
-
         let scaleOf = 4;
         let range = (this.isWhirlwinding) ? world.currentScale * 1.5 : (this.isAttacking) ? world.currentScale / 2 : 0;
         let newX = this.x;
@@ -391,6 +393,8 @@ class Character extends Entity {
             damageST.damaged = 0;
             damageST.exp = 0;
         } //hide
+
+        super.draw();
 
         drawHPBar();
     }
