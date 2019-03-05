@@ -89,10 +89,10 @@ class BoundingBox {
         this.origin.y = this.top + this.height / 2;
     }
 
-    draw(ctx) {
+    draw(ctx, style = 'green') {
         ctx.save();
         // ctx.resetTransform();
-        ctx.strokeStyle = 'green';
+        ctx.strokeStyle = style;
         ctx.beginPath();
         ctx.moveTo(this.left, this.top);
         ctx.lineTo(this.right, this.top);
