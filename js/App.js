@@ -606,7 +606,7 @@ function startGame() {
             if (world1.slimeDungeonLevelOneEntities[i] == 12) {
                 var seX = (i % 88) * 48;
                 var seY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
-                var se = new SlimeEnemy(seX, seY);
+                var se = new Slime(seX, seY);
                 slimeEnemies.push(se);
             }
             if (world1.slimeDungeonLevelOneEntities[i] == 13) {
@@ -618,7 +618,7 @@ function startGame() {
             if (world1.slimeDungeonLevelOneEntities[i] == 14) {
                 var wizardX = (i % 88) * 48;
                 var wizardY = (Math.floor(i / 88)) * 48; // (i / number of blocks long - 1) * scale
-                var wizard = new Wizard(gameEngine, wizardX, wizardY);
+                var wizard = new Wraith(gameEngine, wizardX, wizardY);
                 wizards.push(wizard);
             }
             if (world1.slimeDungeonLevelOneEntities[i] == 15) {

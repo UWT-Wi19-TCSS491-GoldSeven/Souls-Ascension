@@ -9,7 +9,7 @@ let inventory = {
 var world;
 
 function Character(theCurrentWorld) {
-    world = theCurrentWorld;                                                                                             //loop  reversed
+    world = theCurrentWorld;
     this.standAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/characterIdleAnimation.png"), 0, 0, 42, 42, 0.08, 4, true, false);
     this.walkRightAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/characterRightAnimation.png"), 0, 0, 42, 42, 0.15, 6, true, false);
     this.walkUpLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/spritesheet.png"), 32, 32, 33, 32, 1.04, 1, true, false);
@@ -25,6 +25,7 @@ function Character(theCurrentWorld) {
     this.attackRightAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/characterRightAttack.png"), 0, 0, 42, 42, 0.04, 3, false, false);
     this.whirlwindAttackAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/characterWhirlWindAttackAnimation.png"), 0, 0, 42, 42, 0.04, 4, false, false);
     this.animation = this.standAnimation; // initial animation.
+
     this.isAttacking = false;
     this.isWhirlwinding = false;
     this.isMovingLeft = false;
@@ -35,6 +36,17 @@ function Character(theCurrentWorld) {
     this.isMovingUpRight = false;
     this.isMovingDownLeft = false;
     this.isMovingDownRight = false;
+
+    this.attackDamage = 8;
+    this.attackCooldown = 0;
+    this.attackCooldownTime = 3;
+    this.attackReady = true;
+
+    this.whirlwindDamage = 30;
+    this.whirlwindCooldown = 0;
+    this.whirlwindCooldownTime = 200;
+    this.whirlwindReady = true;
+
     this.radius = 100;
     this.inventory = inventory;
     this.level = 1;
@@ -45,7 +57,6 @@ function Character(theCurrentWorld) {
     this.currentHealth = 1000;
     this.currentSoul = 0;
     this.levelSoul = this.soul * 150;
-    this.baseDamge = 10;
     this.currentExp = 0;
     this.levelExp = this.level * 100;
     this.scale = 1; // set to 1 if the sprite dimensions are the exact size that should be rendered.
@@ -120,24 +131,29 @@ Character.prototype.update = function () {
         if (this.attackRightAnimation.isDone()) {
             this.attackRightAnimation.elapsedTime = 0
             this.isAttacking = false;
+            this.attackCooldown = this.attackCooldownTime;
         }
         if (this.attackLeftAnimation.isDone()) {
             this.attackLeftAnimation.elapsedTime = 0
             this.isAttacking = false;
+            this.attackCooldown = this.attackCooldownTime;
         }
         if (this.attackUpAnimation.isDone()) {
             this.attackUpAnimation.elapsedTime = 0
             this.isAttacking = false;
+            this.attackCooldown = this.attackCooldownTime;
         }
         if (this.attackDownAnimation.isDone()) {
             this.attackDownAnimation.elapsedTime = 0
             this.isAttacking = false;
+            this.attackCooldown = this.attackCooldownTime;
         }
     }
     if (this.isWhirlwinding) {
         if (this.whirlwindAttackAnimation.isDone()) {
             this.whirlwindAttackAnimation.elapsedTime = 0
             this.isWhirlwinding = false;
+            this.whirlwindCooldown = this.whirlwindCooldownTime;
         }
     }
     if (this.game.used === 'hp' && this.inventory['hp'].quantity > 0) {
@@ -147,7 +163,9 @@ Character.prototype.update = function () {
     }
 
     // Animation Selection Start
-    if (this.isAttacking) {
+    this.animation = this.standAnimation;
+
+    if (this.isAttacking && this.attackCooldown == 0) {
         //console.debug("Character isAttacking");
         if (this.isMovingUp) {
             this.animation = this.attackUpAnimation;
@@ -158,31 +176,50 @@ Character.prototype.update = function () {
         } else {
             this.animation = this.attackDownAnimation;
         }
-    } else if (this.isWhirlwinding) {
+    } else if (this.isWhirlwinding && this.whirlwindCooldown == 0) {
         //console.debug("Character isWhirlwinding");
         this.animation = this.whirlwindAttackAnimation;
-    } else if (this.isMovingUpLeft) {
-        this.animation = this.walkLeftAnimation;
-    } else if (this.isMovingUpRight) {
-        this.animation = this.walkRightAnimation;
-    } else if (this.isMovingDownLeft) {
-        this.animation = this.walkLeftAnimation;
-    } else if (this.isMovingDownRight) {
-        this.animation = this.walkRightAnimation;
-    } else if (this.isMovingUp) {
-        this.animation = this.walkUpAnimation;
-    } else if (this.isMovingDown) {
-        this.animation = this.walkDownAnimation;
-    } else if (this.isMovingLeft) {
-        this.animation = this.walkLeftAnimation;
-    } else if (this.isMovingRight) {
-        this.animation = this.walkRightAnimation;
     } else {
-        this.animation = this.standAnimation;
+        if (this.isMovingUpLeft) {
+            this.animation = this.walkLeftAnimation;
+        } else if (this.isMovingUpRight) {
+            this.animation = this.walkRightAnimation;
+        } else if (this.isMovingDownLeft) {
+            this.animation = this.walkLeftAnimation;
+        } else if (this.isMovingDownRight) {
+            this.animation = this.walkRightAnimation;
+        } else if (this.isMovingUp) {
+            this.animation = this.walkUpAnimation;
+        } else if (this.isMovingDown) {
+            this.animation = this.walkDownAnimation;
+        } else if (this.isMovingLeft) {
+            this.animation = this.walkLeftAnimation;
+        } else if (this.isMovingRight) {
+            this.animation = this.walkRightAnimation;
+        } else {
+            this.animation = this.standAnimation;
+        }
     }
-    // Animation Selection End
+// Animation Selection End
 
-    // Attack Start
+// Attack Start
+    if (this.attackCooldown > 0) {
+        this.attackCooldown -= 1;
+        if (this.attackCooldown == 0) {
+            this.attackReady = true;
+            this.game.click = null;
+            this.isAttacking = false;
+        }
+    }
+
+    if (this.whirlwindCooldown > 0) {
+        this.whirlwindCooldown -= 1;
+        if (this.whirlwindCooldown == 0) {
+            this.whirlwindReady = true;
+            this.isWhirlwinding = false;
+        }
+    }
+
     let scaleOf = 4;
     let range = (this.isWhirlwinding) ? world.currentScale * 1.5 : (this.isAttacking) ? world.currentScale / 2 : 0;
     let newXY = this.getNewXY();
@@ -194,7 +231,7 @@ Character.prototype.update = function () {
         damageST.exp = 0;
     } //hide
 
-    // Iterate through all entities to check if anyone has collided with another, and take appropriate action.
+// Iterate through all entities to check if anyone has collided with another, and take appropriate action.
     for (let i = 0; i < gameEngine.entities.length; i++) {
         let other = gameEngine.entities[i];
         if (other == this || typeof other === 'undefined') continue;
@@ -243,15 +280,15 @@ Character.prototype.update = function () {
 
             // Inflict damage on the enemy. Kick the Satan! Punch the Devil!
             let damage = 0;
-            if (this.isAttacking && this.game.click) {
+            if (this.attackReady && this.game.click) {
                 this.game.click = false;
 
-                damage = this.baseDamge * (1 + (this.level - 1) * 0.1 + this.soul);
+                damage = this.attackDamage * (1 + (this.level - 1) * 0.1 + this.soul);
                 if (this.game.debug) console.debug("Attacking!");
             }
 
-            if (this.isWhirlwinding && this.game.one) {
-                damage = this.baseDamge * (1 + (this.level - 1) * 0.1 + this.soul); // TODO Is this where to adjust damage amount?
+            if (this.whirlwindReady && this.game.one) {
+                damage = this.whirlwindDamage * (1 + (this.level - 1) * 0.1 + this.soul); // TODO Is this where to adjust damage amount?
                 if (this.game.debug) console.debug("Whirlwinding!");
             }
 
@@ -295,7 +332,17 @@ Character.prototype.update = function () {
         text.style.left = x + 'px';
         text.style.top = y + 'px';
     }
-    // Attack End
+// Attack End
+
+    if (this.isAttacking && this.attackReady) {
+        this.game.sounds.get('characterAttack01').replay();
+        this.attackReady = false;
+    }
+
+    if (this.isWhirlwinding && this.whirlwindReady) {
+        this.game.sounds.get('characterAttack02').replay();
+        this.whirlwindReady = false;
+    }
 
     Entity.prototype.update.call(this);
 }

@@ -2,52 +2,51 @@
  * Put all key event listeners or button event listeners here.
  * Author: Sam Brendel
  */
-function Events(that) {
+function Events(engine) {
     window.addEventListener('keydown', function (e) {
         switch (e.key) {
             case '`':
-                let muted = !that.settings.audio.muted;
-                for (let s of that.sounds.values()) {
+                let muted = !engine.settings.audio.muted;
+                for (let s of engine.sounds.values()) {
                     s._audio.muted = muted;
                 }
-                that.settings.audio.muted = muted;
+                engine.settings.audio.muted = muted;
                 break;
             case 'H':
             case 'h':
-                that.used = 'hp';
+                engine.used = 'hp';
             default:
                 break;
         }
     })
 
-    that.ctx.canvas.addEventListener("keydown", function (e) {
+    engine.ctx.canvas.addEventListener("keydown", function (e) {
         switch (e.keyCode) {
             case 49: // 1
-                that.one = true;
-                that.sounds.get('characterAttack02').replay();
+                engine.one = true;
                 break;
             case 32: // ' '
-                that.space = true;
+                engine.space = true;
                 break;
             case 37: // arrow left
             case 65: // a
-                that.left = true;
-                that.lefting = e.repeat;
+                engine.left = true;
+                engine.lefting = e.repeat;
                 break;
             case 39: // arrow right
             case 68: // d
-                that.right = true;
-                that.righting = e.repeat;
+                engine.right = true;
+                engine.righting = e.repeat;
                 break;
             case 38: // arrow up
             case 87: // w
-                that.up = true;
-                that.upping = e.repeat;
+                engine.up = true;
+                engine.upping = e.repeat;
                 break;
             case 40: // arrow down
             case 83: // s
-                that.down = true;
-                that.downing = e.repeat;
+                engine.down = true;
+                engine.downing = e.repeat;
                 break;
             default:
                 //console.error("Key Down Event - Char: " + e.code + " Code: " + e.keyCode + " Reapeat: " + e.repeat);
@@ -56,58 +55,56 @@ function Events(that) {
         //if (String.fromCharCode(e.which) === ' ') that.space = true;
     }, false);
 
-    that.ctx.canvas.addEventListener("keyup", function (e) {
+    engine.ctx.canvas.addEventListener("keyup", function (e) {
         switch (e.keyCode) {
             case 49: // 1
-                that.one = false;
+                engine.one = false;
                 break;
             case 32: // ' '
-                that.space = false;
+                engine.space = false;
                 break;
             case 37: // arrow left
             case 65: // a
-                that.left = that.lefting = false;
+                engine.left = engine.lefting = false;
                 break;
             case 39: // arrow right
             case 68: // d
-                that.right = that.righting = false;
+                engine.right = engine.righting = false;
                 break;
             case 38: // arrow up
             case 87: // w
-                that.up = that.upping = false;
+                engine.up = engine.upping = false;
                 break;
             case 40: // arrow down
             case 83: // s
-                that.down = that.downing = false;
+                engine.down = engine.downing = false;
                 break;
             default:
-                if (that.debug) console.debug("Key Down Event - Char: " + e.code + " Code: " + e.keyCode + " Reapeat: " + e.repeat);
+                if (engine.debug) console.debug("Key Down Event - Char: " + e.code + " Code: " + e.keyCode + " Reapeat: " + e.repeat);
                 break;
         }
     }, false);
 
     // Right click only.
     window.oncontextmenu = function (e) {
-        that.click = getXandY(e); // Enables inflicting damage on the enemy.
+        engine.click = getXandY(e); // Enables inflicting damage on the enemy.
         e.preventDefault(); // cancels default context menu when right clicked.
-        that.one = true;
-        that.sounds.get('characterAttack02').replay();
+        engine.one = true;
         setTimeout(function() {
-            that.one = false
+            engine.one = false
         }, 400);
         //return false;  // cancels default context menu when right clicked.
     }
 
     // Left click only.
-    that.ctx.canvas.addEventListener("click", function (e) {
-        that.click = getXandY(e); // Enables inflicting damage on the enemy.
-        that.sounds.get('characterAttack01').replay();
-        if (that.debug) console.debug("Clicked " + e.button +  " button at " + e.clientX + "," + e.clientY); // The coordinates on the browser screen.
+    engine.ctx.canvas.addEventListener("click", function (e) {
+        engine.click = getXandY(e); // Enables inflicting damage on the enemy.
+        if (engine.debug) console.debug("Clicked " + e.button +  " button at " + e.clientX + "," + e.clientY); // The coordinates on the browser screen.
     }, false);
 
     var getXandY = function (e) {
-        var x = e.clientX - that.ctx.canvas.getBoundingClientRect().left;
-        var y = e.clientY - that.ctx.canvas.getBoundingClientRect().top;
+        var x = e.clientX - engine.ctx.canvas.getBoundingClientRect().left;
+        var y = e.clientY - engine.ctx.canvas.getBoundingClientRect().top;
 
         if (x < 1024) {
             x = Math.floor(x / 32);

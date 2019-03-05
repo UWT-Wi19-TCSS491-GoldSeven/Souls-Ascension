@@ -15,8 +15,8 @@ function SlimeBehemoth(startingX, startingY) {
     this.stopAttackRange = 300;
     this.startFollowRange = 150;
     this.stopFollowRange = 350;
-    this.maxHealth = 500;
-    this.currentHealth = 500;
+    this.maxHealth = 150;
+    this.currentHealth = 150;
     this.killable = true;
     Entity.call(this, gameEngine, startingX, startingY - 30); // where it starts
 
@@ -81,8 +81,8 @@ SlimeBehemoth.prototype.draw = function () {
 }
 /*----------------------------------------------SlimeBehemoth End-------------------------------------------------------------------------------------------- */
 
-/*----------------------------------------------SlimeEnemy Start--------------------------------------------------------------------------------------------- */
-function SlimeEnemy(startingX, startingY) {
+/*----------------------------------------------Slime Start--------------------------------------------------------------------------------------------- */
+function Slime(startingX, startingY) {
     this.slimeEnemyWalkingLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/SlimeWalkLeft.png"), 0, 0, 80, 80, 0.1, 8, true, false);
     this.slimeEnemyWalkingRightAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/SlimeWalkRight.png"), 0, 0, 80, 80, 0.1, 8, true, false);
     this.slimeEnemyAttackLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/SlimeAttackLeft.png"), 0, 0, 80, 80, 0.1, 10, true, false);
@@ -104,8 +104,8 @@ function SlimeEnemy(startingX, startingY) {
     this.stopAttackRange = 300;
     this.startFollowRange = 150;
     this.stopFollowRange = 350;
-    this.maxHealth = 300;
-    this.currentHealth = 300;
+    this.maxHealth = 40;
+    this.currentHealth = 40;
     this.hasDied = false;
     this.life = 1;
     this.killable = true;
@@ -115,10 +115,10 @@ function SlimeEnemy(startingX, startingY) {
 
 }
 
-SlimeEnemy.prototype = new Entity();
-SlimeEnemy.prototype.constructor = SlimeEnemy;
+Slime.prototype = new Entity();
+Slime.prototype.constructor = Slime;
 
-SlimeEnemy.prototype.update = function () {
+Slime.prototype.update = function () {
     if (this.cooldown > 0) this.cooldown -= gameEngine.clockTick;
     if (this.special > 0) this.cooldown -= gameEngine.clockTick;
     let canMove = false;
@@ -170,7 +170,7 @@ SlimeEnemy.prototype.update = function () {
     }
     Entity.prototype.update.call(this);
 }
-SlimeEnemy.prototype.attack = function (xDiff, yDiff, distance, xOrigS, yOrigS) {
+Slime.prototype.attack = function (xDiff, yDiff, distance, xOrigS, yOrigS) {
     if (this.special <= 0) {
         this.specialAttack(xDiff, yDiff, distance, xOrigS, yOrigS);
     } else if (this.cooldown <= 0) {
@@ -178,7 +178,7 @@ SlimeEnemy.prototype.attack = function (xDiff, yDiff, distance, xOrigS, yOrigS) 
     }
 }
 
-SlimeEnemy.prototype.normalAttack = function (xDiff, yDiff, distance, xOrigS, yOrigS) {
+Slime.prototype.normalAttack = function (xDiff, yDiff, distance, xOrigS, yOrigS) {
     let velX = (this.attackSpeed * xDiff) / distance;
     let velY = (this.attackSpeed * yDiff) / distance;
 
@@ -190,10 +190,10 @@ SlimeEnemy.prototype.normalAttack = function (xDiff, yDiff, distance, xOrigS, yO
     gameEngine.addEntity(projectile);
     this.cooldown = this.attackInterval;
 }
-SlimeEnemy.prototype.specialAttack = function (xDiff, yDiff, distance, xOrigS, yOrigS) {
+Slime.prototype.specialAttack = function (xDiff, yDiff, distance, xOrigS, yOrigS) {
     // TODO
 }
-SlimeEnemy.prototype.draw = function () {
+Slime.prototype.draw = function () {
     if (this.animation !== this.death) {
         if (this.isMovingWest) {
             this.animation = this.slimeEnemyWalkingLeftAnimation;
@@ -217,7 +217,7 @@ SlimeEnemy.prototype.draw = function () {
 
     Entity.prototype.draw.call(this);
 }
-/*----------------------------------------------SlimeEnemy End---------------------------------------------------------------------------------------------- */
+/*----------------------------------------------Slime End---------------------------------------------------------------------------------------------- */
 
 /*----------------------------------------------Skeleton Start---------------------------------------------------------------------------------------------- */
 function Skeleton(game, startingX, startingY) {
@@ -235,8 +235,8 @@ function Skeleton(game, startingX, startingY) {
     this.stopAttackRange = 300;
     this.startFollowRange = 150;
     this.stopFollowRange = 350;
-    this.maxHealth = 1000;
-    this.currentHealth = 1000;
+    this.maxHealth = 60;
+    this.currentHealth = 60;
     this.killable = true;
     Entity.call(this, game, startingX - 50, startingY - 25); // where it starts
 
@@ -297,8 +297,8 @@ Skeleton.prototype.draw = function () {
 }
 /*----------------------------------------------Skeleton End------------------------------------------------------------------------------------------------- */
 
-/*----------------------------------------------Wizard Start------------------------------------------------------------------------------------------------ */
-function Wizard(game, startingX, startingY) {
+/*----------------------------------------------Wraith Start------------------------------------------------------------------------------------------------ */
+function Wraith(game, startingX, startingY) {
     this.ctx = game.ctx;
     this.wizardWalkingLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/wizardWalkLeft.png"), 0, 0, 80, 80, 0.1, 6, true, false);
     this.wizardWalkingRightAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/wizardWalkRight.png"), 0, 0, 80, 80, 0.1, 6, true, false);
@@ -316,18 +316,18 @@ function Wizard(game, startingX, startingY) {
     this.stopAttackRange = 300;
     this.startFollowRange = 150;
     this.stopFollowRange = 350;
-    this.maxHealth = 400;
-    this.currentHealth = 400;
+    this.maxHealth = 60;
+    this.currentHealth = 60;
     this.killable = true;
     this.life = 1;
     Entity.call(this, game, startingX - 50, startingY - 25); // where it starts
 
 }
 
-Wizard.prototype = new Entity();
-Wizard.prototype.constructor = Wizard;
+Wraith.prototype = new Entity();
+Wraith.prototype.constructor = Wraith;
 
-Wizard.prototype.update = function () {
+Wraith.prototype.update = function () {
     let xOrigC = (character.x + character.animation.frameWidth / 2);
     let yOrigC = (character.y + character.animation.frameHeight / 2);
     let xOrigS = (this.x + this.animation.frameWidth / 2)
@@ -365,10 +365,10 @@ Wizard.prototype.update = function () {
     }
     Entity.prototype.update.call(this);
 }
-Wizard.prototype.normalAttack = function (xDiff, yDiff, distance, xOrigS, yOrigS) {
+Wraith.prototype.normalAttack = function (xDiff, yDiff, distance, xOrigS, yOrigS) {
     // to do
 }
-Wizard.prototype.draw = function () {
+Wraith.prototype.draw = function () {
     if (this.animation !== this.death) {
         if (this.isMovingWest) {
             this.animation = this.wizardWalkingLeftAnimation;
@@ -383,7 +383,7 @@ Wizard.prototype.draw = function () {
     }
     Entity.prototype.draw.call(this);
 }
-/*----------------------------------------------Wizard End--------------------------------------------------------------------------------------------------- */
+/*----------------------------------------------Wraith End--------------------------------------------------------------------------------------------------- */
 
 /*----------------------------------------------SorcererVillain Start---------------------------------------------------------------------------------------- */
 function SorcererVillain(game, x, y) {
@@ -403,8 +403,8 @@ function SorcererVillain(game, x, y) {
     this.stopAttackRange = 300;
     this.startFollowRange = 150;
     this.stopFollowRange = 350;
-    this.maxHealth = 1000;
-    this.currentHealth = 1000;
+    this.maxHealth = 200;
+    this.currentHealth = 200;
     this.killable = true;
     Entity.call(this, game, x, y); // where it starts 350, 100
 
