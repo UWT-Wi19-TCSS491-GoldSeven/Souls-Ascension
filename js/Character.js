@@ -92,16 +92,16 @@ class Character extends Entity {
         if (this.game.up && this.game.right) this.isMovingUpRight = true;
         if (this.game.down && this.game.left) this.isMovingDownLeft = true;
         if (this.game.down && this.game.right) this.isMovingDownRight = true;
-        if (this.game.left && !collisionDetect(this.x + 8 - this.travelSpeed, world.currentScale - 5 + this.y, 25, true)) {
+        if (this.game.left && !Collision.hasCollidedWithWalls(this.x + 8 - this.travelSpeed, world.currentScale - 5 + this.y, 25, true)) {
             this.isMovingLeft = true
         }//
-        if (this.game.right && !collisionDetect(this.x + 8 + this.travelSpeed, world.currentScale - 5 + this.y, 25, true)) {
+        if (this.game.right && !Collision.hasCollidedWithWalls(this.x + 8 + this.travelSpeed, world.currentScale - 5 + this.y, 25, true)) {
             this.isMovingRight = true
         }
-        if (this.game.up && !collisionDetect(this.x + 8, 25 + this.y - this.travelSpeed, 25, true)) {
+        if (this.game.up && !Collision.hasCollidedWithWalls(this.x + 8, 25 + this.y - this.travelSpeed, 25, true)) {
             this.isMovingUp = true;
         }
-        if (this.game.down && !collisionDetect(this.x + 8, world.currentScale + this.y, 25, true)) {
+        if (this.game.down && !Collision.hasCollidedWithWalls(this.x + 8, world.currentScale + this.y, 25, true)) {
             this.isMovingDown = true;
         }
         if (this.game.debug && (this.isMovingLeft || this.isMovingRight || this.isMovingUp || this.isMovingDown)) {
@@ -234,7 +234,7 @@ class Character extends Entity {
             let other = gameEngine.entities[i];
             if (other == this || typeof other === 'undefined') continue;
             scaleOf = (other instanceof Projectile) ? 4 : world.currentScale - 10;
-            if (isCollide(newX + 20, newY - scaleOf + 20, 5 + range, 42 + range, other, scaleOf + range, scaleOf + range)) {
+            if (Collider.hasCollided(newX + 20, newY - scaleOf + 20, 5 + range, 42 + range, other, scaleOf + range, scaleOf + range)) {
                 // TODO: This should really be handled by individual enemies/entities and updated in their update methods.
                 if (other instanceof Projectile) {
                     other.isDestroyed = true;

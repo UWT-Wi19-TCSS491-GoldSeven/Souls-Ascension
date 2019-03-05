@@ -152,7 +152,7 @@ class Slime extends Entity {
             this.y += gameEngine.clockTick * velY;
 
         }
-        if (!collisionDetect(this.x + 20, 55 + this.y, 20)) {
+        if (!Collision.hasCollidedWithWalls(this.x + 20, 55 + this.y, 20)) {
             canMove = true
         }
         if (!canMove) {
@@ -438,7 +438,7 @@ class Sorcerer extends Entity {
 
         }
 
-        if (!collisionDetect(this.x + 30, 90 + this.y, 20)) {
+        if (!Collision.hasCollidedWithWalls(this.x + 30, 90 + this.y, 20)) {
             canMove = true
         }
 
@@ -498,7 +498,7 @@ class Projectile extends Entity {
     }
 
     update() {
-        if (collisionDetect(this.x, this.y, world.currentScale)) {
+        if (Collision.hasCollidedWithWalls(this.x, this.y, world.currentScale)) {
             this.destroy();
             return;
         }

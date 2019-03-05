@@ -171,85 +171,99 @@ class CharacterInfo extends Entity {
 
 /*----------------------------------------------BSP TREE Start----------------------------------------------------------------------------------------------- */
 
-let Tree = function (leaf) {
-    this.leaf = leaf
-    this.lchild = undefined
-    this.rchild = undefined
+class Tree {
+    constructor(leaf) {
+        this.leaf = leaf
+        this.lchild = undefined
+        this.rchild = undefined
+    }
+
+    getLeafs() {
+        if (this.lchild === undefined && this.rchild === undefined)
+            return [this.leaf]
+        else
+            return [].concat(this.lchild.getLeafs(), this.rchild.getLeafs())
+    }
+
+    getLevel(level, queue) {
+        if (queue === undefined)
+            queue = []
+        if (level == 1) {
+            queue.push(this)
+        } else {
+            if (this.lchild !== undefined)
+                this.lchild.getLevel(level - 1, queue)
+            if (this.rchild !== undefined)
+                this.rchild.getLevel(level - 1, queue)
+        }
+        return queue
+    }
 }
 
-Tree.prototype.getLeafs = function () {
-    if (this.lchild === undefined && this.rchild === undefined)
-        return [this.leaf]
-    else
-        return [].concat(this.lchild.getLeafs(), this.rchild.getLeafs())
+class Point {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+    }
 }
 
-Tree.prototype.getLevel = function (level, queue) {
-    if (queue === undefined)
-        queue = []
-    if (level == 1) {
-        queue.push(this)
-    } else {
-        if (this.lchild !== undefined)
-            this.lchild.getLevel(level - 1, queue)
-        if (this.rchild !== undefined)
-            this.rchild.getLevel(level - 1, queue)
-    }
-    return queue
-}
-let Point = function (x, y) {
-    this.x = x;
-    this.y = y;
-}
-let Door = function (x, y, position) {
-    this.x = x;
-    this.y = y;
-    this.position = position;
-    this.removed = false;
-}
-//a container prototype.
-let Container = function (x, y, w, h) {
-    this.x = x
-    this.y = y
-    this.w = w
-    this.h = h
-    this.walls = [];
-    this.center = new Point(
-        this.x + (this.w / 2),
-        this.y + (this.h / 2)
-    )
-}
-Container.prototype.pushWall = function (theX, theY, thePosition, code) {//position #0 is a door
-    let point = new Point(theX, theY);
-    if (code === 15) { //door
-        point = new Door(theX, theY, thePosition);
-    }
-    if (this.x <= theX + world1.currentScale / 2 && theX + world1.currentScale / 2 < this.x + this.w
-        && this.y <= theY + world1.currentScale / 2 && theY + world1.currentScale / 2 < this.y + this.h) {
-        this.walls.push(point);
-    } else if (this.x <= theX && theX < this.x + this.w
-        && this.y <= theY && theY < this.y + this.h) {
-        this.walls.push(point);
-    } else if (this.x <= theX && theX < this.x + this.w
-        && this.y <= theY + world1.currentScale && theY + world1.currentScale < this.y + this.h) {
-        this.walls.push(point);
+class Door {
+    constructor(x, y, position) {
+        this.x = x;
+        this.y = y;
+        this.position = position;
+        this.removed = false;
     }
 }
-Container.prototype.paint = function (c) {
-    c.strokeStyle = "#0F0"
-    c.lineWidth = 2
-    c.strokeRect(this.x * SQUARE, this.y * SQUARE,
-        this.w * SQUARE, this.h * SQUARE)
+
+class Container {
+    constructor(x, y, w, h) {
+        this.x = x
+        this.y = y
+        this.w = w
+        this.h = h
+        this.walls = [];
+        this.center = new Point(
+            this.x + (this.w / 2),
+            this.y + (this.h / 2)
+        )
+    }
+
+    pushWall(theX, theY, thePosition, code) {//position #0 is a door
+        let point = new Point(theX, theY);
+        if (code === 15) { //door
+            point = new Door(theX, theY, thePosition);
+        }
+        if (this.x <= theX + world1.currentScale / 2 && theX + world1.currentScale / 2 < this.x + this.w
+            && this.y <= theY + world1.currentScale / 2 && theY + world1.currentScale / 2 < this.y + this.h) {
+            this.walls.push(point);
+        } else if (this.x <= theX && theX < this.x + this.w
+            && this.y <= theY && theY < this.y + this.h) {
+            this.walls.push(point);
+        } else if (this.x <= theX && theX < this.x + this.w
+            && this.y <= theY + world1.currentScale && theY + world1.currentScale < this.y + this.h) {
+            this.walls.push(point);
+        }
+    }
+
+    paint(c) {
+        c.strokeStyle = "#0F0"
+        c.lineWidth = 2
+        c.strokeRect(this.x * SQUARE, this.y * SQUARE,
+            this.w * SQUARE, this.h * SQUARE)
+    }
 }
 
 // build this tree
 function split_container(container, iter) {
     let root = new Tree(container)
+
     if (iter != 0) {
         let sr = random_split(container)
         root.lchild = split_container(sr[0], iter - 1)
         root.rchild = split_container(sr[1], iter - 1)
     }
+
     return root
 }
 
@@ -307,9 +321,7 @@ let N_ITERATIONS = 6;
 let DISCARD_BY_RATIO = true;
 let H_RATIO = 0.45;
 let W_RATIO = 0.45;
-let main_container = new Container(0, 0, mapWidth, mapHeight);
-let container_tree = split_container(main_container, N_ITERATIONS);
-
+let container_tree = split_container(new Container(0, 0, mapWidth, mapHeight), N_ITERATIONS);
 let leafs = container_tree.getLeafs();
 
 function fillBSPTree(target) {//, background) {
@@ -336,62 +348,70 @@ function fillBSPTree(target) {//, background) {
 fillBSPTree(world1.slimeDungeonLevelOne);
 /*----------------------------------------------BSP TREE End------------------------------------------------------------------------------------------------- */
 
-/*----------------------------------------------Collision Start---------------------------------------------------------------------------------------------- */
-let Collision = function (entity, killable, width, height) {
-    this.Entity = entity;
-    this.killable = false;
-    this.w = width;
-    this.h = height;
-};
+/*----------------------------------------------Collider Start---------------------------------------------------------------------------------------------- */
 
-// If enemies have been killed (empty health) override
-// entityPosition is position in array of entities.
-function isCollide(targetX, targetY, targetW, targetH, entity, entityW, entityH) {
-    if (!entity.killable) return false;
-
-    if (entity.x < targetX + targetW &&
-        entity.x + entityW > targetX &&
-        entity.y < targetY + targetH &&
-        entity.y + entityH > targetY) {
-        return true;
+class Collider {
+    constructor(entity, killable, width, height) {
+        this.Entity = entity;
+        this.killable = false;
+        this.w = width;
+        this.h = height;
     }
-    return false;
-}
 
-//let isColli = false;
-function collisionDetect(characterX, characterY, width, isCharacter) {
-    let targetX, targetY;
-    let j; // area to check collision
-    for (j = 0; j < leafs.length; j++) {
-        if (leafs[j].x <= characterX && characterX <= leafs[j].x + leafs[j].w
-            && leafs[j].y <= characterY && characterY <= leafs[j].y + leafs[j].h) {
-            break;
-        }
-    }
-    if (typeof leafs[j] === 'undefined') return true;
-    for (let i = 0; i < leafs[j].walls.length; i++) {
-        targetX = leafs[j].walls[i].x;
-        targetY = leafs[j].walls[i].y;
-        targetX = leafs[j].walls[i].x;
-        targetY = leafs[j].walls[i].y;
-        if (characterX < targetX + world1.currentScale &&// - width for more percise when work with character
-            characterX + world1.currentScale - width > targetX &&
-            characterY < targetY + world1.currentScale &&
-            characterY > targetY) {
-            if (isCharacter && leafs[j].walls[i] instanceof Door == true && character.inventory['SilverKey'] > 0) {
-                leafs[j].walls[i].removed = true;
-                character.inventory['SilverKey'] -= 1;
-                world1.slimeDungeonLevelOne[leafs[j].walls[i].position] = 24; // center floor.
-                removeDoor(characterX, characterY, width); //destroy opened door
-                return false;
-            }
+    static hasCollided(targetX, targetY, targetW, targetH, entity, entityW, entityH) {
+        if (!entity.killable) return false;
+
+        if (entity.x < targetX + targetW &&
+            entity.x + entityW > targetX &&
+            entity.y < targetY + targetH &&
+            entity.y + entityH > targetY) {
             return true;
         }
+        return false;
     }
-    return false;
 }
 
-const removeDoor = (characterX, characterY, width) => {
+class Collision {
+    static hasCollidedWithWalls(characterX, characterY, width, isCharacter) {
+        let targetX, targetY;
+        let j; // area to check collision
+
+        for (j = 0; j < leafs.length; j++) {
+            if (leafs[j].x <= characterX && characterX <= leafs[j].x + leafs[j].w
+                && leafs[j].y <= characterY && characterY <= leafs[j].y + leafs[j].h) {
+                break;
+            }
+        }
+
+        if (typeof leafs[j] === 'undefined') return true;
+
+        for (let i = 0; i < leafs[j].walls.length; i++) {
+            targetX = leafs[j].walls[i].x;
+            targetY = leafs[j].walls[i].y;
+            targetX = leafs[j].walls[i].x;
+            targetY = leafs[j].walls[i].y;
+
+            if (characterX < targetX + world1.currentScale &&// - width for more percise when work with character
+                characterX + world1.currentScale - width > targetX &&
+                characterY < targetY + world1.currentScale &&
+                characterY > targetY) {
+                if (isCharacter && leafs[j].walls[i] instanceof Door == true && character.inventory['SilverKey'] > 0) {
+                    leafs[j].walls[i].removed = true;
+                    character.inventory['SilverKey'] -= 1;
+                    world1.slimeDungeonLevelOne[leafs[j].walls[i].position] = 24; // center floor.
+                    removeDoor(characterX, characterY, width); //destroy opened door
+                    return false;
+                }
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+}
+
+function removeDoor(characterX, characterY, width) {
     let targetX, targetY;
     let j; // area to check collision
     for (j = 0; j < leafs.length; j++) {
@@ -410,23 +430,7 @@ const removeDoor = (characterX, characterY, width) => {
     }
 }
 
-Container.prototype.pushWall = function (theX, theY, thePosition, code) {//position #0 is a door
-    let point = new Point(theX, theY);
-    if (code === 15) { //door
-        point = new Door(theX, theY, thePosition);
-    }
-    if (this.x <= theX + world1.currentScale / 2 && theX + world1.currentScale / 2 < this.x + this.w
-        && this.y <= theY + world1.currentScale / 2 && theY + world1.currentScale / 2 < this.y + this.h) {
-        leafs[i].walls.splice(j, 1); //destroy opened door
-    } else if (this.x <= theX && theX < this.x + this.w
-        && this.y <= theY && theY < this.y + this.h) {
-        leafs[i].walls.splice(j, 1); //destroy opened door
-    } else if (this.x <= theX && theX < this.x + this.w
-        && this.y <= theY + world1.currentScale && theY + world1.currentScale < this.y + this.h) {
-        leafs[i].walls.splice(j, 1); //destroy opened door
-    }
-}
-/*----------------------------------------------Collision End------------------------------------------------------------------------------------------------ */
+/*----------------------------------------------Collider End------------------------------------------------------------------------------------------------ */
 
 /*----------------------------------------------Health Start------------------------------------------------------------------------------------------------ */
 let bug = 0;
@@ -655,11 +659,10 @@ function startGame() {
             gameEngine.addEntity(wizards[i]);
         }
         for (let i = 0; i < skeletons.length;
-        i++
-    )
-        {
+             i++
+        ) {
             gameEngine.addEntity(skeletons[i]
-        )
+            )
             ;
         }
         for (let i = 0; i < sorcererVillains.length; i++) {
