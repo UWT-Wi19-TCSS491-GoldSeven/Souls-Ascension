@@ -129,6 +129,8 @@ class CharacterInfo extends Entity {
         this.h = 512;
         this.image = image;
         this.hpImange = hpImage;
+        this.whirlSkill = ASSET_MANAGER.getAsset("./assets/sprites/whirl.png");
+        this.oneAttackSKill = ASSET_MANAGER.getAsset("./assets/sprites/oneAttack.png");
     }
 
     draw() {
@@ -163,6 +165,51 @@ class CharacterInfo extends Entity {
             character.levelExp *= character.level;
             character.currentHealth = character.maxHealth;
         }
+        this.skillShow();
+        
+    }
+
+    skillShow() {
+        let newX = character.x + 350;
+        let newY = character.y + 340;
+        this.drawSkillImage(newX + 40, newY - 20, 25, this.oneAttackSKill,24,50); // skill 1
+        this.drawSkillImage(newX - 10, newY, 25, this.whirlSkill,24,50); //skill 2
+        this.drawSkillImage(newX - 25, newY + 50, 25, this.whirlSkill,24,50); // skill 3
+        this.drawSkillImage(newX + 35, newY + 40, 35, this.whirlSkill,34,70);//x, y, radius, startAngle, endAngle, anticlockwise
+        this.updateSkillCover(newX, newY);
+
+    }
+
+    drawSkillImage(x, y, radius, skillImage, ratio,size) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, Math.PI * 2, true) //x, y, radius, startAngle, endAngle, anticlockwise
+        ctx.clip();
+        ctx.drawImage(skillImage, x - ratio, y - ratio, size, size);
+        ctx.restore();
+    }
+    drawSkillCover(x, y, radius, globalAlpha, startAngle, endAngle) {
+        ctx.globalAlpha = globalAlpha;    
+        ctx.beginPath();
+        ctx.arc(x, y, radius, startAngle, endAngle, false) //x, y, radius, startAngle, endAngle, anticlockwise
+        ctx.fill();
+
+    }
+    updateSkillCover(newX, newY) { //depend on the skill then set the percent   
+        let percent = 0;
+        let full = -Math.PI / 2;
+        ctx.fillStyle = "black";
+        character.attackCooldownTime = 30; //test
+        percent = this.getPercent(character.attackCooldown, character.attackCooldownTime);
+        this.drawSkillCover(newX + 40, newY - 20, 25, 0.85, full - percent, full + percent); // skill 1
+        percent = this.getPercent(character.whirlwindCooldown, character.whirlwindCooldownTime);
+        this.drawSkillCover(newX - 10, newY, 25, 0.85, full - percent, full + percent); //skill 2
+        percent = 3;//no skill yet
+        this.drawSkillCover(newX - 25, newY + 50, 25, 0.85, full - percent, full + percent); // skill 3
+        this.drawSkillCover(newX + 35, newY + 40, 35, 0.85, full - percent, full + percent);//center
+    }
+    getPercent(attackCooldown, attackCooldownTime) { // 0 is full, 3 is empty
+        return 3 * attackCooldown / attackCooldownTime;
     }
 }
 
@@ -467,7 +514,6 @@ function isInViewPort(x, y, mx, my) {
 
     return false;
 }
-
 /*----------------------------------------------Torch End---------------------------------------------------------------------------------------------------- */
 
 /*----------------------------------------------Main Code Start-------------------------------------------------------------------------------------------- */
@@ -534,6 +580,8 @@ function startGame() {
     ASSET_MANAGER.queueDownload("./assets/sprites/SkeletonWalkRight.png");
     ASSET_MANAGER.queueDownload("./assets/sprites/characterInfo2.png");
     ASSET_MANAGER.queueDownload("./assets/sprites/HP.png");
+    ASSET_MANAGER.queueDownload("./assets/sprites/whirl.png")
+    ASSET_MANAGER.queueDownload("./assets/sprites/oneAttack.png")
     ASSET_MANAGER.downloadAll(function () {
         console.log("starting up da sheild");
         canvas = document.getElementById("viewport");
