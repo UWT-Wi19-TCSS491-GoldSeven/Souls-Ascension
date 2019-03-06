@@ -146,9 +146,9 @@ class CharacterInfo extends Entity {
         ctx.fillStyle = "#0F0";
         ctx.fillText("Level " + character.level + ' / Soul level ' + character.soul, x + 100, y + 40);
         ctx.fillStyle = "white";
-        ctx.fillText("HP " + character.currentHealth + '/' + character.maxHealth, x + 101, y + 59);
+        ctx.fillText("HP " + character.health + '/' + character.maxHealth, x + 101, y + 59);
         ctx.fillText("H", x + 30, y + 235);
-        ctx.fillText(character.inventory['hp'].quantity, x + 5, y + 210);
+        ctx.fillText(character.inventory.HealingPotion, x + 5, y + 210);
         ctx.fillStyle = "white";
         ctx.fillText("EXP " + character.currentExp + '/' + character.levelExp, x + 100, y + 75);
         ctx.fillStyle = "white";
@@ -163,7 +163,7 @@ class CharacterInfo extends Entity {
             character.level++;
             character.maxHealth += character.maxHealth * character.level / 10;
             character.levelExp *= character.level;
-            character.currentHealth = character.maxHealth;
+            character.health = character.maxHealth;
         }
         this.skillShow();
         
@@ -199,7 +199,6 @@ class CharacterInfo extends Entity {
         let percent = 0;
         let full = -Math.PI / 2;
         ctx.fillStyle = "black";
-        character.attackCooldownTime = 30; //test
         percent = this.getPercent(character.attackCooldown, character.attackCooldownTime);
         this.drawSkillCover(newX + 40, newY - 20, 25, 0.85, full - percent, full + percent); // skill 1
         percent = this.getPercent(character.whirlwindCooldown, character.whirlwindCooldownTime);
@@ -420,9 +419,9 @@ class Collision {
                 characterX + world1.currentScale - width > targetX &&
                 characterY < targetY + world1.currentScale &&
                 characterY > targetY) {
-                if (isCharacter && leafs[j].walls[i] instanceof Door == true && character.inventory['SilverKey'] > 0) {
+                if (isCharacter && leafs[j].walls[i] instanceof Door == true && character.inventory.SilverKey > 0) {
                     leafs[j].walls[i].removed = true;
-                    character.inventory['SilverKey'] -= 1;
+                    character.inventory.SilverKey -= 1;
                     world1.slimeDungeonLevelOne[leafs[j].walls[i].position] = 24; // center floor.
                     removeDoor(characterX, characterY, width); //destroy opened door
                     return false;
@@ -466,13 +465,13 @@ const drawHPBar = () => {
         ctx.strokeStyle = "red";
         if (entity.maxHealth > 0 && gameEngine.entities[i] instanceof Character != true) {
             ctx.strokeRect(entity.x + 15, entity.y, 50, 3);
-            ctx.fillRect(entity.x + 15, entity.y, 50 * entity.currentHealth / entity.maxHealth, 3);
+            ctx.fillRect(entity.x + 15, entity.y, 50 * entity.health / entity.maxHealth, 3);
         }
     }
     ctx.strokeStyle = "#b00642";
     ctx.strokeRect(character.x - 279, character.y - 330, 100, 10);
     ctx.fillStyle = "#9a065f";
-    ctx.fillRect(character.x - 279, character.y - 329, 100 * character.currentHealth / character.maxHealth, 8);
+    ctx.fillRect(character.x - 279, character.y - 329, 100 * character.health / character.maxHealth, 8);
     ctx.strokeStyle = "#0FF";
     ctx.strokeRect(character.x - 280, character.y - 315, 100, 10);
     ctx.fillStyle = "blue";
@@ -489,9 +488,7 @@ const drawHPBar = () => {
 class Torch extends Entity {
     constructor(x, y) {
         super(gameEngine, x, y, false);
-
         this.flameAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/torchAnimation.png"), 0, 0, 48, 48, 0.1, 4, true, world1.currentScale);
-        this.killable = false;
     }
 
     draw() {

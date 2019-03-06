@@ -20,8 +20,7 @@ class SlimeBehemoth extends LivingEntity {
         this.startFollowRange = 150;
         this.stopFollowRange = 350;
         this.maxHealth = 150;
-        this.currentHealth = 150;
-        this.killable = true;
+        this.health = 150;
     }
 
     update() {
@@ -33,12 +32,12 @@ class SlimeBehemoth extends LivingEntity {
         let yDiff = yOrigC - yOrigS;
         let distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
 
-        if (this.killed) {
+        if (!this.alive) {
             if (this.death && this.animation == this.death) {
                 this.life -= gameEngine.clockTick;
-                if (this.life <= 0) this.isDestroyed = true;
+                if (this.life <= 0) this.destroyed = true;
             } else {
-                this.isDestroyed = true;
+                this.destroyed = true;
             }
 
             return;
@@ -107,10 +106,9 @@ class Slime extends LivingEntity {
         this.startFollowRange = 150;
         this.stopFollowRange = 350;
         this.maxHealth = 40;
-        this.currentHealth = 40;
+        this.health = 40;
         this.hasDied = false;
         this.life = 1;
-        this.killable = true;
     }
 
     update() {
@@ -127,12 +125,12 @@ class Slime extends LivingEntity {
         let origX = this.x;
         let origY = this.y;
 
-        if (this.killed) {
+        if (!this.alive) {
             if (this.death && this.animation == this.death) {
                 this.life -= gameEngine.clockTick;
-                if (this.life <= 0) this.isDestroyed = true;
+                if (this.life <= 0) this.destroyed = true;
             } else {
-                this.isDestroyed = true;
+                this.destroyed = true;
             }
 
             return;
@@ -205,8 +203,8 @@ class Slime extends LivingEntity {
                 this.animation = this.slimeEnemyAttackLeftAnimation;
             } else if (this.isAttackingRight) {
                 this.animation = this.slimeEnemyAttackRightAnimation;
-            } else if (this.currentHealth == 0 && !this.hasDied) {
-                this.animation = this.slimeEnemyDeathAnimation;
+            } else if (this.health == 0 && !this.hasDied) {
+                this.animation = this.death;
                 this.hasDied = true;
             } else {
                 this.animation = this.slimeEnemyIdleAnimation;
@@ -241,8 +239,7 @@ class Skeleton extends LivingEntity {
         this.startFollowRange = 150;
         this.stopFollowRange = 350;
         this.maxHealth = 60;
-        this.currentHealth = 60;
-        this.killable = true;
+        this.health = 60;
     }
 
     update() {
@@ -254,12 +251,12 @@ class Skeleton extends LivingEntity {
         let yDiff = yOrigC - yOrigS;
         let distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
 
-        if (this.killed) {
+        if (!this.alive) {
             if (this.death && this.animation == this.death) {
                 this.life -= gameEngine.clockTick;
-                if (this.life <= 0) this.isDestroyed = true;
+                if (this.life <= 0) this.destroyed = true;
             } else {
-                this.isDestroyed = true;
+                this.destroyed = true;
             }
 
             return;
@@ -323,8 +320,7 @@ class Wraith extends LivingEntity {
         this.startFollowRange = 150;
         this.stopFollowRange = 350;
         this.maxHealth = 60;
-        this.currentHealth = 60;
-        this.killable = true;
+        this.health = 60;
         this.life = 1;
     }
 
@@ -337,12 +333,12 @@ class Wraith extends LivingEntity {
         let yDiff = yOrigC - yOrigS;
         let distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
 
-        if (this.killed) {
+        if (!this.alive) {
             if (this.death && this.animation == this.death) {
                 this.life -= gameEngine.clockTick;
-                if (this.life <= 0) this.isDestroyed = true;
+                if (this.life <= 0) this.destroyed = true;
             } else {
-                this.isDestroyed = true;
+                this.destroyed = true;
             }
 
             return;
@@ -381,7 +377,7 @@ class Wraith extends LivingEntity {
 
         if (this.animation === this.death) {
             this.life -= gameEngine.clockTick;
-            if (this.life <= 0) this.isDestroyed = true;
+            if (this.life <= 0) this.destroyed = true;
         }
 
         super.draw();
@@ -412,8 +408,7 @@ class Sorcerer extends LivingEntity {
         this.startFollowRange = 150;
         this.stopFollowRange = 350;
         this.maxHealth = 200;
-        this.currentHealth = 200;
-        this.killable = true;
+        this.health = 200;
     }
 
     update() {
@@ -430,12 +425,12 @@ class Sorcerer extends LivingEntity {
         let origX = this.x;
         let origY = this.y;
 
-        if (this.killed) {
+        if (!this.alive) {
             if (this.death && this.animation == this.death) {
                 this.life -= gameEngine.clockTick;
-                if (this.life <= 0) this.isDestroyed = true;
+                if (this.life <= 0) this.destroyed = true;
             } else {
-                this.isDestroyed = true;
+                this.destroyed = true;
             }
 
             return;
@@ -509,15 +504,14 @@ class Sorcerer extends LivingEntity {
 
 /*----------------------------------------------Projectile Start--------------------------------------------------------------------------------------------- */
 
-class Projectile extends LivingEntity {
+class Projectile extends Entity {
     constructor(x, y, xs, ys) {
         super(gameEngine, x, y, false);
         this.xs = xs;
         this.ys = ys;
         this.scale = 4;
         this.life = 10;
-        this.killable = true;
-        this.boundingBox = new BoundingBox(this.x, this.y, this.scale * 2, this.scale * 2);
+        this.boundingBox = new BoundingBox(this.x, this.y, this.scale * 2, this.scale * 2, -this.scale, -this.scale);
     }
 
     update() {
@@ -526,10 +520,15 @@ class Projectile extends LivingEntity {
             return;
         }
 
+        if (this.boundingBox.hasCollided(character.boundingBox)) {
+            this.destroy();
+            character.damage(5);
+        }
+
         this.x += this.xs;
         this.y += this.ys;
         this.life -= gameEngine.clockTick;
-        if (this.life <= 0) this.isDestroyed = true;
+        if (this.life <= 0) this.destroyed = true;
 
         super.update();
     }
@@ -542,7 +541,7 @@ class Projectile extends LivingEntity {
         ctx.fill();
         ctx.restore()
 
-        this.update();
+        super.draw();
     }
 }
 

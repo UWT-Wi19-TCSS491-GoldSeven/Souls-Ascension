@@ -38,7 +38,7 @@ class GameEngine {
         this.click = null;
         this.mouse = null;
         this.wheel = null;
-        this.one = null;
+        this.attack = null;
         this.surfaceWidth = width;
         this.surfaceHeight = height;
         this.viewport = {x: 0, y: 0, sx: 1, sy: 1};
@@ -129,13 +129,13 @@ class GameEngine {
             if (!entity.update)
                 continue;
 
-            if (!entity.isDestroyed) {
+            if (!entity.destroyed) {
                 entity.update();
             }
         }
 
         for (let i = this.entities.length - 1; i >= 0; --i) {
-            if (this.entities[i].isDestroyed) {
+            if (this.entities[i].destroyed) {
                 this.entities.splice(i, 1);
             }
         }
@@ -147,6 +147,6 @@ class GameEngine {
         this.draw();
         this.space = null;
         this.click = null;
-        this.one = null;
+        this.attack = null;
     }
 }

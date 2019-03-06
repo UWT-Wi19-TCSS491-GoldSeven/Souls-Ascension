@@ -1,14 +1,14 @@
 /*----------------------------------------------Character Start---------------------------------------------------------------------------------------------- */
 // The entity's viewport is determined by its BoundingBox object.
 let inventory = {
-    hp: {value: 100, quantity: 1},
-    SilverKey: 1,
+    HealingPotion: 1,
+    SilverKey: 2,
     GoldKey: 0
 };
 
 let world;
 
-class Character extends Entity {
+class Character extends LivingEntity {
     constructor(x, y, theCurrentWorld) {
         super(gameEngine, x, y);
         world = theCurrentWorld;
@@ -42,9 +42,9 @@ class Character extends Entity {
 
         this.attackDamage = 8;
         this.attackCooldown = 0;
-        this.attackCooldownTime = 3;
+        this.attackCooldownTime = 5;
         this.attackReady = true;
-        this.attackLeftAABB = new BoundingBox(0, 0 , 20, 40, 10);
+        this.attackLeftAABB = new BoundingBox(0, 0, 20, 40, 10);
         this.attackRightAABB = new BoundingBox(0, 0, 20, 40, 10);
         this.attackDownAABB = new BoundingBox(0, 0, 20, 40, 10);
         this.attackUPAABB = new BoundingBox(0, 0, 20, 40, 10);
@@ -57,14 +57,12 @@ class Character extends Entity {
 
         this.updateAABBs();
 
-        this.radius = 100;
         this.inventory = inventory;
         this.level = 1;
         this.soul = 1;
         this.travelSpeed = 2;
-        this.killable = true;
         this.maxHealth = 1000 + 1000 * (this.level - 1) * 0.2;
-        this.currentHealth = 1000;
+        this.health = 1000;
         this.currentSoul = 0;
         this.levelSoul = this.soul * 150;
         this.currentExp = 0;
@@ -89,19 +87,21 @@ class Character extends Entity {
         this.isMovingUpRight = false;
         this.isMovingDownLeft = false;
         this.isMovingDownRight = false;
-        if (this.game.one) {
+        if (this.game.whirlwind) {
             this.isWhirlwinding = true;
         }
-        if (this.game.click) {
+        if (this.game.attack) {
             this.isAttacking = true;
         }
         if (this.game.up && this.game.left) this.isMovingUpLeft = true;
         if (this.game.up && this.game.right) this.isMovingUpRight = true;
         if (this.game.down && this.game.left) this.isMovingDownLeft = true;
         if (this.game.down && this.game.right) this.isMovingDownRight = true;
+
+        // TODO should look into refactoring this for performance improvement
         if (this.game.left && !Collision.hasCollidedWithWalls(this.x + 8 - this.travelSpeed, world.currentScale - 5 + this.y, 25, true)) {
             this.isMovingLeft = true
-        }//
+        }
         if (this.game.right && !Collision.hasCollidedWithWalls(this.x + 8 + this.travelSpeed, world.currentScale - 5 + this.y, 25, true)) {
             this.isMovingRight = true
         }
@@ -111,25 +111,24 @@ class Character extends Entity {
         if (this.game.down && !Collision.hasCollidedWithWalls(this.x + 8, world.currentScale + this.y, 25, true)) {
             this.isMovingDown = true;
         }
-        if (this.game.debug && (this.isMovingLeft || this.isMovingRight || this.isMovingUp || this.isMovingDown)) {
-            // console.log(this);
-        }
+
         if (this.isMovingUp) {
             this.y -= this.travelSpeed; // Moves the entity.
         } else if (this.isMovingDown) {
             this.y += this.travelSpeed; // Moves the entity.
         }
+
         if (this.isMovingLeft) {
-            let speed = this.travelSpeed;
             this.x -= this.travelSpeed; // Moves the entity.
         } else if (this.isMovingRight) {
-            let speed = this.travelSpeed;
             this.x += this.travelSpeed; // Moves the entity.
         }
-        // The boundingBox follows the entity.
-        super.update();
 
+        // Update player bounding box position
+        super.update();
+        // Update player attack bounding box positions
         this.updateAABBs();
+        // Synchronize the viewport/camera with the players position
         this.updateViewport();
 
         if (this.isAttacking) {
@@ -161,17 +160,16 @@ class Character extends Entity {
                 this.whirlwindCooldown = this.whirlwindCooldownTime;
             }
         }
-        if (this.game.used === 'hp' && this.inventory['hp'].quantity > 0) {
-            this.currentHealth = Math.min(this.currentHealth + this.inventory['hp'].value, this.maxHealth);
-            this.inventory['hp'].quantity -= 1;
-            this.game.used = null;
+        if (this.game.heal && this.inventory.HealingPotion > 0) {
+            this.health = this.maxHealth;
+            this.inventory.HealingPotion -= 1;
+            this.game.heal = null;
         }
 
         // Animation Selection Start
         this.animation = this.standAnimation;
 
         if (this.isAttacking && this.attackCooldown == 0) {
-            //console.debug("Character isAttacking");
             if (this.isMovingLeft) {
                 this.animation = this.attackLeftAnimation;
                 this.attackAABB = this.attackLeftAABB;
@@ -186,7 +184,6 @@ class Character extends Entity {
                 this.attackAABB = this.attackDownAABB;
             }
         } else if (this.isWhirlwinding && this.whirlwindCooldown == 0) {
-            //console.debug("Character isWhirlwinding");
             this.animation = this.whirlwindAttackAnimation;
             this.attackAABB = this.whirlwindAABB;
         } else {
@@ -210,14 +207,13 @@ class Character extends Entity {
                 this.animation = this.standAnimation;
             }
         }
-// Animation Selection End
+        // Animation Selection End
 
-// Attack Start
+        // Attack Start
         if (this.attackCooldown > 0) {
             this.attackCooldown -= 1;
             if (this.attackCooldown == 0) {
                 this.attackReady = true;
-                this.game.click = null;
                 this.isAttacking = false;
             }
         }
@@ -230,135 +226,58 @@ class Character extends Entity {
             }
         }
 
-        let scaleOf = 4;
-        let range = (this.isWhirlwinding) ? world.currentScale * 1.5 : (this.isAttacking) ? world.currentScale / 2 : 0;
-        let newXY = this.getNewXY();
-        let newX = newXY.x;
-        let newY = newXY.y;
-
+        // Hide the damage/exp text popup
         if (new Date().getTime() - damageST.time > 500) {
             damageST.damaged = 0;
             damageST.exp = 0;
-        } //hide
+        }
 
-// Iterate through all entities to check if anyone has collided with another, and take appropriate action.
-        for (let i = 0; i < gameEngine.entities.length; i++) {
-            let other = gameEngine.entities[i];
-            if (other == this || typeof other === 'undefined' || other instanceof Torch) continue;
-            scaleOf = (other instanceof Projectile) ? 4 : world.currentScale - 10;
+        // Iterate through all entities to check if anyone has collided with another, and take appropriate action.
+        for (let i = 0; i < this.game.entities.length; i++) {
+            let other = this.game.entities[i];
+            if (other == this || !(other instanceof LivingEntity)) continue;
 
-            let collided = false;
-
-            if (other.boundingBox) {
+            if (other.boundingBox && !other.invulnerable) {
                 if (this.attackAABB) {
-                    if (other instanceof LivingEntity) {
-                        // Inflict damage on the enemy. Kick the Satan! Punch the Devil!
-                        // Start Attack
-                        if (this.attackAABB.hasCollided(other.boundingBox)) {
-                            let damage = 0;
-                            if (this.attackReady && this.game.click) {
-                                this.game.click = false;
+                    // Inflict damage on the enemy. Kick the Satan! Punch the Devil!
+                    // Start Attack
+                    if (this.attackAABB.hasCollided(other.boundingBox)) {
+                        let damage = 0;
+                        if (this.attackReady && this.game.attack) {
+                            damage = this.attackDamage * (1 + (this.level - 1) * 0.1 + this.soul);
+                        }
 
-                                damage = this.attackDamage * (1 + (this.level - 1) * 0.1 + this.soul);
-                                if (this.game.debug) console.debug("Attacking!");
-                            }
+                        if (this.whirlwindReady && this.game.whirlwind) {
+                            damage = this.whirlwindDamage * (1 + (this.level - 1) * 0.1 + this.soul); // TODO Is this where to adjust damage amount?
+                        }
 
-                            if (this.whirlwindReady && this.game.one) {
-                                damage = this.whirlwindDamage * (1 + (this.level - 1) * 0.1 + this.soul); // TODO Is this where to adjust damage amount?
-                                if (this.game.debug) console.debug("Whirlwinding!");
-                            }
+                        if (damage > 0) {
+                            other.damage(damage);
+                            damageST.x = other.x;
+                            damageST.y = other.y;
+                            damageST.damaged = damage;
+                            damageST.time = new Date().getTime();
+                            bug = 0;
+                        }
 
-                            if (damage > 0) {
-                                other.currentHealth -= damage;
-                                damageST.x = other.x;
-                                damageST.y = other.y;
-                                damageST.damaged = damage;
-                                damageST.time = new Date().getTime();
-                                bug = 0;
-                            }
+                        if (other.health <= 0 || other.health == null) {
+                            if (other.alive) {
+                                other.alive = false;
 
-                            if (other.currentHealth <= 0 || other.currentHealth == null) {
-                                if (!other.killed) {
-                                    other.killed = true;
-
-                                    if (other.death === null) {
-                                        other.isDestroyed;
-                                    } else {
-                                        gameEngine.entities[i].animation = gameEngine.entities[i].death;
-                                        gameEngine.entities[i].killable = false;
-                                    }
-
-                                    this.currentExp += (this.level + 1) * 20; // may change the formular later
-                                    damageST.exp = (this.level + 1) * 20;
+                                if (other.death === null) {
+                                    other.destroy();
+                                } else {
+                                    other.animation = other.death;
                                 }
+
+                                this.currentExp += (this.level + 1) * 20; // may change the formular later
+                                damageST.exp = (this.level + 1) * 20;
                             }
                         }
                     }
-                    // End Attack
-                }
-
-                if (this.boundingBox.hasCollided(other.boundingBox))
-                    collided = true;
-            }
-
-            if (collided) {
-                // TODO: This should really be handled by individual enemies/entities and updated in their update methods.
-                if (other instanceof Projectile) {
-                    other.isDestroyed = true;
-                    this.currentHealth -= 5;
-                    continue;
-                }
-                if (other instanceof SilverKey) {
-                    this.inventory['SilverKey'] += 1;
-                    other.isDestroyed = true;
-                    continue;
-                }
-                if (other instanceof GoldKey) {
-                    this.inventory['GoldKey'] += 1;
-                    other.isDestroyed = true;
-                    continue;
-                }
-                if (other instanceof HealingPotion) {
-                    this.inventory['hp'].quantity += 1;
-                    other.isDestroyed = true;
-                    continue;
-                }
-                if (other instanceof SoulJar) {
-                    let jar = other.jar || 0;
-                    this.currentSoul += jar;
-                    if (jar > 0 || heal > 0) {
-                        other.killed = true;
-                        let xOrigC = (character.x + character.animation.frameWidth / 2 - 380 + 100);
-                        let yOrigC = (character.y + character.animation.frameHeight / 2 - 380 + 60);
-                        let xOrigS = (other.x)
-                        let yOrigS = (other.y)
-                        let xDiff = xOrigC - xOrigS;
-                        let yDiff = yOrigC - yOrigS;
-                        let distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
-                        other.toX = (10 * xDiff) / distance;
-                        other.toY = (10 * yDiff) / distance;
-                        other.x += (50 * xDiff) / distance;
-                        other.y += (50 * yDiff) / distance;
-                        continue;
-                    }
                 }
             }
         }
-
-        if (this.currentHealth <= 0) {//check here if got bug
-            this.isDestroyed = true;
-            let text = document.getElementById('gameover');
-            text.style.display = 'inline';
-            let tPos = text.getBoundingClientRect();
-            let cPos = gameEngine.ctx.canvas.getBoundingClientRect();
-            let x = cPos.left + (cPos.width - tPos.width) / 2
-            let y = cPos.top + (cPos.height - tPos.height) / 2
-            //console.log(tPos);
-            text.style.position = 'absolute';
-            text.style.left = x + 'px';
-            text.style.top = y + 'px';
-        }
-// Attack End
 
         if (this.isAttacking && this.attackReady) {
             this.game.sounds.get('characterAttack01').replay();
@@ -381,6 +300,27 @@ class Character extends Entity {
         this.whirlwindAABB.setPos(this.x - 10, this.y - 20);
     }
 
+    damage(amount) {
+        super.damage(amount);
+
+        if (this.health <= 0) {
+            this.alive = false;
+
+            let text = document.getElementById('game-over');
+
+            text.style.display = 'inline';
+
+            let tPos = text.getBoundingClientRect();
+            let cPos = gameEngine.ctx.canvas.getBoundingClientRect();
+            let x = cPos.left + (cPos.width - tPos.width) / 2
+            let y = cPos.top + (cPos.height - tPos.height) / 2
+
+            text.style.position = 'absolute';
+            text.style.left = x + 'px';
+            text.style.top = y + 'px';
+        }
+    }
+
     draw() {
         this.animation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
 
@@ -392,9 +332,6 @@ class Character extends Entity {
             this.attackUPAABB.draw(ctx, 'orange');
             this.attackDownAABB.draw(ctx, 'orange');
 
-            //ctx.strokeStyle = "orange";
-            //ctx.strokeRect(this.x, this.y, this.animation.frameWidth*this.scale, this.animation.frameHeight*this.scale); //
-            //console.log('BoundingBox: ' + this.boundingBox.x + ',' + this.boundingBox.y); // Debugging.
             for (let i = 0; i < leafs.length; i++) {
                 ctx.strokeStyle = "red";
                 ctx.strokeRect(leafs[i].x, leafs[i].y, leafs[i].w, leafs[i].h);
@@ -404,67 +341,9 @@ class Character extends Entity {
             }
         }
 
-        let scaleOf = 4;
-        let range = (this.isWhirlwinding) ? world.currentScale * 1.5 : (this.isAttacking) ? world.currentScale / 2 : 0;
-        let newX = this.x;
-        let newY = this.y;
-        switch (this.animation) {
-            case this.attackLeftAnimation:
-                newX -= world.currentScale / 2;
-                break;
-            case this.attackRightAnimation:
-                newX += world.currentScale / 10;
-                break;
-            case this.attackDownAnimation:
-                newY -= world.currentScale / 5;
-                break;
-            case this.attackUpAnimation:
-                newY += world.currentScale / 5;
-                break;
-            case this.whirlwindAttackAnimation:
-                newX -= world.currentScale;
-                newY -= world.currentScale;
-            default:
-                break;
-        }//Sorcerer
-
-        if (new Date().getTime() - damageST.time > 500) {
-            damageST.damaged = 0;
-            damageST.exp = 0;
-        } //hide
-
         super.draw();
 
         drawHPBar();
-    }
-
-    getNewXY() {
-        let newX = this.x;
-        let newY = this.y;
-        switch (this.animation) {
-            case this.attackLeftAnimation:
-                newX -= world.currentScale / 2;
-                break;
-            case this.attackRightAnimation:
-                newX += world.currentScale / 10;
-                break;
-            case this.attackDownAnimation:
-                newY -= world.currentScale / 5;
-                break;
-            case this.attackUpAnimation:
-                newY += world.currentScale / 5;
-                break;
-            case this.whirlwindAttackAnimation:
-                newX -= world.currentScale;
-                newY -= world.currentScale;
-            default:
-                break;
-        }
-
-        return {
-            x: newX,
-            y: newY
-        }
     }
 }
 
