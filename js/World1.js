@@ -242,52 +242,30 @@ function World1() {
             let viewport = this.game.viewport;
             let screenSize = this.game.screenSize;
 
-            let vx = viewport.x;
-            let vy = viewport.y;
-            let mx = vx + screenSize.width;
-            let my = vy + screenSize.height;
+            let xMin = Math.floor(viewport.x / currentScale);
+            let xMax = Math.floor((viewport.x + screenSize.width) / currentScale);
+            let yMin = Math.floor(viewport.y / currentScale);
+            let yMax = Math.floor((viewport.y + screenSize.height) / currentScale);
 
             let spriteX = 0;
             let spriteY = 0;
-            let count = 0;
-            let torchCounter = 0;
-            let x = this.x;
-            let y = this.y;
-            let total = 0;
+            let x = 0;
+            let y = 0;
 
             // Loop to generate each tile
-            for (let i = 0; i < slimeDungeonLevelOne.length; i++) {
-                spriteX = (slimeDungeonLevelOne[i] - 1) * 48; // 32 is the number of pixels per sprite
-                if (this.isInViewPort(x, y, x + this.dw, y + this.dh)) {
-                    total += 1;
+            // for (let i = 0; i < slimeDungeonLevelOne.length; i++) {
+            for (let ly = Math.max(yMin, 0); ly <= yMax; ly++) {
+                for (let lx = Math.max(xMin, 0); lx <= xMax; lx++) {
+                    let i = ly * currentWTiles + lx;
+                    if (slimeDungeonLevelOne[i] == 0) continue;
+
+                    x = lx * currentScale;
+                    y = ly * currentScale;
+                    spriteX = (slimeDungeonLevelOne[i] - 1) * 48; // 32 is the number of pixels per sprite
+
                     ctx.drawImage(this.spritesheet, spriteX, spriteY, this.sw, this.sh, x, y, this.dw, this.dh);
                 }
-                count++;
-                if (count >= currentWTiles) // change the value based on how many tiles you will draw. (88 atm)
-                {
-                    x = this.x;
-                    y += currentScale;
-                    count = 0;
-                } else {
-                    x += currentScale;
-                }
             }
-
-            console.log(total);
-        }
-
-        isInViewPort(x, y, mx, my) {
-            let viewport = this.game.viewport;
-            let screenSize = this.game.screenSize;
-
-            if (viewport.x < mx
-                && viewport.x + screenSize.width > x
-                && viewport.y < my
-                && viewport.y + screenSize.height > y) {
-                return true;
-            }
-
-            return false;
         }
     }
 
