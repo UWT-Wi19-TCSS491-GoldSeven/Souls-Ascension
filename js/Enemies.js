@@ -1,17 +1,34 @@
 class HostileEntity extends LivingEntity {
     constructor(x, y) {
         super(gameEngine, x, y);
+        this.origin = {
+            x: null,
+            y: null
+        }
+        this.destination = {
+            x: null,
+            y: null
+        }
         this.visited = new Array();
     }
 
-    checkSight(aabbA, aabbB) {
+    checkSight(aabbB) {
+        let aabbA = this.boundingBox;
+        if (aabbA == null || aabbA == undefined) return;
+
         let start = aabbA.origin.x < aabbB.origin.x ? aabbA : aabbB;
         let end = aabbA.origin.x < aabbB.origin.x ? aabbB : aabbA;
 
         // Starting tile x and y tile indices
-        let six = Math.floor(start.origin.x / world1.currentScale), siy = Math.floor(start.origin.y / world1.currentScale);
+        let six = Math.floor(start.origin.x / world1.currentScale), siy = Math.floor((start.origin.y + (start.height / 2)) / world1.currentScale);
         // Ending tile x and y indices
-        let eix = Math.floor(end.origin.x / world1.currentScale), eiy = Math.floor(end.origin.y / world1.currentScale);
+        let eix = Math.floor(end.origin.x / world1.currentScale), eiy = Math.floor((end.origin.y + (start.height / 2))  / world1.currentScale);
+
+        this.origin.x = six;
+        this.origin.y = siy;
+
+        this.destination.x = eix;
+        this.destination.y = eiy;
 
         if (six != eix || eix != eiy) {
             if (six == eix) {
@@ -46,7 +63,7 @@ class HostileEntity extends LivingEntity {
                 }
             } else {
                 let uy = Math.floor(((start.origin.y - end.origin.y) / (start.origin.x - end.origin.x)) * world1.currentScale);
-                let y = start.origin.y;
+                let y = start.origin.y + (start.height / 2);
                 let ny = y + uy;
                 let ciy, miy, niy;
 
@@ -109,14 +126,20 @@ class HostileEntity extends LivingEntity {
     draw() {
         super.draw();
 
-        if (this.game.debug) {
+        if (this.game.debug && this.visited.length > 0) {
             let ctx = this.game.ctx;
 
             for (let i in this.visited) {
                 let tile = this.visited[i];
                 ctx.save();
-                ctx.fillStyle = 'rgba(255, 0, 0, 0.2)';
+                ctx.fillStyle = 'rgba(0, 255, 0, 0.2)';
+                ctx.fillRect(this.origin.x * world1.currentScale, this.origin.y * world1.currentScale,
+                    world1.currentScale, world1.currentScale);
+                ctx.fillStyle = 'rgba(0, 0, 255, 0.2)';
                 ctx.fillRect(tile.x * world1.currentScale, tile.y * world1.currentScale,
+                    world1.currentScale, world1.currentScale);
+                ctx.fillStyle = 'rgba(255, 0, 0, 0.2)';
+                ctx.fillRect(this.destination.x * world1.currentScale, this.destination.y * world1.currentScale,
                     world1.currentScale, world1.currentScale);
                 ctx.restore();
             }
@@ -268,7 +291,7 @@ class Slime extends HostileEntity {
 
         super.update();
 
-        if (distance > this.detectRange || !this.checkSight(this.boundingBox, character.boundingBox)) {
+        if (distance > this.detectRange || !this.checkSight(character.boundingBox)) {
             return;
         }
 
