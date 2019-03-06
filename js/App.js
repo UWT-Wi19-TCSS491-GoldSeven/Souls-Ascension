@@ -448,8 +448,24 @@ class Torch extends Entity {
     }
 
     draw() {
-        this.flameAnimation.drawFrame(gameEngine.clockTick, ctx, this.x, this.y);
+        if (isInViewPort(this.x, this.y, this.x + this.flameAnimation.frameWidth, this.y + this.flameAnimation.frameHeight)) {
+            this.flameAnimation.drawFrame(gameEngine.clockTick, ctx, this.x, this.y);
+        }
     }
+}
+
+function isInViewPort(x, y, mx, my) {
+    let viewport = gameEngine.viewport;
+    let screenSize = gameEngine.screenSize;
+
+    if (viewport.x < mx
+        && viewport.x + screenSize.width > x
+        && viewport.y < my
+        && viewport.y + screenSize.height > y) {
+        return true;
+    }
+
+    return false;
 }
 
 /*----------------------------------------------Torch End---------------------------------------------------------------------------------------------------- */

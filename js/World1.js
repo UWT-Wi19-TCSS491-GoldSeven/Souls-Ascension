@@ -252,8 +252,6 @@ function World1() {
             let x = 0;
             let y = 0;
 
-            // Loop to generate each tile
-            // for (let i = 0; i < slimeDungeonLevelOne.length; i++) {
             for (let ly = Math.max(yMin, 0); ly <= yMax; ly++) {
                 for (let lx = Math.max(xMin, 0); lx <= xMax; lx++) {
                     let i = ly * currentWTiles + lx;
