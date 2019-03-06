@@ -1,17 +1,8 @@
 /*----------------------------------------------Character Start---------------------------------------------------------------------------------------------- */
-// The entity's viewport is determined by its BoundingBox object.
-let inventory = {
-    HealingPotion: 1,
-    SilverKey: 2,
-    GoldKey: 0
-};
-
-let world;
 
 class Character extends LivingEntity {
-    constructor(x, y, theCurrentWorld) {
+    constructor(x, y) {
         super(gameEngine, x, y);
-        world = theCurrentWorld;
         this.boundingBox = new BoundingBox(this.x, this.y, 20, 40, 10);
         this.standAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/characterIdleAnimation.png"), 0, 0, 42, 42, 0.08, 4, true, false);
         this.walkRightAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/characterRightAnimation.png"), 0, 0, 42, 42, 0.15, 6, true, false);
@@ -57,7 +48,11 @@ class Character extends LivingEntity {
 
         this.updateAABBs();
 
-        this.inventory = inventory;
+        this.inventory = {
+            HealingPotion: 1,
+            SilverKey: 2,
+            GoldKey: 0
+        };
         this.level = 1;
         this.soul = 1;
         this.travelSpeed = 2;
@@ -99,16 +94,16 @@ class Character extends LivingEntity {
         if (this.game.down && this.game.right) this.isMovingDownRight = true;
 
         // TODO should look into refactoring this for performance improvement
-        if (this.game.left && !Collision.hasCollidedWithWalls(this.x + 8 - this.travelSpeed, world.currentScale - 5 + this.y, 25, true)) {
+        if (this.game.left && !Collision.hasCollidedWithWalls(this.x + 8 - this.travelSpeed, world1.currentScale - 5 + this.y, 25, true)) {
             this.isMovingLeft = true
         }
-        if (this.game.right && !Collision.hasCollidedWithWalls(this.x + 8 + this.travelSpeed, world.currentScale - 5 + this.y, 25, true)) {
+        if (this.game.right && !Collision.hasCollidedWithWalls(this.x + 8 + this.travelSpeed, world1.currentScale - 5 + this.y, 25, true)) {
             this.isMovingRight = true
         }
         if (this.game.up && !Collision.hasCollidedWithWalls(this.x + 8, 25 + this.y - this.travelSpeed, 25, true)) {
             this.isMovingUp = true;
         }
-        if (this.game.down && !Collision.hasCollidedWithWalls(this.x + 8, world.currentScale + this.y, 25, true)) {
+        if (this.game.down && !Collision.hasCollidedWithWalls(this.x + 8, world1.currentScale + this.y, 25, true)) {
             this.isMovingDown = true;
         }
 

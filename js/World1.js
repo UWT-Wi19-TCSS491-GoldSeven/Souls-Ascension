@@ -224,6 +224,7 @@ function World1() {
     /*----------------------------------------------Background for level 1 Start--------------------------------------------------------------------------------- */
     let currentScale = 48; // number of pixels
     let currentWTiles = 88; // number of tiles width wise on the map
+    let currentHTiles = worldGeneration.length / currentWTiles;
 
 
     class Background extends Entity {
@@ -270,5 +271,13 @@ function World1() {
     /*----------------------------------------------Background for level 1 End----------------------------------------------------------------------------------- */
 
 
-    return {slimeDungeonLevelOne, slimeDungeonLevelOneEntities, currentWTiles, currentScale, Background};
+    return {slimeDungeonLevelOne, slimeDungeonLevelOneEntities, currentWTiles, currentHTiles, currentScale, Background};
+}
+
+function getIndex(xIndex, yIndex) {
+    return yIndex * world1.currentWTiles + xIndex;
+}
+
+function isImpassible(index) {
+    return world1.slimeDungeonLevelOne[index] > 0 && world1.slimeDungeonLevelOne[index] < 16;
 }

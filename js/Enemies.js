@@ -1,8 +1,137 @@
-/*----------------------------------------------SlimeBehemoth Start------------------------------------------------------------------------------------------ */
-
-class SlimeBehemoth extends LivingEntity {
+class HostileEntity extends LivingEntity {
     constructor(x, y) {
         super(gameEngine, x, y);
+        this.visited = new Array();
+    }
+
+    checkSight(aabbA, aabbB) {
+        let start = aabbA.origin.x < aabbB.origin.x ? aabbA : aabbB;
+        let end = aabbA.origin.x < aabbB.origin.x ? aabbB : aabbA;
+
+        // Starting tile x and y tile indices
+        let six = Math.floor(start.origin.x / world1.currentScale), siy = Math.floor(start.origin.y / world1.currentScale);
+        // Ending tile x and y indices
+        let eix = Math.floor(end.origin.x / world1.currentScale), eiy = Math.floor(end.origin.y / world1.currentScale);
+
+        if (six != eix || eix != eiy) {
+            if (six == eix) {
+                // Organize tile y indices
+                if (siy < eiy) {
+                    siy += 1;
+                } else {
+                    let tmp = siy;
+                    siy = eiy;
+                    eiy = tmp - 1;
+                }
+
+                // All tiles are in one column. Skip the starting tile.
+                for (let cy = siy; cy <= eiy; cy++) {
+                    if (this.game.debug) this.visited.push({
+                        x: six,
+                        y: cy
+                    });
+
+                    if (isImpassible(getIndex(six, cy)))
+                        return false;
+                }
+            } else if (siy == eiy) {
+                for (let cx = six + 1; cx <= eix; cx++) {
+                    if (this.game.debug) this.visited.push({
+                        x: cx,
+                        y: siy
+                    });
+
+                    if (isImpassible(getIndex(cx, siy)))
+                        return false;
+                }
+            } else {
+                let uy = Math.floor(((start.origin.y - end.origin.y) / (start.origin.x - end.origin.x)) * world1.currentScale);
+                let y = start.origin.y;
+                let ny = y + uy;
+                let ciy, miy, niy;
+
+                for (let cx = six; cx <= eix; cx++) {
+                    ciy = Math.floor(y / world1.currentScale);
+                    miy = (ny - (ny % world1.currentScale)) / world1.currentScale;
+                    niy = Math.floor(ny / world1.currentScale);
+
+                    if (uy >= 0) {
+                        for (let cy = ciy; cy <= niy; cy++) {
+                            if (cy <= miy) {
+                                if (this.game.debug) this.visited.push({
+                                    x: cx,
+                                    y: cy
+                                });
+
+                                if (isImpassible(getIndex(cx, cy))) return false;
+                            }
+
+                            if (cy >= miy) {
+                                if (this.game.debug) this.visited.push({
+                                    x: cx + 1,
+                                    y: cy
+                                });
+
+                                if (isImpassible(getIndex(cx + 1, cy))) return false;
+                            }
+                        }
+                    } else {
+                        for (let cy = ciy; cy >= niy; cy--) {
+                            if (cy <= miy) {
+                                if (this.game.debug) this.visited.push({
+                                    x: cx,
+                                    y: cy
+                                });
+
+                                if (isImpassible(getIndex(cx, cy))) return false;
+                            }
+
+                            if (cy >= miy) {
+                                if (this.game.debug) this.visited.push({
+                                    x: cx + 1,
+                                    y: cy
+                                });
+
+                                if (isImpassible(getIndex(cx + 1, cy))) return false;
+                            }
+                        }
+                    }
+
+                    y = ny;
+                    ny = y + uy;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    draw() {
+        super.draw();
+
+        if (this.game.debug) {
+            let ctx = this.game.ctx;
+
+            for (let i in this.visited) {
+                let tile = this.visited[i];
+                ctx.save();
+                ctx.fillStyle = 'rgba(255, 0, 0, 0.2)';
+                ctx.fillRect(tile.x * world1.currentScale, tile.y * world1.currentScale,
+                    world1.currentScale, world1.currentScale);
+                ctx.restore();
+            }
+
+            this.visited.length = 0;
+        }
+    }
+}
+
+
+/*----------------------------------------------SlimeBehemoth Start------------------------------------------------------------------------------------------ */
+
+class SlimeBehemoth extends HostileEntity {
+    constructor(x, y) {
+        super(x, y, false);
         this.boundingBox = new BoundingBox(x, y, 40, 60, 20, 5);
         this.slimeBehemothWalkingLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/SlimeBehemothWalkingLeft.png"), 0, 0, 80, 68, 0.1, 8, true, false);
         this.slimeBehemothWalkingRightAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/SlimeBehemothWalkingRight.png"), 0, 0, 80, 68, 0.1, 8, true, false);
@@ -80,9 +209,9 @@ class SlimeBehemoth extends LivingEntity {
 
 /*----------------------------------------------Slime Start--------------------------------------------------------------------------------------------- */
 
-class Slime extends LivingEntity {
+class Slime extends HostileEntity {
     constructor(x, y) {
-        super(gameEngine, x, y, false);
+        super(x, y);
         this.slimeEnemyWalkingLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/SlimeWalkLeft.png"), 0, 0, 80, 80, 0.1, 8, true, false);
         this.slimeEnemyWalkingRightAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/SlimeWalkRight.png"), 0, 0, 80, 80, 0.1, 8, true, false);
         this.slimeEnemyAttackLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/SlimeAttackLeft.png"), 0, 0, 80, 80, 0.1, 10, true, false);
@@ -105,6 +234,7 @@ class Slime extends LivingEntity {
         this.stopAttackRange = 300;
         this.startFollowRange = 150;
         this.stopFollowRange = 350;
+        this.detectRange = 360;
         this.maxHealth = 40;
         this.health = 40;
         this.hasDied = false;
@@ -133,6 +263,12 @@ class Slime extends LivingEntity {
                 this.destroyed = true;
             }
 
+            return;
+        }
+
+        super.update();
+
+        if (distance > this.detectRange || !this.checkSight(this.boundingBox, character.boundingBox)) {
             return;
         }
 
@@ -165,8 +301,6 @@ class Slime extends LivingEntity {
             this.x = origX;
             this.y = origY;
         }
-
-        super.update();
     }
 
     attack(xDiff, yDiff, distance, xOrigS, yOrigS) {
@@ -221,9 +355,9 @@ class Slime extends LivingEntity {
 
 /*----------------------------------------------skeleton Start---------------------------------------------------------------------------------------------- */
 
-class Skeleton extends LivingEntity {
+class Skeleton extends HostileEntity {
     constructor(x, y) {
-        super(gameEngine, x, y, false);
+        super(x, y);
         this.boundingBox = new BoundingBox(x, y, 30, 50, 10, 15);
         this.skeletonWalkingLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/SkeletonWalkLeft.png"), 0, 0, 44, 66, 0.1, 13, true, false);
         this.skeletonWalkingRightAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/SkeletonWalkRight.png"), 0, 0, 44, 66, 0.1, 13, true, false);
@@ -299,9 +433,9 @@ class Skeleton extends LivingEntity {
 
 /*----------------------------------------------Wraith Start------------------------------------------------------------------------------------------------ */
 
-class Wraith extends LivingEntity {
+class Wraith extends HostileEntity {
     constructor(x, y) {
-        super(gameEngine, x, y, false);
+        super(x, y);
         this.boundingBox = new BoundingBox(x, y, 30, 50, 25, 15);
         this.wizardWalkingLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/wizardWalkLeft.png"), 0, 0, 80, 80, 0.1, 6, true, false);
         this.wizardWalkingRightAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/wizardWalkRight.png"), 0, 0, 80, 80, 0.1, 6, true, false);
@@ -388,9 +522,9 @@ class Wraith extends LivingEntity {
 
 /*----------------------------------------------Sorcerer Start---------------------------------------------------------------------------------------- */
 
-class Sorcerer extends LivingEntity {
+class Sorcerer extends HostileEntity {
     constructor(x, y) {
-        super(gameEngine, x, y, false);
+        super(x, y);
         this.boundingBox = new BoundingBox(x, y, 20, 60, 35, 30);
         this.standingAttackAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/sorcererVillain.png"), 0, 0, 100, 100, 0.1, 10, true, false);
         this.death = null;
@@ -515,7 +649,7 @@ class Projectile extends Entity {
     }
 
     update() {
-        if (Collision.hasCollidedWithWalls(this.x, this.y, world.currentScale)) {
+        if (Collision.hasCollidedWithWalls(this.x, this.y, world1.currentScale)) {
             this.destroy();
             return;
         }
