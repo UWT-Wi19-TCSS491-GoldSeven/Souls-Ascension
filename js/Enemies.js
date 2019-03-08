@@ -20,9 +20,11 @@ class HostileEntity extends LivingEntity {
         let end = aabbA.origin.x < aabbB.origin.x ? aabbB : aabbA;
 
         // Starting tile x and y tile indices
-        let six = Math.floor(start.origin.x / world1.currentScale), siy = Math.floor((start.origin.y + (start.height / 2)) / world1.currentScale);
+        let six = Math.floor(start.origin.x / world1.currentScale),
+            siy = Math.floor((start.origin.y + (start.height / 2)) / world1.currentScale);
         // Ending tile x and y indices
-        let eix = Math.floor(end.origin.x / world1.currentScale), eiy = Math.floor((end.origin.y + (start.height / 2))  / world1.currentScale);
+        let eix = Math.floor(end.origin.x / world1.currentScale),
+            eiy = Math.floor((end.origin.y + (start.height / 2)) / world1.currentScale);
 
         this.origin.x = six;
         this.origin.y = siy;
@@ -30,93 +32,91 @@ class HostileEntity extends LivingEntity {
         this.destination.x = eix;
         this.destination.y = eiy;
 
-        if (six != eix || eix != eiy) {
-            if (six == eix) {
-                // Organize tile y indices
-                if (siy < eiy) {
-                    siy += 1;
-                } else {
-                    let tmp = siy;
-                    siy = eiy;
-                    eiy = tmp - 1;
-                }
-
-                // All tiles are in one column. Skip the starting tile.
-                for (let cy = siy; cy <= eiy; cy++) {
-                    if (this.game.debug) this.visited.push({
-                        x: six,
-                        y: cy
-                    });
-
-                    if (isImpassible(getIndex(six, cy)))
-                        return false;
-                }
-            } else if (siy == eiy) {
-                for (let cx = six + 1; cx <= eix; cx++) {
-                    if (this.game.debug) this.visited.push({
-                        x: cx,
-                        y: siy
-                    });
-
-                    if (isImpassible(getIndex(cx, siy)))
-                        return false;
-                }
+        if (six == eix) {
+            // Organize tile y indices
+            if (siy < eiy) {
+                siy += 1;
             } else {
-                let uy = Math.floor(((start.origin.y - end.origin.y) / (start.origin.x - end.origin.x)) * world1.currentScale);
-                let y = start.origin.y + (start.height / 2);
-                let ny = y + uy;
-                let ciy, miy, niy;
+                let tmp = siy;
+                siy = eiy;
+                eiy = tmp - 1;
+            }
 
-                for (let cx = six; cx <= eix; cx++) {
-                    ciy = Math.floor(y / world1.currentScale);
-                    miy = (ny - (ny % world1.currentScale)) / world1.currentScale;
-                    niy = Math.floor(ny / world1.currentScale);
+            // All tiles are in one column. Skip the starting tile.
+            for (let cy = siy; cy <= eiy; cy++) {
+                if (this.game.debug) this.visited.push({
+                    x: six,
+                    y: cy
+                });
 
-                    if (uy >= 0) {
-                        for (let cy = ciy; cy <= niy; cy++) {
-                            if (cy <= miy) {
-                                if (this.game.debug) this.visited.push({
-                                    x: cx,
-                                    y: cy
-                                });
+                if (isImpassible(getIndex(six, cy)))
+                    return false;
+            }
+        } else if (siy == eiy) {
+            for (let cx = six + 1; cx <= eix; cx++) {
+                if (this.game.debug) this.visited.push({
+                    x: cx,
+                    y: siy
+                });
 
-                                if (isImpassible(getIndex(cx, cy))) return false;
-                            }
+                if (isImpassible(getIndex(cx, siy)))
+                    return false;
+            }
+        } else {
+            let uy = Math.floor(((start.origin.y - end.origin.y) / (start.origin.x - end.origin.x)) * world1.currentScale);
+            let y = start.origin.y + (start.height / 2);
+            let ny = y + uy;
+            let ciy, miy, niy;
 
-                            if (cy >= miy) {
-                                if (this.game.debug) this.visited.push({
-                                    x: cx + 1,
-                                    y: cy
-                                });
+            for (let cx = six; cx <= eix; cx++) {
+                ciy = Math.floor(y / world1.currentScale);
+                miy = (ny - (ny % world1.currentScale)) / world1.currentScale;
+                niy = Math.floor(ny / world1.currentScale);
 
-                                if (isImpassible(getIndex(cx + 1, cy))) return false;
-                            }
+                if (uy >= 0) {
+                    for (let cy = ciy; cy <= niy; cy++) {
+                        if (cy <= miy) {
+                            if (this.game.debug) this.visited.push({
+                                x: cx,
+                                y: cy
+                            });
+
+                            if (isImpassible(getIndex(cx, cy))) return false;
                         }
-                    } else {
-                        for (let cy = ciy; cy >= niy; cy--) {
-                            if (cy <= miy) {
-                                if (this.game.debug) this.visited.push({
-                                    x: cx,
-                                    y: cy
-                                });
 
-                                if (isImpassible(getIndex(cx, cy))) return false;
-                            }
+                        if (cy >= miy) {
+                            if (this.game.debug) this.visited.push({
+                                x: cx + 1,
+                                y: cy
+                            });
 
-                            if (cy >= miy) {
-                                if (this.game.debug) this.visited.push({
-                                    x: cx + 1,
-                                    y: cy
-                                });
-
-                                if (isImpassible(getIndex(cx + 1, cy))) return false;
-                            }
+                            if (isImpassible(getIndex(cx + 1, cy))) return false;
                         }
                     }
+                } else {
+                    for (let cy = ciy; cy >= niy; cy--) {
+                        if (cy <= miy) {
+                            if (this.game.debug) this.visited.push({
+                                x: cx,
+                                y: cy
+                            });
 
-                    y = ny;
-                    ny = y + uy;
+                            if (isImpassible(getIndex(cx, cy))) return false;
+                        }
+
+                        if (cy >= miy) {
+                            if (this.game.debug) this.visited.push({
+                                x: cx + 1,
+                                y: cy
+                            });
+
+                            if (isImpassible(getIndex(cx + 1, cy))) return false;
+                        }
+                    }
                 }
+
+                y = ny;
+                ny = y + uy;
             }
         }
 
