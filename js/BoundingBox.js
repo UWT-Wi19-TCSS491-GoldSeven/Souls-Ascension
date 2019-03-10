@@ -91,7 +91,6 @@ class BoundingBox {
 
     draw(ctx, style = 'green') {
         ctx.save();
-        // ctx.resetTransform();
         ctx.strokeStyle = style;
         ctx.beginPath();
         ctx.moveTo(this.left, this.top);
@@ -103,3 +102,5 @@ class BoundingBox {
         ctx.restore();
     }
 }
+
+export default BoundingBox;

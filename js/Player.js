@@ -1,23 +1,27 @@
-/*----------------------------------------------Character Start---------------------------------------------------------------------------------------------- */
+import Animation from './Animation.js'
+import BoundingBox from './BoundingBox.js'
+import Entity from './Entity.js'
+import LivingEntity from './LivingEntity.js'
+import TextIndicator from "./ui/TextIndicator.js";
 
-class Character extends LivingEntity {
-    constructor(x, y) {
-        super(gameEngine, x, y);
+class Player extends LivingEntity {
+    constructor(game, x, y) {
+        super(game, x, y);
         this.boundingBox = new BoundingBox(this.x, this.y, 20, 40, 10);
-        this.standAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/characterIdleAnimation.png"), 0, 0, 42, 42, 0.08, 4, true, false);
-        this.walkRightAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/characterRightAnimation.png"), 0, 0, 42, 42, 0.15, 6, true, false);
-        this.walkUpLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/spritesheet.png"), 32, 32, 33, 32, 1.04, 1, true, false);
-        this.walkLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/characterLeftAnimation.png"), 0, 0, 42, 42, 0.15, 6, true, false);
-        this.walkUpRightAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/spritesheet.png"), 32, 64, 33, 32, 1.04, 1, true, false);
-        this.walkUpAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/characterBackwardRun.png"), 0, 0, 42, 42, 0.15, 5, true, false);
-        this.walkDownLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/spritesheet.png"), 32, 96, 32, 32, 1.04, 1, true, false);
-        this.walkDownAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/CharacterForwardRun.png"), 0, 0, 42, 42, 0.15, 5, true, false);
-        this.walkDownRightAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/spritesheet.png"), 32, 128, 32, 32, 1.04, 1, true, false);
-        this.attackUpAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/characterUpAttack.png"), 0, 0, 42, 42, 0.04, 3, false, false);
-        this.attackDownAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/characterDownAttack.png"), 0, 0, 42, 42, 0.04, 3, false, false);
-        this.attackLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/characterLeftAttack.png"), 0, 0, 42, 42, 0.04, 3, false, false);
-        this.attackRightAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/characterRightAttack.png"), 0, 0, 42, 42, 0.04, 3, false, false);
-        this.whirlwindAttackAnimation = new Animation(ASSET_MANAGER.getAsset("./assets/sprites/characterWhirlWindAttackAnimation.png"), 0, 0, 42, 42, 0.04, 4, false, false);
+        this.standAnimation = new Animation(game.assetManager.getAsset("./assets/sprites/characterIdleAnimation.png"), 0, 0, 42, 42, 0.08, 4, true, false);
+        this.walkRightAnimation = new Animation(game.assetManager.getAsset("./assets/sprites/characterRightAnimation.png"), 0, 0, 42, 42, 0.15, 6, true, false);
+        // this.walkUpLeftAnimation = new Animation(game.assetManager.getAsset("./assets/sprites/spritesheet.png"), 32, 32, 33, 32, 1.04, 1, true, false);
+        this.walkLeftAnimation = new Animation(game.assetManager.getAsset("./assets/sprites/characterLeftAnimation.png"), 0, 0, 42, 42, 0.15, 6, true, false);
+        // this.walkUpRightAnimation = new Animation(game.assetManager.getAsset("./assets/sprites/spritesheet.png"), 32, 64, 33, 32, 1.04, 1, true, false);
+        this.walkUpAnimation = new Animation(game.assetManager.getAsset("./assets/sprites/characterBackwardRun.png"), 0, 0, 42, 42, 0.15, 5, true, false);
+        // this.walkDownLeftAnimation = new Animation(game.assetManager.getAsset("./assets/sprites/spritesheet.png"), 32, 96, 32, 32, 1.04, 1, true, false);
+        this.walkDownAnimation = new Animation(game.assetManager.getAsset("./assets/sprites/CharacterForwardRun.png"), 0, 0, 42, 42, 0.15, 5, true, false);
+        // this.walkDownRightAnimation = new Animation(game.assetManager.getAsset("./assets/sprites/spritesheet.png"), 32, 128, 32, 32, 1.04, 1, true, false);
+        this.attackUpAnimation = new Animation(game.assetManager.getAsset("./assets/sprites/characterUpAttack.png"), 0, 0, 42, 42, 0.04, 3, false, false);
+        this.attackDownAnimation = new Animation(game.assetManager.getAsset("./assets/sprites/characterDownAttack.png"), 0, 0, 42, 42, 0.04, 3, false, false);
+        this.attackLeftAnimation = new Animation(game.assetManager.getAsset("./assets/sprites/characterLeftAttack.png"), 0, 0, 42, 42, 0.04, 3, false, false);
+        this.attackRightAnimation = new Animation(game.assetManager.getAsset("./assets/sprites/characterRightAttack.png"), 0, 0, 42, 42, 0.04, 3, false, false);
+        this.whirlwindAttackAnimation = new Animation(game.assetManager.getAsset("./assets/sprites/characterWhirlWindAttackAnimation.png"), 0, 0, 42, 42, 0.04, 4, false, false);
         this.animation = this.standAnimation; // initial animation.
 
         this.isAttacking = false;
@@ -62,7 +66,7 @@ class Character extends LivingEntity {
         this.levelSoul = this.soul * 150;
         this.currentExp = 0;
         this.levelExp = this.level * 100;
-        this.scale = 1; // set to 1 if the sprite dimensions are the exact size that should be rendered.
+        this.textIndicator = new TextIndicator(game, x, y);
     }
 
     updateViewport() {
@@ -82,29 +86,25 @@ class Character extends LivingEntity {
         this.isMovingUpRight = false;
         this.isMovingDownLeft = false;
         this.isMovingDownRight = false;
-        if (this.game.whirlwind) {
-            this.isWhirlwinding = true;
-        }
-        if (this.game.attack) {
-            this.isAttacking = true;
-        }
+
         if (this.game.up && this.game.left) this.isMovingUpLeft = true;
         if (this.game.up && this.game.right) this.isMovingUpRight = true;
         if (this.game.down && this.game.left) this.isMovingDownLeft = true;
         if (this.game.down && this.game.right) this.isMovingDownRight = true;
 
+
         // TODO should look into refactoring this for performance improvement
-        if (this.game.left && !Collision.hasCollidedWithWalls(this.x + 8 - this.travelSpeed, world1.currentScale - 5 + this.y, 25, true)) {
+        if (this.game.left && !this.game.levelManager.level.hasCollidedWithWalls(this)) {
             this.isMovingLeft = true
         }
-        if (this.game.right && !Collision.hasCollidedWithWalls(this.x + 8 + this.travelSpeed, world1.currentScale - 5 + this.y, 25, true)) {
+        if (this.game.right && !this.game.levelManager.level.hasCollidedWithWalls(this)) {
             this.isMovingRight = true
         }
-        if (this.game.up && !Collision.hasCollidedWithWalls(this.x + 8, 25 + this.y - this.travelSpeed, 25, true)) {
+        if (this.game.up && !this.game.levelManager.level.hasCollidedWithWalls(this)) {
             this.isMovingUp = true;
         }
-        if (this.game.down && !Collision.hasCollidedWithWalls(this.x + 8, world1.currentScale + this.y, 25, true)) {
-            this.isMovingDown = true;
+        if (this.game.down) {
+            if (!this.game.levelManager.level.hasCollidedWithWalls(this)) this.isMovingDown = true;
         }
 
         if (this.isMovingUp) {
@@ -119,6 +119,9 @@ class Character extends LivingEntity {
             this.x += this.travelSpeed; // Moves the entity.
         }
 
+        if (this.game.whirlwind) this.isWhirlwinding = true;
+        if (this.game.attack) this.isAttacking = true;
+
         // Update player bounding box position
         super.update();
         // Update player attack bounding box positions
@@ -132,29 +135,32 @@ class Character extends LivingEntity {
                 this.isAttacking = false;
                 this.attackCooldown = this.attackCooldownTime;
             }
+
             if (this.attackLeftAnimation.isDone()) {
                 this.attackLeftAnimation.elapsedTime = 0
                 this.isAttacking = false;
                 this.attackCooldown = this.attackCooldownTime;
             }
+
             if (this.attackUpAnimation.isDone()) {
                 this.attackUpAnimation.elapsedTime = 0
                 this.isAttacking = false;
                 this.attackCooldown = this.attackCooldownTime;
             }
+
             if (this.attackDownAnimation.isDone()) {
                 this.attackDownAnimation.elapsedTime = 0
                 this.isAttacking = false;
                 this.attackCooldown = this.attackCooldownTime;
             }
         }
-        if (this.isWhirlwinding) {
-            if (this.whirlwindAttackAnimation.isDone()) {
-                this.whirlwindAttackAnimation.elapsedTime = 0
-                this.isWhirlwinding = false;
-                this.whirlwindCooldown = this.whirlwindCooldownTime;
-            }
+
+        if (this.isWhirlwinding && this.whirlwindAttackAnimation.isDone()) {
+            this.whirlwindAttackAnimation.elapsedTime = 0
+            this.isWhirlwinding = false;
+            this.whirlwindCooldown = this.whirlwindCooldownTime;
         }
+
         if (this.game.heal && this.inventory.HealingPotion > 0) {
             this.health = this.maxHealth;
             this.inventory.HealingPotion -= 1;
@@ -222,9 +228,9 @@ class Character extends LivingEntity {
         }
 
         // Hide the damage/exp text popup
-        if (new Date().getTime() - damageST.time > 500) {
-            damageST.damaged = 0;
-            damageST.exp = 0;
+        if (new Date().getTime() - this.textIndicator.time > 500) {
+            this.textIndicator.damaged = 0;
+            this.textIndicator.exp = 0;
         }
 
         // Iterate through all entities to check if anyone has collided with another, and take appropriate action.
@@ -248,11 +254,10 @@ class Character extends LivingEntity {
 
                         if (damage > 0) {
                             other.damage(damage);
-                            damageST.x = other.x;
-                            damageST.y = other.y;
-                            damageST.damaged = damage;
-                            damageST.time = new Date().getTime();
-                            bug = 0;
+                            this.textIndicator.x = other.x;
+                            this.textIndicator.y = other.y;
+                            this.textIndicator.damaged = damage;
+                            this.textIndicator.time = new Date().getTime();
                         }
 
                         if (other.health <= 0 || other.health == null) {
@@ -266,7 +271,7 @@ class Character extends LivingEntity {
                                 }
 
                                 this.currentExp += (this.level + 1) * 20; // may change the formular later
-                                damageST.exp = (this.level + 1) * 20;
+                                this.textIndicator.exp = (this.level + 1) * 20;
                             }
                         }
                     }
@@ -306,9 +311,9 @@ class Character extends LivingEntity {
             text.style.display = 'inline';
 
             let tPos = text.getBoundingClientRect();
-            let cPos = gameEngine.ctx.canvas.getBoundingClientRect();
-            let x = cPos.left + (cPos.width - tPos.width) / 2
-            let y = cPos.top + (cPos.height - tPos.height) / 2
+            let cPos =  this.game.ctx.canvas.getBoundingClientRect();
+            let x = cPos.left + (cPos.width - tPos.width) / 2;
+            let y = cPos.top + (cPos.height - tPos.height) / 2;
 
             text.style.position = 'absolute';
             text.style.left = x + 'px';
@@ -316,30 +321,27 @@ class Character extends LivingEntity {
         }
     }
 
-    draw() {
+    draw(ctx) {
         this.animation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
+        super.draw(ctx);
+        this.textIndicator.draw(ctx);
+        this.drawHPBar(ctx);
+    }
 
-        if (this.game.debug) {
-            this.whirlwindAABB.draw(ctx, 'red');
-
-            this.attackLeftAABB.draw(ctx, 'orange');
-            this.attackRightAABB.draw(ctx, 'orange');
-            this.attackUPAABB.draw(ctx, 'orange');
-            this.attackDownAABB.draw(ctx, 'orange');
-
-            for (let i = 0; i < leafs.length; i++) {
-                ctx.strokeStyle = "red";
-                ctx.strokeRect(leafs[i].x, leafs[i].y, leafs[i].w, leafs[i].h);
-                ctx.strokeStyle = "green";
-                for (let j = 0; j < leafs[i].walls.length; j++)
-                    ctx.strokeRect(leafs[i].walls[j].x, leafs[i].walls[j].y, 48, 48);
-            }
-        }
-
-        super.draw();
-
-        drawHPBar();
+    drawHPBar(ctx) {
+        ctx.strokeStyle = "#b00642";
+        ctx.strokeRect(this.x - 279, this.y - 330, 100, 10);
+        ctx.fillStyle = "#9a065f";
+        ctx.fillRect(this.x - 279, this.y - 329, 100 * this.health / this.maxHealth, 8);
+        ctx.strokeStyle = "#0FF";
+        ctx.strokeRect(this.x - 280, this.y - 315, 100, 10);
+        ctx.fillStyle = "blue";
+        ctx.fillRect(this.x - 280, this.y - 314, 100 * this.currentExp / this.levelExp, 8);
+        ctx.strokeStyle = "#0CF";
+        ctx.strokeRect(this.x - 280, this.y - 300, 100, 10);
+        ctx.fillStyle = "blue";
+        ctx.fillRect(this.x - 280, this.y - 299, 100 * this.currentSoul / this.levelSoul, 8);
     }
 }
 
-/*----------------------------------------------Character End---------------------------------------------------------------------------------------------- */
+export default Player;

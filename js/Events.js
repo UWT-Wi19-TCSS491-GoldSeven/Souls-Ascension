@@ -2,7 +2,7 @@
  * Put all key event listeners or button event listeners here.
  * Author: Sam Brendel
  */
-function Events(engine) {
+function startInput(engine) {
     window.addEventListener('keydown', function (e) {
         switch (e.key) {
             case '`':
@@ -103,3 +103,5 @@ function Events(engine) {
         else if (e.button == 2) engine.whirlwind = false;
     })
 }
+
+export default { startInput }

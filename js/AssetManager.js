@@ -47,3 +47,5 @@ class AssetManager {
         return this.cache[key];
     }
 }
+
+export default AssetManager;

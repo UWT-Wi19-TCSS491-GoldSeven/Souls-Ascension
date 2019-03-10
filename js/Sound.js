@@ -1,7 +1,3 @@
-/*
- * Author: Sam Brendel
- */
-
 /**
  * An object to control sound effects.
  * @param {*} sourceFileName
@@ -58,3 +54,5 @@ class Sound {
         }
     }
 }
+
+export default Sound;
