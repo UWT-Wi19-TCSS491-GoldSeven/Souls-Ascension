@@ -50,7 +50,7 @@ function Events(engine) {
                 engine.settings.audio.muted = muted;
                 break;
             case 'H':
-            case 'H':
+            case 'h':
                 engine.heal = true;
             default:
                 break;

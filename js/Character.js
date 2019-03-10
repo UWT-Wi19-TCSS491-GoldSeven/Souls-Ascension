@@ -40,6 +40,9 @@ class Character extends LivingEntity {
         this.attackDownAABB = new BoundingBox(0, 0, 20, 40, 10);
         this.attackUPAABB = new BoundingBox(0, 0, 20, 40, 10);
 
+        this.direction = null;
+        this.facing = null;
+
         this.whirlwindDamage = 30;
         this.whirlwindCooldown = 0;
         this.whirlwindCooldownTime = 200;
@@ -96,15 +99,23 @@ class Character extends LivingEntity {
         // TODO should look into refactoring this for performance improvement
         if (this.game.left && !Collision.hasCollidedWithWalls(this.x + 8 - this.travelSpeed, world1.currentScale - 5 + this.y, 25, true)) {
             this.isMovingLeft = true
+            this.direction = "left";
+            this.facing = this.getIDLE("left");
         }
         if (this.game.right && !Collision.hasCollidedWithWalls(this.x + 8 + this.travelSpeed, world1.currentScale - 5 + this.y, 25, true)) {
-            this.isMovingRight = true
+            this.isMovingRight = true;
+            this.direction = "right";
+            this.facing = this.getIDLE("right");
         }
         if (this.game.up && !Collision.hasCollidedWithWalls(this.x + 8, 25 + this.y - this.travelSpeed, 25, true)) {
             this.isMovingUp = true;
+            this.direction = "up";
+            this.facing = this.getIDLE("up");
         }
         if (this.game.down && !Collision.hasCollidedWithWalls(this.x + 8, world1.currentScale + this.y, 25, true)) {
             this.isMovingDown = true;
+            this.direction = "down";
+            this.facing = this.getIDLE("down");
         }
 
         if (this.isMovingUp) {
@@ -165,13 +176,13 @@ class Character extends LivingEntity {
         this.animation = this.standAnimation;
 
         if (this.isAttacking && this.attackCooldown == 0) {
-            if (this.isMovingLeft) {
+            if (this.isMovingLeft || this.direction === "left") {
                 this.animation = this.attackLeftAnimation;
                 this.attackAABB = this.attackLeftAABB;
-            } else if (this.isMovingRight) {
+            } else if (this.isMovingRight || this.direction === "right") {
                 this.animation = this.attackRightAnimation;
                 this.attackAABB = this.attackRightAABB;
-            } else if (this.isMovingUp) {
+            } else if (this.isMovingUp || this.direction === "up") {
                 this.animation = this.attackUpAnimation;
                 this.attackAABB = this.attackUPAABB;
             } else {
@@ -286,6 +297,12 @@ class Character extends LivingEntity {
             this.attackAABB = null;
         }
     }
+    getIDLE(direction) {
+        if (direction === "left") return ASSET_MANAGER.getAsset("./assets/sprites/CharacterLeftIdle.png");
+        if (direction === "right") return ASSET_MANAGER.getAsset("./assets/sprites/CharacterRightIdle.png");
+        if (direction === "up") return ASSET_MANAGER.getAsset("./assets/sprites/CharacterUpIdle.png");
+        return null;
+    }
 
     updateAABBs() {
         this.attackLeftAABB.setPos(this.x - 15, this.y);
@@ -317,8 +334,11 @@ class Character extends LivingEntity {
     }
 
     draw() {
-        this.animation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
-
+        if (this.animation !== this.standAnimation || null === this.facing)
+            this.animation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
+        else if (null !== this.facing) {
+            ctx.drawImage(this.facing, this.x, this.y, world1.currentScale, world1.currentScale);
+        }
         if (this.game.debug) {
             this.whirlwindAABB.draw(ctx, 'red');
 

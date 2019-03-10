@@ -254,10 +254,11 @@ class Point {
 }
 
 class Door {
-    constructor(x, y, position) {
+    constructor(x, y, position,code) {
         this.x = x;
         this.y = y;
         this.position = position;
+        this.code = code;
         this.removed = false;
     }
 }
@@ -277,8 +278,8 @@ class Container {
 
     pushWall(theX, theY, thePosition, code) {//position #0 is a door
         let point = new Point(theX, theY);
-        if (code === 15) { //door
-            point = new Door(theX, theY, thePosition);
+        if (code >= 15) { //door
+            point = new Door(theX, theY, thePosition, code);
         }
         if (this.x <= theX + world1.currentScale / 2 && theX + world1.currentScale / 2 < this.x + this.w
             && this.y <= theY + world1.currentScale / 2 && theY + world1.currentScale / 2 < this.y + this.h) {
@@ -419,6 +420,7 @@ class Collision {
                 characterX + world1.currentScale - width > targetX &&
                 characterY < targetY + world1.currentScale &&
                 characterY > targetY) {
+                if (isCharacter && leafs[j].walls[i] instanceof Door == true) return false;
                 if (isCharacter && leafs[j].walls[i] instanceof Door == true && character.inventory.SilverKey > 0) {
                     leafs[j].walls[i].removed = true;
                     character.inventory.SilverKey -= 1;
@@ -576,6 +578,9 @@ function startGame() {
     ASSET_MANAGER.queueDownload("./assets/sprites/SkeletonWalkLeft.png");
     ASSET_MANAGER.queueDownload("./assets/sprites/SkeletonWalkRight.png");
     ASSET_MANAGER.queueDownload("./assets/sprites/characterInfo2.png");
+    ASSET_MANAGER.queueDownload("./assets/sprites/CharacterUpIdle.png");
+    ASSET_MANAGER.queueDownload("./assets/sprites/CharacterLeftIdle.png");
+    ASSET_MANAGER.queueDownload("./assets/sprites/CharacterRightIdle.png");
     ASSET_MANAGER.queueDownload("./assets/sprites/HP.png");
     ASSET_MANAGER.queueDownload("./assets/sprites/whirl.png")
     ASSET_MANAGER.queueDownload("./assets/sprites/oneAttack.png")
