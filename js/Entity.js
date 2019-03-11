@@ -8,6 +8,7 @@ class Entity {
         this.xMot = 0;
         this.yMot = 0;
         this.direction = 'down';
+        this.wallCollisionResult;
     }
 
     update() {
@@ -54,15 +55,23 @@ class Entity {
         return this._y;
     }
 
+    collidedWithWall() {
+        return this.wallCollisionResult
+            && (this.wallCollisionResult.left
+                || this.wallCollisionResult.right
+                || this.wallCollisionResult.top
+                || this.wallCollisionResult.bottom);
+    }
+
     updatePosition(aabb = this.boundingBox) {
         if (!aabb) return;
 
-        let result = this.game.level.hasCollidedWithWalls(aabb, this.xMot, this.yMot);
+        this.wallCollisionResult = this.game.level.hasCollidedWithWalls(aabb, this.xMot, this.yMot);
 
-        if (result) {
-            if (!(result.left || result.right)) this.x += this.xMot;
+        if (this.wallCollisionResult) {
+            if (!(this.wallCollisionResult.left || this.wallCollisionResult.right)) this.x += this.xMot;
             else this.xMot = 0;
-            if (!(result.top || result.bottom)) this.y += this.yMot;
+            if (!(this.wallCollisionResult.top || this.wallCollisionResult.bottom)) this.y += this.yMot;
             else this.yMot = 0;
         }
 

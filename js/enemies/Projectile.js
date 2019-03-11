@@ -2,34 +2,36 @@ import Entity from '../Entity.js';
 import BoundingBox from '../BoundingBox.js';
 
 class Projectile extends Entity {
-    constructor(game, x, y, xs, ys) {
+    constructor(game, parent, x, y, xs, ys, damage) {
         super(game, x, y);
+        this.parent = parent;
         this.xs = xs;
         this.ys = ys;
         this.scale = 4;
-        this.life = 10;
-        this.boundingBox = new BoundingBox(this.x, this.y, this.scale * 2, this.scale * 2, -this.scale, -this.scale);
+        this.life = 100;
+        this.damage = damage;
+        this.boundingBox = new BoundingBox(this.x, this.y, this.scale * 2, this.scale * 2, -this.scale / 2, -this.scale / 2);
     }
 
     update() {
-        let player = this.game.levelManager.level.getEntityWithTag('Player');
+        super.update()
 
-        if (this.game.levelManager.level.hasCollidedWithWalls(this)) {
+        let player = this.game.level.getEntityWithTag('Player');
+
+        if (this.collidedWithWall()) {
             this.destroy();
             return;
         }
 
         if (this.boundingBox.hasCollided(player.boundingBox)) {
             this.destroy();
-            player.damage(5);
+            player.damage(this.damage);
         }
 
         this.x += this.xs;
         this.y += this.ys;
         this.life -= this.game.clockTick;
         if (this.life <= 0) this.destroyed = true;
-
-        super.update();
     }
 
     draw(ctx) {

@@ -13,12 +13,11 @@ class Sorcerer extends HostileEntity {
         this.moveSpeed = 1;
         this.fleeSpeed = 90;
         this.attackSpeed = 3;
+        this.attackDamage = 40;
         this.attackInterval = 0.6;
         this.cooldown = 0;
-        this.special = 4;
-        this.dangerRange = 50;
         this.fleeRange = 100;
-        this.startAttackRange = 80;
+        this.startAttackRange = 60;
         this.stopAttackRange = 300;
         this.startFollowRange = 150;
         this.stopFollowRange = 350;
@@ -31,12 +30,11 @@ class Sorcerer extends HostileEntity {
 
         let player = this.game.levelManager.level.getEntityWithTag('Player');
 
-        if (this.cooldown > 0) this.cooldown -= this.game.clockTick;
-        if (this.special > 0) this.cooldown -= this.game.clockTick;
+        if (this.cooldown > 0) this.cooldown = Math.max(this.cooldown - this.game.clockTick, 0);
         let xOrigC = (player.x + player.animation.frameWidth / 2);
         let yOrigC = (player.y + player.animation.frameHeight / 2);
-        let xOrigS = (this.x + this.animation.frameWidth / 2)
-        let yOrigS = (this.y + this.animation.frameHeight / 2)
+        let xOrigS = this.boundingBox.origin.x;
+        let yOrigS = this.boundingBox.origin.y;
         let xDiff = xOrigC - xOrigS;
         let yDiff = yOrigC - yOrigS;
         let distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
@@ -55,9 +53,9 @@ class Sorcerer extends HostileEntity {
         if (distance < this.fleeRange) {
             this.xMot = -this.game.clockTick * (this.fleeSpeed * xDiff) / distance;
             this.yMot = -this.game.clockTick * (this.fleeSpeed * yDiff) / distance;
+        }
 
-            if (distance < this.dangerRange) this.specialAttack(xDiff, yDiff, distance, xOrigS, yOrigS);
-        } else if (this.startAttackRange <= distance && distance <= this.stopAttackRange) {
+        if (this.startAttackRange <= distance && distance <= this.stopAttackRange) {
             this.attack(xDiff, yDiff, distance, xOrigS, yOrigS);
         }
 
@@ -69,36 +67,22 @@ class Sorcerer extends HostileEntity {
         this.updatePosition(this.boundingBox);
     }
 
-    updatePosition(aabb = this.boundingBox) {
-        if (this.xMot != 0 || this.yMot != 0) {
-            return super.updatePosition(aabb);
-        } else {
-            return super.updatePosition(aabb);
-        }
-    }
-
     attack(xDiff, yDiff, distance, xOrigS, yOrigS) {
-        if (this.special <= 0) {
-            this.specialAttack(xDiff, yDiff, distance, xOrigS, yOrigS);
-        } else if (this.cooldown <= 0) {
-            this.normalAttack(xDiff, yDiff, distance, xOrigS, yOrigS);
+        if (this.cooldown == 0) {
+            let velX = (this.attackSpeed * xDiff) / distance;
+            let velY = (this.attackSpeed * yDiff) / distance;
+
+            let projectile = new Projectile(
+                this.game,
+                this,
+                xOrigS,
+                yOrigS,
+                velX,
+                velY,
+                this.attackDamage);
+            this.game.levelManager.level.addEntity(projectile);
+            this.cooldown = this.attackInterval;
         }
-    }
-
-    normalAttack(xDiff, yDiff, distance, xOrigS, yOrigS) {
-        let velX = (this.attackSpeed * xDiff) / distance;
-        let velY = (this.attackSpeed * yDiff) / distance;
-
-        let projectile = new Projectile(
-            xOrigS,
-            yOrigS,
-            velX,
-            velY);
-        this.game.levelManager.level.addEntity(projectile);
-        this.cooldown = this.attackInterval;
-    }
-
-    specialAttack(xDiff, yDiff, distance, xOrigS, yOrigS) {
     }
 
     draw(ctx) {
