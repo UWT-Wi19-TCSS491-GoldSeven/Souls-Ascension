@@ -7,6 +7,7 @@ class Player extends LivingEntity {
     constructor(game, x, y) {
         super(game, x, y);
         this.boundingBox = new BoundingBox(this.x, this.y, 20, 40, 5);
+        this.wallAABB = new BoundingBox(this.x, this.y, 20, 20, 5, 10);
         this.standAnimation = new Animation(game.assetManager.getAsset('player.idle.down'), 0, 0, 42, 42, 0.08, 4, true, false);
         this.standLeftAnimation = new Animation(game.assetManager.getAsset('player.idle.left'), 0, 0, 42, 42, 0.08, 1, true, false);
         this.standRightAnimation = new Animation(game.assetManager.getAsset('player.idle.right'), 0, 0, 42, 42, 0.08, 1, true, false);
@@ -39,7 +40,7 @@ class Player extends LivingEntity {
         this.whirlwindReady = true;
         this.whirlwindAABB = new BoundingBox(0, 0, 60, 80);
 
-        this.updateAttackColliders();
+        this.updateAABBs();
 
         this.inventory = {
             HealingPotion: 1,
@@ -153,7 +154,7 @@ class Player extends LivingEntity {
         }
 
         if (xMot != 0 || yMot != 0) {
-            let result = this.game.level.hasCollidedWithWalls(this.boundingBox, xMot, yMot);
+            let result = this.game.level.hasCollidedWithWalls(this.wallAABB, xMot, yMot);
 
             if (result) {
                 if (!(result.left || result.right)) this.x += xMot;
@@ -168,7 +169,7 @@ class Player extends LivingEntity {
             else if (xMot > 0) this.direction = 'right';
         }
 
-        this.updateAttackColliders();
+        this.updateAABBs();
         this.updateViewport();
 
         if (this.game.whirlwind) this.isWhirlwinding = true;
@@ -290,7 +291,8 @@ class Player extends LivingEntity {
         return this.standAnimation;
     }
 
-    updateAttackColliders() {
+    updateAABBs() {
+        this.wallAABB.setPos(this.x, this.y);
         this.attackLeftAABB.setPos(this.x - 15, this.y);
         this.attackRightAABB.setPos(this.x + 15, this.y);
         this.attackDownAABB.setPos(this.x, this.y + 15);
@@ -329,6 +331,8 @@ class Player extends LivingEntity {
             this.attackRightAABB.draw(ctx, 'orange');
             this.attackUPAABB.draw(ctx, 'orange');
             this.attackDownAABB.draw(ctx, 'orange');
+
+            this.wallAABB.draw(ctx, 'blue');
         }
 
         super.draw(ctx);

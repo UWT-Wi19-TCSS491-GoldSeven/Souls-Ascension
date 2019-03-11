@@ -14,7 +14,7 @@ class Level1A extends Level {
     }
 
     prePopulate() {
-        this.queueTemplate(0, 0, Templates.roomTemplateSquare1);
+        this.queueTemplate(0, 0, Templates.roomTemplateBoss3);
     }
 
     postPopulate() {
@@ -22,7 +22,7 @@ class Level1A extends Level {
     }
 
     isImpassable(id) {
-        return (id > 0 && id < 16) || (id > 28);
+        return (id >= 0 && id < 16) || (id > 28);
     }
 }
 
