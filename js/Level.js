@@ -341,6 +341,8 @@ class Level {
     }
 
     _drawEntities(ctx) {
+        this.entities.sort(this.compareDepth);
+
         for (let i = 0; i < this.entities.length; i++) {
             ctx.save();
             this.entities[i].draw(ctx);
@@ -349,6 +351,17 @@ class Level {
     }
 
     drawUserInterface(ctx) {
+    }
+
+    compareDepth(a, b) {
+        if (a.boundingBox && b.boundingBox) {
+            if (a.boundingBox.bottom < b.boundingBox.bottom)
+                return -1;
+            if (b.boundingBox.bottom > a.boundingBox.bottom)
+                return 1;
+        }
+
+        return 0;
     }
 }
 
