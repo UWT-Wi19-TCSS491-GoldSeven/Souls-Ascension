@@ -1,6 +1,5 @@
 import Animation from './Animation.js'
 import BoundingBox from './BoundingBox.js'
-import Entity from './Entity.js'
 import LivingEntity from './LivingEntity.js'
 import TextIndicator from "./ui/TextIndicator.js";
 
@@ -8,15 +7,14 @@ class Player extends LivingEntity {
     constructor(game, x, y) {
         super(game, x, y);
         this.boundingBox = new BoundingBox(this.x, this.y, 20, 40, 10);
-        this.standAnimation = new Animation(game.assetManager.getAsset("./assets/sprites/characterIdleAnimation.png"), 0, 0, 42, 42, 0.08, 4, true, false);
+        this.standAnimation = new Animation(game.assetManager.getAsset("player.idle.down"), 0, 0, 42, 42, 0.08, 4, true, false);
+        this.standLeftAnimation = new Animation(game.assetManager.getAsset("player.idle.left"), 0, 0, 42, 42, 0.08, 1, true, false);
+        this.standRightAnimation = new Animation(game.assetManager.getAsset("player.idle.right"), 0, 0, 42, 42, 0.08, 1, true, false);
+        this.standUpAnimation = new Animation(game.assetManager.getAsset("player.idle.up"), 0, 0, 42, 42, 0.08, 1, true, false);
         this.walkRightAnimation = new Animation(game.assetManager.getAsset("./assets/sprites/characterRightAnimation.png"), 0, 0, 42, 42, 0.15, 6, true, false);
-        // this.walkUpLeftAnimation = new Animation(game.assetManager.getAsset("./assets/sprites/spritesheet.png"), 32, 32, 33, 32, 1.04, 1, true, false);
         this.walkLeftAnimation = new Animation(game.assetManager.getAsset("./assets/sprites/characterLeftAnimation.png"), 0, 0, 42, 42, 0.15, 6, true, false);
-        // this.walkUpRightAnimation = new Animation(game.assetManager.getAsset("./assets/sprites/spritesheet.png"), 32, 64, 33, 32, 1.04, 1, true, false);
         this.walkUpAnimation = new Animation(game.assetManager.getAsset("./assets/sprites/characterBackwardRun.png"), 0, 0, 42, 42, 0.15, 5, true, false);
-        // this.walkDownLeftAnimation = new Animation(game.assetManager.getAsset("./assets/sprites/spritesheet.png"), 32, 96, 32, 32, 1.04, 1, true, false);
         this.walkDownAnimation = new Animation(game.assetManager.getAsset("./assets/sprites/CharacterForwardRun.png"), 0, 0, 42, 42, 0.15, 5, true, false);
-        // this.walkDownRightAnimation = new Animation(game.assetManager.getAsset("./assets/sprites/spritesheet.png"), 32, 128, 32, 32, 1.04, 1, true, false);
         this.attackUpAnimation = new Animation(game.assetManager.getAsset("./assets/sprites/characterUpAttack.png"), 0, 0, 42, 42, 0.04, 3, false, false);
         this.attackDownAnimation = new Animation(game.assetManager.getAsset("./assets/sprites/characterDownAttack.png"), 0, 0, 42, 42, 0.04, 3, false, false);
         this.attackLeftAnimation = new Animation(game.assetManager.getAsset("./assets/sprites/characterLeftAttack.png"), 0, 0, 42, 42, 0.04, 3, false, false);
@@ -98,22 +96,18 @@ class Player extends LivingEntity {
         if (this.game.left && !this.game.levelManager.level.hasCollidedWithWalls(this)) {
             this.isMovingLeft = true
             this.direction = "left";
-            this.facing = this.getIDLE("left");
         }
         if (this.game.right && !this.game.levelManager.level.hasCollidedWithWalls(this)) {
             this.isMovingRight = true
             this.direction = "right";
-            this.facing = this.getIDLE("right");
         }
         if (this.game.up && !this.game.levelManager.level.hasCollidedWithWalls(this)) {
             this.isMovingUp = true;
             this.direction = "up";
-            this.facing = this.getIDLE("up");
         }
         if (this.game.down && !this.game.levelManager.level.hasCollidedWithWalls(this)) {
             this.isMovingDown = true;
             this.direction = "down";
-            this.facing = this.getIDLE("down");
         }
 
         if (this.isMovingUp) {
@@ -217,6 +211,11 @@ class Player extends LivingEntity {
                 this.animation = this.standAnimation;
             }
         }
+
+        if (this.animation == this.standAnimation) {
+            this.animation = this.getIdleAnimation(this.direction);
+        }
+
         // Animation Selection End
 
         // Attack Start
@@ -301,11 +300,11 @@ class Player extends LivingEntity {
         }
     }
 
-    getIDLE(direction) {
-        if (direction === "left") return ASSET_MANAGER.getAsset("./assets/sprites/CharacterLeftIdle.png");
-        if (direction === "right") return ASSET_MANAGER.getAsset("./assets/sprites/CharacterRightIdle.png");
-        if (direction === "up") return ASSET_MANAGER.getAsset("./assets/sprites/CharacterUpIdle.png");
-        return null;
+    getIdleAnimation(direction) {
+        if (direction === "left") return this.standLeftAnimation;
+        if (direction === "right") return this.standRightAnimation;
+        if (direction === "up") return this.standUpAnimation;
+        return this.standAnimation;
     }
 
     updateAABBs() {
@@ -327,7 +326,7 @@ class Player extends LivingEntity {
             text.style.display = 'inline';
 
             let tPos = text.getBoundingClientRect();
-            let cPos =  this.game.ctx.canvas.getBoundingClientRect();
+            let cPos = this.game.ctx.canvas.getBoundingClientRect();
             let x = cPos.left + (cPos.width - tPos.width) / 2;
             let y = cPos.top + (cPos.height - tPos.height) / 2;
 
@@ -338,11 +337,7 @@ class Player extends LivingEntity {
     }
 
     draw(ctx) {
-        if (this.animation !== this.standAnimation || null === this.facing)
-            this.animation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
-        else if (null !== this.facing) {
-            ctx.drawImage(this.facing, this.x, this.y, this.game.level.currentScale, this.game.level.currentScale);
-        }
+        this.animation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
 
         if (this.game.debug) {
             this.whirlwindAABB.draw(ctx, 'red');

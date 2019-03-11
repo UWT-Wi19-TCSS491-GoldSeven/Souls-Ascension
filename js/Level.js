@@ -146,12 +146,12 @@ class Level {
         this.grid = new Array(this.rows * this.columns).fill(0);
 
         while (this.templateQueue.length > 0) {
-            let element = this.templateQueue.splice(0, 1);
-            if (element) this._populateGrid(element.column, element.row, element.template);
+            let element = this.templateQueue.splice(0, 1)[0];
+            if (element) this._populateTemplate(element.column, element.row, element.template);
         }
     }
 
-    _queueTemplate(column, row, template) {
+    queueTemplate(column, row, template) {
         this.templateQueue.push({
             column: column,
             row: row,
@@ -164,7 +164,7 @@ class Level {
         if (this.rows < rows) this.rows = rows;
     }
 
-    _populateGrid(column, row, template) {
+    _populateTemplate(column, row, template) {
         for (let r = 0; r < template.length; r++) {
             for (let c = 0; c < template[r].length; r++) {
                 let data = template[r][c];

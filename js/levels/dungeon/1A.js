@@ -1,5 +1,6 @@
-import Level from '../Level.js';
-import Player from "../Player.js";
+import Level from '../../Level.js';
+import Player from "../../Player.js";
+import Templates from './DungeonTemplates.js';
 
 class Level1A extends Level {
     constructor(game) {
@@ -13,11 +14,11 @@ class Level1A extends Level {
     }
 
     prePopulate() {
-        this.addEntity(new Player(this.game, 0, 0), "Player");
+        this.queueTemplate(0, 0, Templates.roomTemplateSquare1);
     }
 
     postPopulate() {
-        //
+        this.addEntity(new Player(this.game, 0, 0), "Player");
     }
 
     isImpassable(id) {

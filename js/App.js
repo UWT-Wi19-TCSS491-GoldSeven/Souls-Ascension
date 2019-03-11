@@ -1,7 +1,7 @@
 import GameEngine from './GameEngine.js';
 import Entity from './Entity.js'
 import Sound from './Sound.js';
-import Level1A from "./levels/1A.js";
+import Level1A from "./levels/dungeon/1A.js";
 
 /*----------------------------------------------Collision Start---------------------------------------------------------------------------------------------- */
 
@@ -34,8 +34,10 @@ function startGame() {
     document.getElementById('start-game').hidden = true;
 
     GAME.assetManager.queueDownload("map.dungeon", "./assets/sprites/DungeonBackgroundSpriteSheet.png");
-    GAME.assetManager.queueDownload("./assets/sprites/spritesheet.png");
-    GAME.assetManager.queueDownload("./assets/sprites/characterIdleAnimation.png");
+    GAME.assetManager.queueDownload("player.idle.down", "./assets/sprites/characterIdleAnimation.png");
+    GAME.assetManager.queueDownload("player.idle.left", "./assets/sprites/CharacterLeftIdle.png");
+    GAME.assetManager.queueDownload("player.idle.right", "./assets/sprites/CharacterRightIdle.png");
+    GAME.assetManager.queueDownload("player.idle.up", "./assets/sprites/CharacterUpIdle.png");
     GAME.assetManager.queueDownload('./assets/sprites/ChatacterAttackRanged.png');
     GAME.assetManager.queueDownload("./assets/sprites/CharacterForwardRun.png");
     GAME.assetManager.queueDownload("./assets/sprites/characterBackwardRun.png");
