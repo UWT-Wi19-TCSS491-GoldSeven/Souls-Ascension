@@ -229,21 +229,15 @@ class Level {
     }
 
     _draw(ctx) {
-        let viewport = this.game.viewport;
-        let sx = viewport.sx;
-        let sy = viewport.sy;
-        let cw = ctx.canvas.width;
-        let ch = ctx.canvas.height;
+        let camera = this.game.camera;
         // Calculate the x and y (top left) of a scaled window.
-        let tx = viewport.x / sx;
-        let ty = viewport.y / sy;
 
         ctx.resetTransform();
         ctx.clearRect(0, 0, this.game.canvas.width, this.game.canvas.height);
         // Scaling the context ahead of time can simulate zooming.
-        ctx.scale(sx, sy);
+        ctx.scale(camera.sx, camera.sy);
         // We must translate the canvas to it's expected position.
-        ctx.translate(-tx, -ty);
+        ctx.translate(-camera.left, -camera.top);
 
         this._drawLevel(ctx);
         this._drawEntities(ctx);
@@ -261,32 +255,30 @@ class Level {
             if (this.game.debug.verbosity > 2) {
                 ctx.save();
                 // Calculates the width and height of a scaled window.
-                let sw = cw / sx;
-                let sh = ch / sy;
                 ctx.strokeStyle = 'blue';
                 ctx.beginPath();
-                ctx.moveTo(tx, ty + sh / 2);
-                ctx.lineTo(tx + sw, ty + sh / 2);
-                ctx.moveTo(tx + sw / 2, ty);
-                ctx.lineTo(tx + sw / 2, ty + sh);
+                ctx.moveTo(camera.left, camera.yMid());
+                ctx.lineTo(camera.right, camera.yMid());
+                ctx.moveTo(camera.xMid(), camera.top);
+                ctx.lineTo(camera.xMid(), camera.bottom);
                 ctx.stroke();
                 ctx.restore();
             }
         }
 
         ctx.save();
+        ctx.resetTransform();
         this.drawUserInterface(ctx);
         ctx.restore();
     }
 
     _drawLevel(ctx) {
-        let viewport = this.game.viewport;
-        let screenSize = this.game.screenSize;
+        let camera = this.game.camera;
 
-        let xMin = Math.floor(viewport.x / this.tileDimension);
-        let xMax = Math.floor((viewport.x + screenSize.width) / this.tileDimension);
-        let yMin = Math.floor(viewport.y / this.tileDimension);
-        let yMax = Math.floor((viewport.y + screenSize.height) / this.tileDimension);
+        let xMin = Math.floor(camera.left / this.tileDimension);
+        let xMax = Math.floor(camera.right / this.tileDimension);
+        let yMin = Math.floor(camera.top / this.tileDimension);
+        let yMax = Math.floor(camera.bottom / this.tileDimension);
 
         this.game.ctx.save();
         for (let r = Math.max(yMin, 0); r <= Math.min(yMax, this.rows - 1); r++) {

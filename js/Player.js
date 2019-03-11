@@ -58,11 +58,8 @@ class Player extends LivingEntity {
     }
 
     updateViewport() {
-        let sx = this.game.viewport.sx;
-        let sy = this.game.viewport.sy;
-        // Calculates the position with the given scale.
-        this.game.viewport.x = (this.x + this.boundingBox.width) * sx - this.game.ctx.canvas.width / 2;
-        this.game.viewport.y = (this.y + this.boundingBox.height / 2) * sy - this.game.ctx.canvas.height / 2;
+        let camera = this.game.camera;
+        camera.setOrigin(this.boundingBox.origin.x, this.boundingBox.origin.y);
     }
 
     isMoving() {
@@ -328,22 +325,6 @@ class Player extends LivingEntity {
 
         super.draw(ctx);
         this.textIndicator.draw(ctx);
-        this.drawHPBar(ctx);
-    }
-
-    drawHPBar(ctx) {
-        ctx.strokeStyle = '#b00642';
-        ctx.strokeRect(this.x - 279, this.y - 330, 100, 10);
-        ctx.fillStyle = '#9a065f';
-        ctx.fillRect(this.x - 279, this.y - 329, 100 * this.health / this.maxHealth, 8);
-        ctx.strokeStyle = '#0FF';
-        ctx.strokeRect(this.x - 280, this.y - 315, 100, 10);
-        ctx.fillStyle = 'blue';
-        ctx.fillRect(this.x - 280, this.y - 314, 100 * this.currentExp / this.levelExp, 8);
-        ctx.strokeStyle = '#0CF';
-        ctx.strokeRect(this.x - 280, this.y - 300, 100, 10);
-        ctx.fillStyle = 'blue';
-        ctx.fillRect(this.x - 280, this.y - 299, 100 * this.currentSoul / this.levelSoul, 8);
     }
 }
 

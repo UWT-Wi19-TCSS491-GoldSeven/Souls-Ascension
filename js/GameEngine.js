@@ -3,6 +3,7 @@
 import AssetManager from './AssetManager.js';
 import LevelManager from './LevelManager.js';
 import Events from './Events.js';
+import Camera from './Camera.js';
 
 window.requestAnimFrame = (function () {
     return window.requestAnimationFrame ||
@@ -40,17 +41,7 @@ class GameEngine {
         this.assetManager = new AssetManager();
         this.levelManager = new LevelManager(this);
         this.sounds = new Map();
-        this.attack = null;
-        this.viewport = {
-            x: 0,
-            y: 0,
-            sx: 1,
-            sy: 1
-        };
-        this.screenSize = {
-            width: canvas.width,
-            height: canvas.height
-        };
+        this.camera = new Camera(this);
         this.settings = {
             audio: {
                 muted: false
@@ -81,20 +72,6 @@ class GameEngine {
 
         this.levelManager.update();
         this.levelManager.draw(this.ctx);
-    }
-
-    isInViewPort(x, y, mx, my) {
-        let viewport = this.viewport;
-        let screenSize = this.screenSize;
-
-        if (viewport.x < mx
-            && viewport.x + screenSize.width > x
-            && viewport.y < my
-            && viewport.y + screenSize.height > y) {
-            return true;
-        }
-
-        return false;
     }
 
     get level() {

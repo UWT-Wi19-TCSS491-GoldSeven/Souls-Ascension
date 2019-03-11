@@ -14,22 +14,22 @@ class PlayerHUD extends Entity {
 
     draw(ctx) {
         let player = this.game.level.getEntityWithTag('Player');
+        let canvas = this.game.canvas;
 
-        let x = player.x - 380;
-        let y = player.y - 380;
+        this.drawStats(ctx);
 
-        ctx.drawImage(this.image, x, y, 100, 100);
-        ctx.drawImage(this.hpImange, x, y + 200, 40, 40);
-        ctx.fillStyle = '#0F0';
-        ctx.fillText('Level ' + player.level + ' / Soul level ' + player.soul, x + 100, y + 40);
+        let padding = 25;
+        let pW = 100, pH = 100;
+        let iW = 40, iH = 40, iX = padding, iY = canvas.height - iH - padding
+
+        ctx.drawImage(this.image, 0, 0, pW, pH);
+        ctx.drawImage(this.hpImange, iX, iY, iW, iH);
+        ctx.font = '20px bold Arial';
         ctx.fillStyle = 'white';
-        ctx.fillText('HP ' + player.health + '/' + player.maxHealth, x + 101, y + 59);
-        ctx.fillText('H', x + 30, y + 235);
-        ctx.fillText(player.inventory.HealingPotion, x + 5, y + 210);
-        ctx.fillStyle = 'white';
-        ctx.fillText('EXP ' + player.currentExp + '/' + player.levelExp, x + 100, y + 75);
-        ctx.fillStyle = 'white';
-        ctx.fillText('Soul ' + player.currentSoul + '/' + player.levelSoul, x + 100, y + 90);
+        ctx.fillText('H', iX + 30, iY + 30);
+        ctx.font = '20px bold Arial';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(`x${player.inventory.HealingPotion}`, iX + 50, iY + 20);
 
         if (player.currentSoul > player.levelSoul) {
             player.currentSoul = player.currentSoul - player.levelSoul;
@@ -49,42 +49,83 @@ class PlayerHUD extends Entity {
 
     }
 
-    skillShow(ctx) {
-        let player = this.game.level.getEntityWithTag("Player");
+    drawStats(ctx) {
+        let player = this.game.level.getEntityWithTag('Player');
 
-        let newX = player.x + 350;
-        let newY = player.y + 340;
-        this.drawSkillImage(ctx, newX - 10, newY, 25, this.whirlSkill, 24, 50); //skill 2
-        this.updateSkillCover(ctx, newX, newY);
+        let alX = 110;
+        let lvY = 25, hpY = 45, expY = 60, soulY = 75;
+        let mW = 100, iH = 8, oH = 10;
+        let perH = Math.max(Math.min(mW * player.health / player.maxHealth, mW), 0);
+        let perE = Math.max(Math.min(mW * player.currentExp / player.levelExp, mW), 0);
+        let perS = Math.max(Math.min(mW * player.currentSoul / player.levelSoul, mW), 0);
+
+        ctx.textBaseline = 'top';
+        ctx.fillStyle = '#0F0';
+        ctx.fillText('Level ' + player.level + ' / Soul level ' + player.soul, alX, lvY);
+
+        // HP Bar
+
+        ctx.strokeStyle = '#b00642';
+        ctx.strokeRect(alX, hpY - 1, mW, oH);
+        ctx.fillStyle = '#9a065f';
+        ctx.fillRect(alX, hpY, perH, iH);
+        ctx.fillStyle = 'white';
+        ctx.fillText('HP ' + player.health + '/' + player.maxHealth, alX, hpY);
+
+        // EXP Bar
+
+        ctx.strokeStyle = '#0FF';
+        ctx.strokeRect(alX, expY - 1, mW, oH);
+        ctx.fillStyle = 'blue';
+        ctx.fillRect(alX, expY, perE, iH);
+        ctx.fillStyle = 'white';
+        ctx.fillText('EXP ' + player.currentExp + '/' + player.levelExp, alX, expY);
+
+        // Soul Bar
+
+        ctx.strokeStyle = '#0CF';
+        ctx.strokeRect(alX, soulY - 1, mW, oH);
+        ctx.fillStyle = 'blue';
+        ctx.fillRect(alX, soulY, perS, iH);
+        ctx.fillStyle = 'white';
+        ctx.fillText('Soul ' + player.currentSoul + '/' + player.levelSoul, alX, soulY);
+    }
+
+    skillShow(ctx) {
+        let canvas = this.game.canvas;
+
+        let xOff = -50, yOff = -50;
+        let radius = 25, ratio = 24, size = 50;
+        let alpha = 0.85;
+
+        this.drawSkillImage(ctx, canvas.width + xOff, canvas.height + yOff, radius, this.whirlSkill, ratio, size, alpha);
 
     }
 
-    drawSkillImage(ctx, x, y, radius, skillImage, ratio, size) {
-        ctx.save();
+    drawSkillImage(ctx, x, y, radius, skillImage, ratio, size, alpha) {
         ctx.beginPath();
-        ctx.arc(x, y, radius, 0, Math.PI * 2, true) //x, y, radius, startAngle, endAngle, anticlockwise
+        ctx.arc(x, y, radius, 0, Math.PI * 2, true)
         ctx.clip();
         ctx.drawImage(skillImage, x - ratio, y - ratio, size, size);
 
-        this.updateSkillCover(ctx, x + 10, y)
-        ctx.restore();
+        this.updateSkillCover(ctx, x, y, radius, alpha);
     }
 
-    updateSkillCover(ctx, newX, newY) { //depend on the skill then set the percent
-        let player = this.game.level.getEntityWithTag("Player");
+    updateSkillCover(ctx, x, y, radius, alpha = 1, color = 'black') {
+        let player = this.game.level.getEntityWithTag('Player');
 
         let full = -Math.PI / 2;
         let percent = this.getPercent(player.whirlwindCooldown, player.whirlwindCooldownTime);
 
-        ctx.fillStyle = 'black';
+        ctx.fillStyle = color;
 
-        this.drawSkillCover(ctx, newX - 10, newY, 25, 0.85, full - percent, full + percent); //skill 2
+        this.drawSkillCover(ctx, x, y, radius, alpha, full - percent, full + percent);
     }
 
-    drawSkillCover(ctx, x, y, radius, globalAlpha, startAngle, endAngle) {
-        ctx.globalAlpha = globalAlpha;
+    drawSkillCover(ctx, x, y, radius, alpha, startAngle, endAngle) {
+        ctx.globalAlpha = alpha;
         ctx.beginPath();
-        ctx.arc(x, y, radius, startAngle, endAngle, false) //x, y, radius, startAngle, endAngle, anticlockwise
+        ctx.arc(x, y, radius, startAngle, endAngle, false)
         ctx.fill();
     }
 

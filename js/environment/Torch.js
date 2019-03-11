@@ -8,7 +8,7 @@ class Torch extends Entity {
     }
 
     draw(ctx) {
-        if (this.game.isInViewPort(this.x, this.y, this.x + this.flameAnimation.frameWidth, this.y + this.flameAnimation.frameHeight)) {
+        if (this.game.camera.isAreaInView(this.x, this.y, this.flameAnimation.frameWidth, this.flameAnimation.frameHeight)) {
             this.flameAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
         }
     }

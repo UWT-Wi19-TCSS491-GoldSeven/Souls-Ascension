@@ -20,15 +20,17 @@ class Level1A extends Level {
     }
 
     prePopulate() {
-        this.queueTemplate(0, 0, Templates.roomTemplateSquare2);
+        this.queueTemplate(100, 100, Templates.roomTemplateSquare2);
+        this.queueTemplate(126, 92, Templates.roomTemplateSquare15)
+        this.queueTemplate(115, 100, Templates.hallwayTemplate1);
     }
 
     postPopulate() {
-        let player = new Player(this.game, 150, 150);
+        let player = new Player(this.game, 112 * this.tileDimension, 103 * this.tileDimension);
 
         this.addEntity(player, 'Player');
-        this.addEntity(new Sorcerer(this.game, 500, 400));
-        this.addEntity(new Slime(this.game, 400, 200))
+        this.addEntity(new Sorcerer(this.game, 112 * this.tileDimension, 112 * this.tileDimension));
+        this.addEntity(new Slime(this.game, 103 * this.tileDimension, 103 * this.tileDimension))
     }
 
     isImpassable(id) {
