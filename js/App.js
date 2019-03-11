@@ -76,4 +76,4 @@ function startGame() {
     });
 }
 
-export default startGame();
+export default startGame;
