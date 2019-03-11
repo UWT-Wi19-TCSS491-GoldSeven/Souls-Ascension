@@ -84,9 +84,10 @@ class BoundingBox {
         this.y = y;
     }
 
-    draw(ctx, style = 'green') {
+    draw(ctx, style = 'green', lineWidth = 1) {
         ctx.save();
         ctx.strokeStyle = style;
+        ctx.lineWidth = lineWidth;
         ctx.beginPath();
         ctx.moveTo(this.left, this.top);
         ctx.lineTo(this.right, this.top);

@@ -39,14 +39,8 @@ class GameEngine {
         this.ctx = canvas.getContext('2d');
         this.assetManager = new AssetManager();
         this.levelManager = new LevelManager(this);
-        this.sounds = new Map(); // The key name can be different than the audio file name.
-        this.showOutlines = false;
-        this.click = null;
-        this.mouse = null;
-        this.wheel = null;
+        this.sounds = new Map();
         this.attack = null;
-        this.surfaceWidth = canvas.width;
-        this.surfaceHeight = canvas.height;
         this.viewport = {
             x: 0,
             y: 0,
@@ -60,9 +54,12 @@ class GameEngine {
         this.settings = {
             audio: {
                 muted: false
+            },
+            debug: {
+                enabled: false,
+                verbosity: 0
             }
         }
-        this.debug = false; // If true, console output and entity boxes will appear.
     }
 
     init() {
@@ -106,6 +103,24 @@ class GameEngine {
 
     get entities() {
         return this.level ? this.level.entities : [];
+    }
+
+    get debug() {
+        return this.settings.debug;
+    }
+
+    toggleDebug() {
+        let debug = this.debug;
+        if (!debug.enabled) {
+            this.debug.enabled = true;
+            this.debug.verbosity = 0;
+        } else {
+            if (this.debug.verbosity < 4) {
+                this.debug.verbosity += 1;
+            } else {
+                this.debug.enabled = false;
+            }
+        }
     }
 }
 

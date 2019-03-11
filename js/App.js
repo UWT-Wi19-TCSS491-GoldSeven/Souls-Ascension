@@ -81,8 +81,6 @@ function startGame() {
     GAME.assetManager.queueDownload('./assets/sprites/whirl.png')
     GAME.assetManager.queueDownload('./assets/sprites/oneAttack.png')
     GAME.assetManager.downloadAll(function () {
-        GAME.debug = false;
-
         GAME.levelManager.load(new Level1A(GAME))
 
         GAME.init();

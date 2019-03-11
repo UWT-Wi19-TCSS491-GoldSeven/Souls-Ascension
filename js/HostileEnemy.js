@@ -50,7 +50,7 @@ class HostileEntity extends LivingEntity {
 
             // All tiles are in one column. Skip the starting tile.
             for (let cy = siy; cy <= eiy; cy++) {
-                if (this.game.debug) this.visited.push({
+                if (this.game.debug.enabled) this.visited.push({
                     x: six,
                     y: cy
                 });
@@ -60,7 +60,7 @@ class HostileEntity extends LivingEntity {
             }
         } else if (siy == eiy) {
             for (let cx = six + 1; cx <= eix; cx++) {
-                if (this.game.debug) this.visited.push({
+                if (this.game.debug.enabled) this.visited.push({
                     x: cx,
                     y: siy
                 });
@@ -82,7 +82,7 @@ class HostileEntity extends LivingEntity {
                 if (uy >= 0) {
                     for (let cy = ciy; cy <= niy; cy++) {
                         if (cy <= miy) {
-                            if (this.game.debug) this.visited.push({
+                            if (this.game.debug.enabled) this.visited.push({
                                 x: cx,
                                 y: cy
                             });
@@ -91,7 +91,7 @@ class HostileEntity extends LivingEntity {
                         }
 
                         if (cy >= miy) {
-                            if (this.game.debug) this.visited.push({
+                            if (this.game.debug.enabled) this.visited.push({
                                 x: cx + 1,
                                 y: cy
                             });
@@ -102,7 +102,7 @@ class HostileEntity extends LivingEntity {
                 } else {
                     for (let cy = ciy; cy >= niy; cy--) {
                         if (cy <= miy) {
-                            if (this.game.debug) this.visited.push({
+                            if (this.game.debug.enabled) this.visited.push({
                                 x: cx,
                                 y: cy
                             });
@@ -111,7 +111,7 @@ class HostileEntity extends LivingEntity {
                         }
 
                         if (cy >= miy) {
-                            if (this.game.debug) this.visited.push({
+                            if (this.game.debug.enabled) this.visited.push({
                                 x: cx + 1,
                                 y: cy
                             });
@@ -132,7 +132,7 @@ class HostileEntity extends LivingEntity {
     draw(ctx) {
         super.draw(ctx);
 
-        if (this.game.debug && this.visited.length > 0) {
+        if (this.game.debug.enabled && this.visited.length > 0) {
             let scale = this.game.levelManager.level.tileDimension;
 
             for (let i in this.visited) {

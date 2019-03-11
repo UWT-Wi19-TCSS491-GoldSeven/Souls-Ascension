@@ -238,10 +238,9 @@ class Level {
         let tx = viewport.x / sx;
         let ty = viewport.y / sy;
 
-        ctx.clearRect(0, 0, this.game.canvas.width, this.game.canvas.height);
         ctx.save();
         ctx.resetTransform();
-
+        ctx.clearRect(0, 0, this.game.canvas.width, this.game.canvas.height);
         // Scaling the context ahead of time can simulate zooming.
         ctx.scale(sx, sy);
         // We must translate the canvas to it's expected position.
@@ -250,19 +249,30 @@ class Level {
         this._drawLevel(ctx);
         this._drawEntities(ctx);
 
-        if (this.game.debug) {
-            // Calculates the width and height of a scaled window.
-            let sw = cw / sx;
-            let sh = ch / sy;
-            // ctx.fillStyle = 'blue';
-            // ctx.fillRect(tx, ty, sw / 2, sh / 2);
-            ctx.strokeStyle = 'blue';
-            ctx.beginPath();
-            ctx.moveTo(tx, ty + sh / 2);
-            ctx.lineTo(tx + sw, ty + sh / 2);
-            ctx.moveTo(tx + sw / 2, ty);
-            ctx.lineTo(tx + sw / 2, ty + sh);
-            ctx.stroke();
+        if (this.game.debug.enabled) {
+            ctx.save();
+            ctx.resetTransform();
+            ctx.font = '16px Arial';
+            ctx.fillStyle = 'white';
+            ctx.textAlign = 'right';
+            ctx.textBaseline = 'top';
+            ctx.fillText(`Debug Level: ${this.game.debug.verbosity}`, this.game.canvas.width, 0);
+            ctx.restore();
+
+            if (this.game.debug.verbosity > 2) {
+                ctx.save();
+                // Calculates the width and height of a scaled window.
+                let sw = cw / sx;
+                let sh = ch / sy;
+                ctx.strokeStyle = 'blue';
+                ctx.beginPath();
+                ctx.moveTo(tx, ty + sh / 2);
+                ctx.lineTo(tx + sw, ty + sh / 2);
+                ctx.moveTo(tx + sw / 2, ty);
+                ctx.lineTo(tx + sw / 2, ty + sh);
+                ctx.stroke();
+                ctx.restore();
+            }
         }
 
         ctx.restore();
@@ -310,6 +320,24 @@ class Level {
                 this.tileDimension,
                 this.tileDimension
             );
+        }
+
+        if (this.game.debug.enabled) {
+            ctx.save();
+            ctx.strokeStyle = 'green';
+            ctx.moveTo(column * this.tileDimension, row * this.tileDimension);
+            ctx.lineTo(column * this.tileDimension + this.tileDimension, row * this.tileDimension);
+            ctx.lineTo(column * this.tileDimension + this.tileDimension, row * this.tileDimension + this.tileDimension);
+            ctx.lineTo(column * this.tileDimension, row * this.tileDimension + this.tileDimension);
+            ctx.stroke();
+
+            if (this.game.debug.verbosity > 3) {
+                ctx.font = '15px Arial';
+                ctx.fillStyle = 'tan';
+                ctx.textAlign = 'center';
+                ctx.fillText(`${column},${row}`, column * this.tileDimension + (this.tileDimension / 2), row * this.tileDimension + (this.tileDimension / 2));
+                ctx.restore();
+            }
         }
     }
 

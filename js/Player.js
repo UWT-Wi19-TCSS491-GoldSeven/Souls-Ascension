@@ -23,8 +23,6 @@ class Player extends LivingEntity {
         this.whirlwindAttackAnimation = new Animation(game.assetManager.getAsset('./assets/sprites/characterWhirlWindAttackAnimation.png'), 0, 0, 42, 42, 0.04, 4, false, false);
         this.animation = this.standAnimation; // initial animation.
 
-        this.direction = 'down';
-
         this.attackDamage = 8;
         this.attackCooldown = 0;
         this.attackCooldownTime = 5;
@@ -139,34 +137,22 @@ class Player extends LivingEntity {
     }
 
     update() {
-        let xMot = 0, yMot = 0;
+        super.update();
 
         if (this.game.left) {
-            xMot -= this.travelSpeed;
+            this.xMot -= this.travelSpeed;
         } else if (this.game.right) {
-            xMot += this.travelSpeed;
+            this.xMot += this.travelSpeed;
         }
 
         if (this.game.up) {
-            yMot -= this.travelSpeed;
+            this.yMot -= this.travelSpeed;
         } else if (this.game.down) {
-            yMot += this.travelSpeed;
+            this.yMot += this.travelSpeed;
         }
 
-        if (xMot != 0 || yMot != 0) {
-            let result = this.game.level.hasCollidedWithWalls(this.wallAABB, xMot, yMot);
-
-            if (result) {
-                if (!(result.left || result.right)) this.x += xMot;
-                else xMot = 0;
-                if (!(result.top || result.bottom)) this.y += yMot;
-                else yMot = 0;
-            }
-
-            if (yMot < 0) this.direction = 'up';
-            else if (yMot > 0) this.direction = 'down';
-            else if (xMot < 0) this.direction = 'left';
-            else if (xMot > 0) this.direction = 'right';
+        if (this.xMot != 0 || this.yMot != 0) {
+            this.updatePosition(this.wallAABB);
         }
 
         this.updateAABBs();
@@ -324,15 +310,20 @@ class Player extends LivingEntity {
     draw(ctx) {
         this.animation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
 
-        if (this.game.debug) {
-            this.whirlwindAABB.draw(ctx, 'red');
+        if (this.game.debug.enabled) {
+            let verbosity = this.game.debug.verbosity;
+            if (verbosity > 0) {
+                this.wallAABB.draw(ctx, 'blue', 5);
 
-            this.attackLeftAABB.draw(ctx, 'orange');
-            this.attackRightAABB.draw(ctx, 'orange');
-            this.attackUPAABB.draw(ctx, 'orange');
-            this.attackDownAABB.draw(ctx, 'orange');
+                if (verbosity > 1) {
+                    this.whirlwindAABB.draw(ctx, 'red');
 
-            this.wallAABB.draw(ctx, 'blue');
+                    this.attackLeftAABB.draw(ctx, 'orange');
+                    this.attackRightAABB.draw(ctx, 'orange');
+                    this.attackUPAABB.draw(ctx, 'orange');
+                    this.attackDownAABB.draw(ctx, 'orange');
+                }
+            }
         }
 
         super.draw(ctx);

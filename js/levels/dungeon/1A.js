@@ -1,6 +1,7 @@
 import Level from '../../Level.js';
 import Player from '../../Player.js';
 import Templates from './DungeonTemplates.js';
+import Sorcerer from '../../enemies/Sorcerer.js';
 
 class Level1A extends Level {
     constructor(game) {
@@ -19,6 +20,7 @@ class Level1A extends Level {
 
     postPopulate() {
         this.addEntity(new Player(this.game, 150, 150), 'Player');
+        this.addEntity(new Sorcerer(this.game, 550, 150));
     }
 
     isImpassable(id) {

@@ -6,7 +6,7 @@ function startInput(engine) {
     window.addEventListener('keydown', function (e) {
         switch (e.key) {
             case '`':
-                engine.debug = !engine.debug;
+                engine.toggleDebug();
                 break;
             default:
                 break;

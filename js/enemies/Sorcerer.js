@@ -1,15 +1,16 @@
 import HostileEntity from '../HostileEnemy.js';
 import BoundingBox from '../BoundingBox.js';
 import Animation from '../Animation.js';
+import Projectile from './Projectile.js';
 
 class Sorcerer extends HostileEntity {
     constructor(game, x, y) {
         super(game, x, y);
-        this.boundingBox = new BoundingBox(x, y, 20, 60, 35, 30);
+        this.boundingBox = new BoundingBox(x, y, 20, 60, 18, 15);
         this.standingAttackAnimation = new Animation(this.game.assetManager.getAsset('./assets/sprites/sorcererVillain.png'), 0, 0, 100, 100, 0.1, 10, true, false);
         this.death = null;
         this.animation = this.standingAttackAnimation;
-        this.moveSpeed = 70;
+        this.moveSpeed = 1;
         this.fleeSpeed = 90;
         this.attackSpeed = 3;
         this.attackInterval = 0.6;
@@ -26,11 +27,12 @@ class Sorcerer extends HostileEntity {
     }
 
     update() {
+        super.update();
+
         let player = this.game.levelManager.level.getEntityWithTag('Player');
 
         if (this.cooldown > 0) this.cooldown -= this.game.clockTick;
         if (this.special > 0) this.cooldown -= this.game.clockTick;
-        let canMove = false;
         let xOrigC = (player.x + player.animation.frameWidth / 2);
         let yOrigC = (player.y + player.animation.frameHeight / 2);
         let xOrigS = (this.x + this.animation.frameWidth / 2)
@@ -38,8 +40,6 @@ class Sorcerer extends HostileEntity {
         let xDiff = xOrigC - xOrigS;
         let yDiff = yOrigC - yOrigS;
         let distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
-        let origX = this.x;
-        let origY = this.y;
 
         if (!this.alive) {
             if (this.death && this.animation == this.death) {
@@ -53,11 +53,8 @@ class Sorcerer extends HostileEntity {
         }
 
         if (distance < this.fleeRange) {
-            let velX = (this.fleeSpeed * xDiff) / distance;
-            let velY = (this.fleeSpeed * yDiff) / distance;
-
-            this.x -= this.game.clockTick * velX;
-            this.y -= this.game.clockTick * velY;
+            this.xMot = -this.game.clockTick * (this.fleeSpeed * xDiff) / distance;
+            this.yMot = -this.game.clockTick * (this.fleeSpeed * yDiff) / distance;
 
             if (distance < this.dangerRange) this.specialAttack(xDiff, yDiff, distance, xOrigS, yOrigS);
         } else if (this.startAttackRange <= distance && distance <= this.stopAttackRange) {
@@ -65,24 +62,19 @@ class Sorcerer extends HostileEntity {
         }
 
         if (this.startFollowRange <= distance && distance <= this.stopFollowRange) {
-            let velX = (this.moveSpeed * xDiff) / distance;
-            let velY = (this.moveSpeed * yDiff) / distance;
-
-            this.x += this.game.clockTick * velX;
-            this.y += this.game.clockTick * velY;
-
+            this.xMot = (this.moveSpeed * xDiff) / distance;
+            this.yMot = (this.moveSpeed * yDiff) / distance;
         }
 
-        if (!this.game.levelManager.level.hasCollidedWithWalls(this)) {
-            canMove = true
-        }
+        this.updatePosition(this.boundingBox);
+    }
 
-        if (!canMove) {
-            this.x = origX;
-            this.y = origY;
+    updatePosition(aabb = this.boundingBox) {
+        if (this.xMot != 0 || this.yMot != 0) {
+            return super.updatePosition(aabb);
+        } else {
+            return super.updatePosition(aabb);
         }
-
-        super.update();
     }
 
     attack(xDiff, yDiff, distance, xOrigS, yOrigS) {
