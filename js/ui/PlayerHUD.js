@@ -1,15 +1,13 @@
-import Entity from '../Entity.js';
-
-class PlayerHUD extends Entity {
-    constructor(game, image, hpImage) {
-        super(game, 0, 0);
+class PlayerHUD {
+    constructor(game) {
+        this.game = game;
         this.x = 0;
         this.y = 0;
         this.w = 512;
         this.h = 512;
-        this.image = image;
-        this.hpImange = hpImage;
-        this.whirlSkill = game.assetManager.getAsset('./assets/sprites/whirl.png');
+        this.image = game.assetManager.getAsset('ui.avatar');
+        this.hpImange = game.assetManager.getAsset('ui.hp');
+        this.whirlSkill = game.assetManager.getAsset('ui.whirlwind');
     }
 
     draw(ctx) {

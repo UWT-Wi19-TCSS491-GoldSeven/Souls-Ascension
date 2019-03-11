@@ -6,13 +6,13 @@ import Projectile from './Projectile.js';
 class Slime extends HostileEntity {
     constructor(game, x, y) {
         super(game, x, y);
-        this.slimeEnemyWalkingLeftAnimation = new Animation(this.game.assetManager.getAsset('./assets/sprites/SlimeWalkLeft.png'), 0, 0, 80, 80, 0.1, 8, true, false);
-        this.slimeEnemyWalkingRightAnimation = new Animation(this.game.assetManager.getAsset('./assets/sprites/SlimeWalkRight.png'), 0, 0, 80, 80, 0.1, 8, true, false);
-        this.slimeEnemyAttackLeftAnimation = new Animation(this.game.assetManager.getAsset('./assets/sprites/SlimeAttackLeft.png'), 0, 0, 80, 80, 0.1, 10, true, false);
-        this.slimeEnemyAttackRightAnimation = new Animation(this.game.assetManager.getAsset('./assets/sprites/SlimeAttackRight.png'), 0, 0, 80, 80, 0.1, 10, true, false);
-        this.slimeEnemyIdleAnimation = new Animation(this.game.assetManager.getAsset('./assets/sprites/SlimeIdle.png'), 0, 0, 80, 80, 0.1, 8, true, false);
-        this.death = new Animation(this.game.assetManager.getAsset('./assets/sprites/SlimeDeath.png'), 0, 0, 80, 80, 0.1, 8, false, false);
-        this.animation = this.slimeEnemyIdleAnimation;
+        this.animIdle = new Animation(this.game.assetManager.getAsset('slime.idle'), 0, 0, 80, 80, 0.1, 8, true, false);
+        this.animWalkLeft = new Animation(this.game.assetManager.getAsset('slime.walk.left'), 0, 0, 80, 80, 0.1, 8, true, false);
+        this.animWalkRight = new Animation(this.game.assetManager.getAsset('slime.walk.right'), 0, 0, 80, 80, 0.1, 8, true, false);
+        this.animAttackLeft = new Animation(this.game.assetManager.getAsset('slime.attack.left'), 0, 0, 80, 80, 0.1, 10, true, false);
+        this.animAttackRight = new Animation(this.game.assetManager.getAsset('slime.attack.right'), 0, 0, 80, 80, 0.1, 10, true, false);
+        this.animDeath = new Animation(this.game.assetManager.getAsset('slime.animDeath'), 0, 0, 80, 80, 0.1, 8, false, false);
+        this.animation = this.animIdle;
         this.boundingBox = new BoundingBox(x, y, 35, 20, 13, 18);
         this.isMovingWest = false;
         this.isMovingEast = false;
@@ -44,8 +44,8 @@ class Slime extends HostileEntity {
         let distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
 
         if (!this.alive) {
-            if (this.death && this.animation == this.death) {
-                if (this.death.isDone()) this.destroyed = true;
+            if (this.animDeath && this.animation == this.animDeath) {
+                if (this.animDeath.isDone()) this.destroyed = true;
             } else {
                 this.destroyed = true;
             }
@@ -87,19 +87,19 @@ class Slime extends HostileEntity {
     }
 
     draw(ctx) {
-        if (this.animation !== this.death) {
+        if (this.animation !== this.animDeath) {
             if (this.isMovingWest) {
-                this.animation = this.slimeEnemyWalkingLeftAnimation;
+                this.animation = this.animWalkLeft;
             } else if (this.isMovingEast) {
-                this.animation = this.slimeEnemyWalkingRightAnimation;
+                this.animation = this.animWalkRight;
             } else if (this.isAttackingLeft) {
-                this.animation = this.slimeEnemyAttackLeftAnimation;
+                this.animation = this.animAttackLeft;
             } else if (this.isAttackingRight) {
-                this.animation = this.slimeEnemyAttackRightAnimation;
+                this.animation = this.animAttackRight;
             } else if (this.health == 0 && !this.destroyed) {
-                this.animation = this.death;
+                this.animation = this.animDeath;
             } else {
-                this.animation = this.slimeEnemyIdleAnimation;
+                this.animation = this.animIdle;
             }
         }
 

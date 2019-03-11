@@ -7,12 +7,12 @@ class SlimeBehemoth extends HostileEntity {
     constructor(game, x, y) {
         super(game, x, y);
         this.boundingBox = new BoundingBox(x, y, 40, 60, 20, 5);
-        this.slimeBehemothWalkingLeftAnimation = new Animation(this.game.assetManager.getAsset('./assets/sprites/SlimeBehemothWalkingLeft.png'), 0, 0, 80, 68, 0.1, 8, true, false);
-        this.slimeBehemothWalkingRightAnimation = new Animation(this.game.assetManager.getAsset('./assets/sprites/SlimeBehemothWalkingRight.png'), 0, 0, 80, 68, 0.1, 8, true, false);
-        this.slimeBehemothAttackLeftAnimation = new Animation(this.game.assetManager.getAsset('./assets/sprites/SlimeBehemothAttackLeft.png'), 0, 0, 117, 68, 0.1, 8, true, false);
-        this.slimeBehemothAttackRightAnimation = new Animation(this.game.assetManager.getAsset('./assets/sprites/SlimeBehemothAttackRight.png'), 0, 0, 120, 68, 0.1, 8, true, false);
-        this.death = null;
-        this.animation = this.slimeBehemothWalkingRightAnimation;
+        this.animWalkLeft = new Animation(this.game.assetManager.getAsset('behemoth.walk.left'), 0, 0, 80, 68, 0.1, 8, true, false);
+        this.animWalkRight = new Animation(this.game.assetManager.getAsset('behemoth.walk.right'), 0, 0, 80, 68, 0.1, 8, true, false);
+        this.animAttackLeft = new Animation(this.game.assetManager.getAsset('behemoth.attack.left'), 0, 0, 117, 68, 0.1, 8, true, false);
+        this.animAttackRight = new Animation(this.game.assetManager.getAsset('behemoth.attack.right'), 0, 0, 120, 68, 0.1, 8, true, false);
+        this.animDeath = null;
+        this.animation = this.animWalkRight;
         this.isMovingWest = true;
         this.isMovingEast = false;
         this.moveSpeed = 70;
@@ -38,7 +38,7 @@ class SlimeBehemoth extends HostileEntity {
         let distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
 
         if (!this.alive) {
-            if (this.death && this.animation == this.death) {
+            if (this.animDeath && this.animation == this.animDeath) {
                 this.life -= this.game.clockTick;
                 if (this.life <= 0) this.destroyed = true;
             } else {
@@ -70,9 +70,9 @@ class SlimeBehemoth extends HostileEntity {
 
     draw(ctx) {
         if (this.isMovingWest) {
-            this.animation = this.slimeBehemothWalkingLeftAnimation;
+            this.animation = this.animWalkLeft;
         } else {
-            this.animation = this.slimeBehemothWalkingRightAnimation;
+            this.animation = this.animWalkRight;
         }
 
         this.animation.drawFrame(this.game.clockTick, ctx, this.x, this.y);

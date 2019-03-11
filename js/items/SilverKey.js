@@ -6,7 +6,7 @@ class SilverKey extends Entity {
     constructor(game, x, y) {
         super(game, x, y);
         this.boundingBox = new BoundingBox(x, y, 10, 10, 20, 20);
-        this.silverKeyAnimation = new Animation(game.assetManager.getAsset('./assets/sprites/SilverKeyAnimation.png'), 0, 0, 48, 48, 0.1, 4, true);
+        this.silverKeyAnimation = new Animation(game.assetManager.getAsset('item.silver.key'), 0, 0, 48, 48, 0.1, 4, true);
     }
 
     update() {
@@ -20,7 +20,7 @@ class SilverKey extends Entity {
         }
     }
 
-    draw() {
+    draw(ctx) {
         this.silverKeyAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
         super.draw();
     }

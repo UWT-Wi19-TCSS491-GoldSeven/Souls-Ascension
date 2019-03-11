@@ -8,15 +8,13 @@ import Slime from '../../enemies/Slime.js';
 class Level1A extends Level {
     constructor(game) {
         super(game, 48);
-        this.hud = new PlayerHUD(this.game,
-            this.game.assetManager.getAsset('./assets/sprites/characterInfo2.png'),
-            this.game.assetManager.getAsset('./assets/sprites/HP.png'));
+        this.hud = new PlayerHUD(this.game)
     }
 
     init() {
         this.appendTileSheet(this.game.assetManager.getAsset('map.dungeon'));
 
-        this.game.sounds.get('dungeon1').play();
+        this.game.sounds.get('dungeon1.music').play();
     }
 
     prePopulate() {

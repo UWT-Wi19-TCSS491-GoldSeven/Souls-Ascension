@@ -6,7 +6,7 @@ class HealingPotion extends Entity {
     constructor(game, x, y) {
         super(game, x, y);
         this.boundingBox = new BoundingBox(x, y, 10, 10, 20, 20);
-        this.sparkleAnimation = new Animation(game.assetManager.getAsset('./assets/sprites/HealthPotionAnimation.png'), 0, 0, 48, 48, 0.1, 4, true);
+        this.sparkleAnimation = new Animation(game.assetManager.getAsset('item.hp'), 0, 0, 48, 48, 0.1, 4, true);
     }
 
     update() {
@@ -20,7 +20,7 @@ class HealingPotion extends Entity {
         }
     }
 
-    draw() {
+    draw(ctx) {
         this.sparkleAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
         super.draw();
     }

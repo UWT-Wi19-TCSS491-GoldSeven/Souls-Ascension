@@ -6,10 +6,10 @@ class Skeleton extends HostileEntity {
     constructor(game, x, y) {
         super(game, x, y);
         this.boundingBox = new BoundingBox(x, y, 30, 50, 10, 15);
-        this.skeletonWalkingLeftAnimation = new Animation(this.game.assetManager.getAsset('./assets/sprites/SkeletonWalkLeft.png'), 0, 0, 44, 66, 0.1, 13, true, false);
-        this.skeletonWalkingRightAnimation = new Animation(this.game.assetManager.getAsset('./assets/sprites/SkeletonWalkRight.png'), 0, 0, 44, 66, 0.1, 13, true, false);
-        this.death = null;
-        this.animation = this.skeletonWalkingRightAnimation;
+        this.animWalkLeft = new Animation(this.game.assetManager.getAsset('skeleton.walk.left'), 0, 0, 44, 66, 0.1, 13, true, false);
+        this.animWalkRight = new Animation(this.game.assetManager.getAsset('skeleton.walk.right'), 0, 0, 44, 66, 0.1, 13, true, false);
+        this.animDeath = null;
+        this.animation = this.animWalkRight;
         this.isMovingWest = true;
         this.isMovingEast = false;
         this.moveSpeed = 30;
@@ -25,7 +25,7 @@ class Skeleton extends HostileEntity {
 
     update() {
         if (!this.alive) {
-            if (this.death && this.animation == this.death) {
+            if (this.animDeath && this.animation == this.animDeath) {
                 this.life -= this.game.clockTick;
                 if (this.life <= 0) this.destroyed = true;
             } else {
@@ -57,9 +57,9 @@ class Skeleton extends HostileEntity {
 
     draw(ctx) {
         if (this.isMovingWest) {
-            this.animation = this.skeletonWalkingLeftAnimation;
+            this.animation = this.animWalkLeft;
         } else {
-            this.animation = this.skeletonWalkingRightAnimation;
+            this.animation = this.animWalkRight;
         }
 
         this.animation.drawFrame(this.game.clockTick, ctx, this.x, this.y);

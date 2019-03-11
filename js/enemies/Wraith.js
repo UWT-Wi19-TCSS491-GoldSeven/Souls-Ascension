@@ -6,13 +6,13 @@ class Wraith extends HostileEntity {
     constructor(game, x, y) {
         super(game, x, y);
         this.boundingBox = new BoundingBox(x, y, 30, 50, 25, 15);
-        this.wizardWalkingLeftAnimation = new Animation(this.game.assetManager.getAsset('./assets/sprites/wizardWalkLeft.png'), 0, 0, 80, 80, 0.1, 6, true, false);
-        this.wizardWalkingRightAnimation = new Animation(this.game.assetManager.getAsset('./assets/sprites/wizardWalkRight.png'), 0, 0, 80, 80, 0.1, 6, true, false);
-        this.wizardAttackLeftAnimation = new Animation(this.game.assetManager.getAsset('./assets/sprites/wizardAttackLeft.png'), 0, 0, 80, 80, 0.1, 6, true, false);
-        this.wizardAttackRightAnimation = new Animation(this.game.assetManager.getAsset('./assets/sprites/wizardAttackRight.png'), 0, 0, 80, 80, 0.1, 6, true, false);
-        this.wizardIdleAnimation = new Animation(this.game.assetManager.getAsset('./assets/sprites/wizardIdle.png'), 0, 0, 80, 80, 0.1, 10, true, false);
-        this.death = new Animation(this.game.assetManager.getAsset('./assets/sprites/wizardDeath.png'), 0, 0, 80, 80, 0.1, 10, false, false);
-        this.animation = this.wizardWalkingLeftAnimation;
+        this.animIdle = new Animation(this.game.assetManager.getAsset('wraith.idle'), 0, 0, 80, 80, 0.1, 10, true, false);
+        this.animWalkLeft = new Animation(this.game.assetManager.getAsset('wraith.walk.left'), 0, 0, 80, 80, 0.1, 6, true, false);
+        this.animWalkRight = new Animation(this.game.assetManager.getAsset('wraith.walk.right'), 0, 0, 80, 80, 0.1, 6, true, false);
+        this.animAttackLeft = new Animation(this.game.assetManager.getAsset('wraith.attack.left'), 0, 0, 80, 80, 0.1, 6, true, false);
+        this.animAttackRight = new Animation(this.game.assetManager.getAsset('wraith.attack.right'), 0, 0, 80, 80, 0.1, 6, true, false);
+        this.animDeath = new Animation(this.game.assetManager.getAsset('wraith.animDeath'), 0, 0, 80, 80, 0.1, 10, false, false);
+        this.animation = this.animWalkLeft;
         this.isMovingWest = false;
         this.isMovingEast = true;
         this.moveSpeed = 140;
@@ -29,7 +29,7 @@ class Wraith extends HostileEntity {
 
     update() {
         if (!this.alive) {
-            if (this.death && this.animation == this.death) {
+            if (this.animDeath && this.animation == this.animDeath) {
                 this.life -= this.game.clockTick;
                 if (this.life <= 0) this.destroyed = true;
             } else {
@@ -60,17 +60,17 @@ class Wraith extends HostileEntity {
     }
 
     draw(ctx) {
-        if (this.animation !== this.death) {
+        if (this.animation !== this.animDeath) {
             if (this.isMovingWest) {
-                this.animation = this.wizardWalkingLeftAnimation;
+                this.animation = this.animWalkLeft;
             } else {
-                this.animation = this.wizardWalkingRightAnimation;
+                this.animation = this.animWalkRight;
             }
         }
 
         this.animation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
 
-        if (this.animation === this.death) {
+        if (this.animation === this.animDeath) {
             this.life -= this.game.clockTick;
             if (this.life <= 0) this.destroyed = true;
         }

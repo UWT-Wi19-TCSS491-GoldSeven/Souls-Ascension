@@ -7,9 +7,9 @@ class Sorcerer extends HostileEntity {
     constructor(game, x, y) {
         super(game, x, y);
         this.boundingBox = new BoundingBox(x, y, 20, 60, 18, 15);
-        this.standingAttackAnimation = new Animation(this.game.assetManager.getAsset('./assets/sprites/sorcererVillain.png'), 0, 0, 100, 100, 0.1, 10, true, false);
-        this.death = null;
-        this.animation = this.standingAttackAnimation;
+        this.animAttack = new Animation(this.game.assetManager.getAsset('sorcerer.attack'), 0, 0, 100, 100, 0.1, 10, true, false);
+        this.animDeath = null;
+        this.animation = this.animAttack;
         this.moveSpeed = 1;
         this.fleeSpeed = 90;
         this.attackSpeed = 3;
@@ -41,7 +41,7 @@ class Sorcerer extends HostileEntity {
         let distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
 
         if (!this.alive) {
-            if (this.death && this.animation == this.death) {
+            if (this.animDeath && this.animation == this.animDeath) {
                 this.life -= this.game.clockTick;
                 if (this.life <= 0) this.destroyed = true;
             } else {
