@@ -1,5 +1,5 @@
 import Level from '../../Level.js';
-import Player from "../../Player.js";
+import Player from '../../Player.js';
 import Templates from './DungeonTemplates.js';
 
 class Level1A extends Level {
@@ -8,7 +8,7 @@ class Level1A extends Level {
     }
 
     init() {
-        this.appendTileSheet(this.game.assetManager.getAsset("map.dungeon"));
+        this.appendTileSheet(this.game.assetManager.getAsset('map.dungeon'));
 
         this.game.sounds.get('dungeon1').play();
     }
@@ -18,7 +18,7 @@ class Level1A extends Level {
     }
 
     postPopulate() {
-        this.addEntity(new Player(this.game, 150, 150), "Player");
+        this.addEntity(new Player(this.game, 150, 150), 'Player');
     }
 
     isImpassable(id) {

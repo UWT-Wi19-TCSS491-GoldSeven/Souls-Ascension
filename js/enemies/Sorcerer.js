@@ -1,12 +1,12 @@
-import HostileEntity from "../HostileEnemy.js";
-import BoundingBox from "../BoundingBox.js";
-import Animation from "../Animation.js";
+import HostileEntity from '../HostileEnemy.js';
+import BoundingBox from '../BoundingBox.js';
+import Animation from '../Animation.js';
 
 class Sorcerer extends HostileEntity {
     constructor(game, x, y) {
         super(game, x, y);
         this.boundingBox = new BoundingBox(x, y, 20, 60, 35, 30);
-        this.standingAttackAnimation = new Animation(this.game.assetManager.getAsset("./assets/sprites/sorcererVillain.png"), 0, 0, 100, 100, 0.1, 10, true, false);
+        this.standingAttackAnimation = new Animation(this.game.assetManager.getAsset('./assets/sprites/sorcererVillain.png'), 0, 0, 100, 100, 0.1, 10, true, false);
         this.death = null;
         this.animation = this.standingAttackAnimation;
         this.moveSpeed = 70;
@@ -26,7 +26,7 @@ class Sorcerer extends HostileEntity {
     }
 
     update() {
-        let player = this.game.levelManager.level.getEntityWithTag("Player");
+        let player = this.game.levelManager.level.getEntityWithTag('Player');
 
         if (this.cooldown > 0) this.cooldown -= this.game.clockTick;
         if (this.special > 0) this.cooldown -= this.game.clockTick;

@@ -13,7 +13,7 @@ function startInput(engine) {
         }
     })
 
-    engine.ctx.canvas.addEventListener("keydown", function (e) {
+    engine.ctx.canvas.addEventListener('keydown', function (e) {
         switch (e.key) {
             case '1':
                 engine.attack = true;
@@ -57,7 +57,7 @@ function startInput(engine) {
         }
     }, false);
 
-    engine.ctx.canvas.addEventListener("keyup", function (e) {
+    engine.ctx.canvas.addEventListener('keyup', function (e) {
         switch (e.key) {
             case '1':
                 engine.attack = false;
@@ -93,15 +93,15 @@ function startInput(engine) {
         }
     }, false);
 
-    engine.ctx.canvas.addEventListener("mousedown", function (e) {
+    engine.ctx.canvas.addEventListener('mousedown', function (e) {
         if (e.button == 0) engine.attack = true; // Enables inflicting damage on the enemy.
         else if (e.button == 2) engine.whirlwind = true;
     }, false);
 
-    engine.ctx.canvas.addEventListener("mouseup", function (e) {
+    engine.ctx.canvas.addEventListener('mouseup', function (e) {
         if (e.button == 0) engine.attack = false;
         else if (e.button == 2) engine.whirlwind = false;
     })
 }
 
-export default { startInput }
+export default {startInput}

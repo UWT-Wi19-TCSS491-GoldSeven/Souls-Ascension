@@ -1,4 +1,4 @@
-import Entity from "../Entity.js";
+import Entity from '../Entity.js';
 
 class TextIndicator extends Entity {
     constructor(game) {
@@ -10,15 +10,15 @@ class TextIndicator extends Entity {
 
     draw(ctx) {
         if (this.damaged !== 0) {
-            ctx.fillStyle = "red";
-            ctx.font = "30px Arial";
-            ctx.fillText(" - " + this.damaged, this.x, this.y);
+            ctx.fillStyle = 'red';
+            ctx.font = '30px Arial';
+            ctx.fillText(' - ' + this.damaged, this.x, this.y);
         }
 
         if (this.exp !== 0) {
-            ctx.fillStyle = "blue";
-            ctx.font = "30px Arial";
-            ctx.fillText(" + " + this.exp + 'Exp', this.x + 10, this.y + 10);
+            ctx.fillStyle = 'blue';
+            ctx.font = '30px Arial';
+            ctx.fillText(' + ' + this.exp + 'Exp', this.x + 10, this.y + 10);
         }
     }
 }

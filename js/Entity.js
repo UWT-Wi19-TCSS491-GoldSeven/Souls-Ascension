@@ -1,4 +1,4 @@
-import BoundingBox from "./BoundingBox.js";
+import BoundingBox from './BoundingBox.js';
 
 class Entity {
     constructor(game, x, y) {

@@ -1,17 +1,17 @@
-import HostileEntity from "../HostileEnemy.js";
-import BoundingBox from "../BoundingBox.js";
-import Animation from "../Animation.js";
+import HostileEntity from '../HostileEnemy.js';
+import BoundingBox from '../BoundingBox.js';
+import Animation from '../Animation.js';
 
 class Wraith extends HostileEntity {
     constructor(game, x, y) {
         super(game, x, y);
         this.boundingBox = new BoundingBox(x, y, 30, 50, 25, 15);
-        this.wizardWalkingLeftAnimation = new Animation(this.game.assetManager.getAsset("./assets/sprites/wizardWalkLeft.png"), 0, 0, 80, 80, 0.1, 6, true, false);
-        this.wizardWalkingRightAnimation = new Animation(this.game.assetManager.getAsset("./assets/sprites/wizardWalkRight.png"), 0, 0, 80, 80, 0.1, 6, true, false);
-        this.wizardAttackLeftAnimation = new Animation(this.game.assetManager.getAsset("./assets/sprites/wizardAttackLeft.png"), 0, 0, 80, 80, 0.1, 6, true, false);
-        this.wizardAttackRightAnimation = new Animation(this.game.assetManager.getAsset("./assets/sprites/wizardAttackRight.png"), 0, 0, 80, 80, 0.1, 6, true, false);
-        this.wizardIdleAnimation = new Animation(this.game.assetManager.getAsset("./assets/sprites/wizardIdle.png"), 0, 0, 80, 80, 0.1, 10, true, false);
-        this.death = new Animation(this.game.assetManager.getAsset("./assets/sprites/wizardDeath.png"), 0, 0, 80, 80, 0.1, 10, false, false);
+        this.wizardWalkingLeftAnimation = new Animation(this.game.assetManager.getAsset('./assets/sprites/wizardWalkLeft.png'), 0, 0, 80, 80, 0.1, 6, true, false);
+        this.wizardWalkingRightAnimation = new Animation(this.game.assetManager.getAsset('./assets/sprites/wizardWalkRight.png'), 0, 0, 80, 80, 0.1, 6, true, false);
+        this.wizardAttackLeftAnimation = new Animation(this.game.assetManager.getAsset('./assets/sprites/wizardAttackLeft.png'), 0, 0, 80, 80, 0.1, 6, true, false);
+        this.wizardAttackRightAnimation = new Animation(this.game.assetManager.getAsset('./assets/sprites/wizardAttackRight.png'), 0, 0, 80, 80, 0.1, 6, true, false);
+        this.wizardIdleAnimation = new Animation(this.game.assetManager.getAsset('./assets/sprites/wizardIdle.png'), 0, 0, 80, 80, 0.1, 10, true, false);
+        this.death = new Animation(this.game.assetManager.getAsset('./assets/sprites/wizardDeath.png'), 0, 0, 80, 80, 0.1, 10, false, false);
         this.animation = this.wizardWalkingLeftAnimation;
         this.isMovingWest = false;
         this.isMovingEast = true;

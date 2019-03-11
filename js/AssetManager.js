@@ -24,14 +24,14 @@ class AssetManager {
         for (let property in this.downloadQueue) {
             let img = new Image();
 
-            img.addEventListener("load", function () {
+            img.addEventListener('load', function () {
                 // console.log("Loaded " + this.src);
                 that.successCount++;
                 if (that.isDone()) callback();
             });
 
-            img.addEventListener("error", function () {
-                console.log("Error loading " + this.src);
+            img.addEventListener('error', function () {
+                console.log('Error loading ' + this.src);
                 that.errorCount++;
                 if (that.isDone()) callback();
             });

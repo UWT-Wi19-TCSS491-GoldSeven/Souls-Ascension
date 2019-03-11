@@ -41,4 +41,4 @@ function sliceImage(src,
     return images;
 }
 
-export default { sliceImage };
+export default {sliceImage};

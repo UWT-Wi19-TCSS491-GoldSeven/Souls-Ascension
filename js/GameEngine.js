@@ -1,8 +1,8 @@
 // This game shell was happily copied from Googler Seth Ladd's "Bad Aliens" game and his Google IO talk in 2011
 
 import AssetManager from './AssetManager.js';
-import LevelManager from "./LevelManager.js";
-import Events from "./Events.js";
+import LevelManager from './LevelManager.js';
+import Events from './Events.js';
 
 window.requestAnimFrame = (function () {
     return window.requestAnimationFrame ||

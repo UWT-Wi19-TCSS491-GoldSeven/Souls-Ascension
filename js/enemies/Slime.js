@@ -1,16 +1,16 @@
-import HostileEntity from "../HostileEnemy.js";
-import Animation from "../Animation.js";
-import BoundingBox from "../BoundingBox.js";
+import HostileEntity from '../HostileEnemy.js';
+import Animation from '../Animation.js';
+import BoundingBox from '../BoundingBox.js';
 
 class Slime extends HostileEntity {
     constructor(game, x, y) {
         super(game, x, y);
-        this.slimeEnemyWalkingLeftAnimation = new Animation(this.game.assetManager.getAsset("./assets/sprites/SlimeWalkLeft.png"), 0, 0, 80, 80, 0.1, 8, true, false);
-        this.slimeEnemyWalkingRightAnimation = new Animation(this.game.assetManager.getAsset("./assets/sprites/SlimeWalkRight.png"), 0, 0, 80, 80, 0.1, 8, true, false);
-        this.slimeEnemyAttackLeftAnimation = new Animation(this.game.assetManager.getAsset("./assets/sprites/SlimeAttackLeft.png"), 0, 0, 80, 80, 0.1, 10, true, false);
-        this.slimeEnemyAttackRightAnimation = new Animation(this.game.assetManager.getAsset("./assets/sprites/SlimeAttackRight.png"), 0, 0, 80, 80, 0.1, 10, true, false);
-        this.slimeEnemyIdleAnimation = new Animation(this.game.assetManager.getAsset("./assets/sprites/SlimeIdle.png"), 0, 0, 80, 80, 0.1, 8, true, false);
-        this.death = new Animation(this.game.assetManager.getAsset("./assets/sprites/SlimeDeath.png"), 0, 0, 80, 80, 0.1, 8, false, false);
+        this.slimeEnemyWalkingLeftAnimation = new Animation(this.game.assetManager.getAsset('./assets/sprites/SlimeWalkLeft.png'), 0, 0, 80, 80, 0.1, 8, true, false);
+        this.slimeEnemyWalkingRightAnimation = new Animation(this.game.assetManager.getAsset('./assets/sprites/SlimeWalkRight.png'), 0, 0, 80, 80, 0.1, 8, true, false);
+        this.slimeEnemyAttackLeftAnimation = new Animation(this.game.assetManager.getAsset('./assets/sprites/SlimeAttackLeft.png'), 0, 0, 80, 80, 0.1, 10, true, false);
+        this.slimeEnemyAttackRightAnimation = new Animation(this.game.assetManager.getAsset('./assets/sprites/SlimeAttackRight.png'), 0, 0, 80, 80, 0.1, 10, true, false);
+        this.slimeEnemyIdleAnimation = new Animation(this.game.assetManager.getAsset('./assets/sprites/SlimeIdle.png'), 0, 0, 80, 80, 0.1, 8, true, false);
+        this.death = new Animation(this.game.assetManager.getAsset('./assets/sprites/SlimeDeath.png'), 0, 0, 80, 80, 0.1, 8, false, false);
         this.animation = this.slimeEnemyIdleAnimation;
         this.boundingBox = new BoundingBox(x, y, 35, 20, 25, 35);
         this.isMovingWest = false;
@@ -35,7 +35,7 @@ class Slime extends HostileEntity {
     }
 
     update() {
-        let player = this.game.levelManager.level.getEntityWithTag("Player");
+        let player = this.game.levelManager.level.getEntityWithTag('Player');
 
         if (this.cooldown > 0) this.cooldown -= this.game.clockTick;
         if (this.special > 0) this.cooldown -= this.game.clockTick;

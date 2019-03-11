@@ -1,18 +1,18 @@
-import Entity from "../Entity.js";
-import BoundingBox from "../BoundingBox.js";
-import Animation from "../Animation.js";
+import Entity from '../Entity.js';
+import BoundingBox from '../BoundingBox.js';
+import Animation from '../Animation.js';
 
 class HealingPotion extends Entity {
     constructor(game, x, y) {
         super(game, x, y);
         this.boundingBox = new BoundingBox(x, y, 10, 10, 20, 20);
-        this.sparkleAnimation = new Animation(game.assetManager.getAsset("./assets/sprites/HealthPotionAnimation.png"), 0, 0, 48, 48, 0.1, 4, true);
+        this.sparkleAnimation = new Animation(game.assetManager.getAsset('./assets/sprites/HealthPotionAnimation.png'), 0, 0, 48, 48, 0.1, 4, true);
     }
 
     update() {
         super.update();
 
-        let player = this.game.levelManager.level.getEntityWithTag("Player");
+        let player = this.game.levelManager.level.getEntityWithTag('Player');
 
         if (this.boundingBox.hasCollided(player.boundingBox)) {
             this.destroy();

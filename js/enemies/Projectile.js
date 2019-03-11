@@ -1,5 +1,5 @@
-import Entity from "../Entity.js";
-import BoundingBox from "../BoundingBox.js";
+import Entity from '../Entity.js';
+import BoundingBox from '../BoundingBox.js';
 
 class Projectile extends Entity {
     constructor(game, x, y, xs, ys) {
@@ -12,7 +12,7 @@ class Projectile extends Entity {
     }
 
     update() {
-        let player = this.game.levelManager.level.getEntityWithTag("Player");
+        let player = this.game.levelManager.level.getEntityWithTag('Player');
 
         if (this.game.levelManager.level.hasCollidedWithWalls(this)) {
             this.destroy();

@@ -28,7 +28,7 @@ class Sound {
         if (this._source && this._audio) {
             this._audio.play();
         } else {
-            console.error("Cannot play audio object.");
+            console.error('Cannot play audio object.');
         }
     }
 
@@ -42,7 +42,7 @@ class Sound {
             this._audio.muted = temp.muted;
             this._audio.play();
         } else {
-            console.error("Cannot play audio object.");
+            console.error('Cannot play audio object.');
         }
     }
 
@@ -50,7 +50,7 @@ class Sound {
         if (this._source && this._audio) {
             this._audio.pause();
         } else {
-            console.error("Cannot pause audio object.");
+            console.error('Cannot pause audio object.');
         }
     }
 }

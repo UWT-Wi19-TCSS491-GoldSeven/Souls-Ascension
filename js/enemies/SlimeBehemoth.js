@@ -1,16 +1,16 @@
 import Animation from '../Animation.js';
-import HostileEntity from "../HostileEnemy.js";
-import BoundingBox from "../BoundingBox.js";
-import Entity from "../Entity.js";
+import HostileEntity from '../HostileEnemy.js';
+import BoundingBox from '../BoundingBox.js';
+import Entity from '../Entity.js';
 
 class SlimeBehemoth extends HostileEntity {
     constructor(game, x, y) {
         super(game, x, y);
         this.boundingBox = new BoundingBox(x, y, 40, 60, 20, 5);
-        this.slimeBehemothWalkingLeftAnimation = new Animation(this.game.assetManager.getAsset("./assets/sprites/SlimeBehemothWalkingLeft.png"), 0, 0, 80, 68, 0.1, 8, true, false);
-        this.slimeBehemothWalkingRightAnimation = new Animation(this.game.assetManager.getAsset("./assets/sprites/SlimeBehemothWalkingRight.png"), 0, 0, 80, 68, 0.1, 8, true, false);
-        this.slimeBehemothAttackLeftAnimation = new Animation(this.game.assetManager.getAsset("./assets/sprites/SlimeBehemothAttackLeft.png"), 0, 0, 117, 68, 0.1, 8, true, false);
-        this.slimeBehemothAttackRightAnimation = new Animation(this.game.assetManager.getAsset("./assets/sprites/SlimeBehemothAttackRight.png"), 0, 0, 120, 68, 0.1, 8, true, false);
+        this.slimeBehemothWalkingLeftAnimation = new Animation(this.game.assetManager.getAsset('./assets/sprites/SlimeBehemothWalkingLeft.png'), 0, 0, 80, 68, 0.1, 8, true, false);
+        this.slimeBehemothWalkingRightAnimation = new Animation(this.game.assetManager.getAsset('./assets/sprites/SlimeBehemothWalkingRight.png'), 0, 0, 80, 68, 0.1, 8, true, false);
+        this.slimeBehemothAttackLeftAnimation = new Animation(this.game.assetManager.getAsset('./assets/sprites/SlimeBehemothAttackLeft.png'), 0, 0, 117, 68, 0.1, 8, true, false);
+        this.slimeBehemothAttackRightAnimation = new Animation(this.game.assetManager.getAsset('./assets/sprites/SlimeBehemothAttackRight.png'), 0, 0, 120, 68, 0.1, 8, true, false);
         this.death = null;
         this.animation = this.slimeBehemothWalkingRightAnimation;
         this.isMovingWest = true;
@@ -27,7 +27,7 @@ class SlimeBehemoth extends HostileEntity {
     }
 
     update() {
-        let player = this.game.levelManager.level.getEntityWithTag("Player");
+        let player = this.game.levelManager.level.getEntityWithTag('Player');
 
         let xOrigC = (player.x + player.animation.frameWidth / 2);
         let yOrigC = (player.y + player.animation.frameHeight / 2);

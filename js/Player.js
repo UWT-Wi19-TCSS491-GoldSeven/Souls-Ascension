@@ -1,28 +1,28 @@
 import Animation from './Animation.js'
 import BoundingBox from './BoundingBox.js'
 import LivingEntity from './LivingEntity.js'
-import TextIndicator from "./ui/TextIndicator.js";
+import TextIndicator from './ui/TextIndicator.js';
 
 class Player extends LivingEntity {
     constructor(game, x, y) {
         super(game, x, y);
         this.boundingBox = new BoundingBox(this.x, this.y, 20, 40, 5);
-        this.standAnimation = new Animation(game.assetManager.getAsset("player.idle.down"), 0, 0, 42, 42, 0.08, 4, true, false);
-        this.standLeftAnimation = new Animation(game.assetManager.getAsset("player.idle.left"), 0, 0, 42, 42, 0.08, 1, true, false);
-        this.standRightAnimation = new Animation(game.assetManager.getAsset("player.idle.right"), 0, 0, 42, 42, 0.08, 1, true, false);
-        this.standUpAnimation = new Animation(game.assetManager.getAsset("player.idle.up"), 0, 0, 42, 42, 0.08, 1, true, false);
-        this.walkRightAnimation = new Animation(game.assetManager.getAsset("./assets/sprites/characterRightAnimation.png"), 0, 0, 42, 42, 0.15, 6, true, false);
-        this.walkLeftAnimation = new Animation(game.assetManager.getAsset("./assets/sprites/characterLeftAnimation.png"), 0, 0, 42, 42, 0.15, 6, true, false);
-        this.walkUpAnimation = new Animation(game.assetManager.getAsset("./assets/sprites/characterBackwardRun.png"), 0, 0, 42, 42, 0.15, 5, true, false);
-        this.walkDownAnimation = new Animation(game.assetManager.getAsset("./assets/sprites/CharacterForwardRun.png"), 0, 0, 42, 42, 0.15, 5, true, false);
-        this.attackUpAnimation = new Animation(game.assetManager.getAsset("./assets/sprites/characterUpAttack.png"), 0, 0, 42, 42, 0.04, 3, false, false);
-        this.attackDownAnimation = new Animation(game.assetManager.getAsset("./assets/sprites/characterDownAttack.png"), 0, 0, 42, 42, 0.04, 3, false, false);
-        this.attackLeftAnimation = new Animation(game.assetManager.getAsset("./assets/sprites/characterLeftAttack.png"), 0, 0, 42, 42, 0.04, 3, false, false);
-        this.attackRightAnimation = new Animation(game.assetManager.getAsset("./assets/sprites/characterRightAttack.png"), 0, 0, 42, 42, 0.04, 3, false, false);
-        this.whirlwindAttackAnimation = new Animation(game.assetManager.getAsset("./assets/sprites/characterWhirlWindAttackAnimation.png"), 0, 0, 42, 42, 0.04, 4, false, false);
+        this.standAnimation = new Animation(game.assetManager.getAsset('player.idle.down'), 0, 0, 42, 42, 0.08, 4, true, false);
+        this.standLeftAnimation = new Animation(game.assetManager.getAsset('player.idle.left'), 0, 0, 42, 42, 0.08, 1, true, false);
+        this.standRightAnimation = new Animation(game.assetManager.getAsset('player.idle.right'), 0, 0, 42, 42, 0.08, 1, true, false);
+        this.standUpAnimation = new Animation(game.assetManager.getAsset('player.idle.up'), 0, 0, 42, 42, 0.08, 1, true, false);
+        this.walkRightAnimation = new Animation(game.assetManager.getAsset('./assets/sprites/characterRightAnimation.png'), 0, 0, 42, 42, 0.15, 6, true, false);
+        this.walkLeftAnimation = new Animation(game.assetManager.getAsset('./assets/sprites/characterLeftAnimation.png'), 0, 0, 42, 42, 0.15, 6, true, false);
+        this.walkUpAnimation = new Animation(game.assetManager.getAsset('./assets/sprites/characterBackwardRun.png'), 0, 0, 42, 42, 0.15, 5, true, false);
+        this.walkDownAnimation = new Animation(game.assetManager.getAsset('./assets/sprites/CharacterForwardRun.png'), 0, 0, 42, 42, 0.15, 5, true, false);
+        this.attackUpAnimation = new Animation(game.assetManager.getAsset('./assets/sprites/characterUpAttack.png'), 0, 0, 42, 42, 0.04, 3, false, false);
+        this.attackDownAnimation = new Animation(game.assetManager.getAsset('./assets/sprites/characterDownAttack.png'), 0, 0, 42, 42, 0.04, 3, false, false);
+        this.attackLeftAnimation = new Animation(game.assetManager.getAsset('./assets/sprites/characterLeftAttack.png'), 0, 0, 42, 42, 0.04, 3, false, false);
+        this.attackRightAnimation = new Animation(game.assetManager.getAsset('./assets/sprites/characterRightAttack.png'), 0, 0, 42, 42, 0.04, 3, false, false);
+        this.whirlwindAttackAnimation = new Animation(game.assetManager.getAsset('./assets/sprites/characterWhirlWindAttackAnimation.png'), 0, 0, 42, 42, 0.04, 4, false, false);
         this.animation = this.standAnimation; // initial animation.
 
-        this.direction = "down";
+        this.direction = 'down';
 
         this.attackDamage = 8;
         this.attackCooldown = 0;
@@ -79,10 +79,10 @@ class Player extends LivingEntity {
     }
 
     updateDirection() {
-        if (this.game.left) this.direction = "left";
-        if (this.game.right) this.direction = "right";
-        if (this.game.up) this.direction = "up";
-        if (this.game.down) this.direction = "down";
+        if (this.game.left) this.direction = 'left';
+        if (this.game.right) this.direction = 'right';
+        if (this.game.up) this.direction = 'up';
+        if (this.game.down) this.direction = 'down';
     }
 
     updateAttackStates() {
@@ -162,10 +162,10 @@ class Player extends LivingEntity {
                 else yMot = 0;
             }
 
-            if (yMot < 0) this.direction = "up";
-            else if (yMot > 0) this.direction = "down";
-            else if (xMot < 0) this.direction = "left";
-            else if (xMot > 0) this.direction = "right";
+            if (yMot < 0) this.direction = 'up';
+            else if (yMot > 0) this.direction = 'down';
+            else if (xMot < 0) this.direction = 'left';
+            else if (xMot > 0) this.direction = 'right';
         }
 
         this.updateAttackColliders();
@@ -183,13 +183,13 @@ class Player extends LivingEntity {
         this.animation = this.standAnimation;
 
         if (this.isAttacking && this.attackCooldown == 0) {
-            if (this.direction === "left") {
+            if (this.direction === 'left') {
                 this.animation = this.attackLeftAnimation;
                 this.attackAABB = this.attackLeftAABB;
-            } else if (this.direction === "right") {
+            } else if (this.direction === 'right') {
                 this.animation = this.attackRightAnimation;
                 this.attackAABB = this.attackRightAABB;
-            } else if (this.direction === "up") {
+            } else if (this.direction === 'up') {
                 this.animation = this.attackUpAnimation;
                 this.attackAABB = this.attackUPAABB;
             } else {
@@ -201,11 +201,11 @@ class Player extends LivingEntity {
             this.attackAABB = this.whirlwindAABB;
         } else {
             if (this.isMoving()) {
-                if (this.direction === "left") {
+                if (this.direction === 'left') {
                     this.animation = this.walkLeftAnimation;
-                } else if (this.direction === "right") {
+                } else if (this.direction === 'right') {
                     this.animation = this.walkRightAnimation;
-                } else if (this.direction === "up") {
+                } else if (this.direction === 'up') {
                     this.animation = this.walkUpAnimation;
                 } else {
                     this.animation = this.walkDownAnimation;
@@ -284,9 +284,9 @@ class Player extends LivingEntity {
 
 
     getIdleAnimation(direction) {
-        if (direction === "left") return this.standLeftAnimation;
-        if (direction === "right") return this.standRightAnimation;
-        if (direction === "up") return this.standUpAnimation;
+        if (direction === 'left') return this.standLeftAnimation;
+        if (direction === 'right') return this.standRightAnimation;
+        if (direction === 'up') return this.standUpAnimation;
         return this.standAnimation;
     }
 
@@ -337,17 +337,17 @@ class Player extends LivingEntity {
     }
 
     drawHPBar(ctx) {
-        ctx.strokeStyle = "#b00642";
+        ctx.strokeStyle = '#b00642';
         ctx.strokeRect(this.x - 279, this.y - 330, 100, 10);
-        ctx.fillStyle = "#9a065f";
+        ctx.fillStyle = '#9a065f';
         ctx.fillRect(this.x - 279, this.y - 329, 100 * this.health / this.maxHealth, 8);
-        ctx.strokeStyle = "#0FF";
+        ctx.strokeStyle = '#0FF';
         ctx.strokeRect(this.x - 280, this.y - 315, 100, 10);
-        ctx.fillStyle = "blue";
+        ctx.fillStyle = 'blue';
         ctx.fillRect(this.x - 280, this.y - 314, 100 * this.currentExp / this.levelExp, 8);
-        ctx.strokeStyle = "#0CF";
+        ctx.strokeStyle = '#0CF';
         ctx.strokeRect(this.x - 280, this.y - 300, 100, 10);
-        ctx.fillStyle = "blue";
+        ctx.fillStyle = 'blue';
         ctx.fillRect(this.x - 280, this.y - 299, 100 * this.currentSoul / this.levelSoul, 8);
     }
 }

@@ -1,4 +1,4 @@
-import Entity from "../Entity.js";
+import Entity from '../Entity.js';
 
 class PlayerHUD extends Entity {
     constructor(game, player, image, hpImage) {
@@ -10,8 +10,8 @@ class PlayerHUD extends Entity {
         this.h = 512;
         this.image = image;
         this.hpImange = hpImage;
-        this.whirlSkill = game.assetManager.getAsset("./assets/sprites/whirl.png");
-        this.oneAttackSKill = game.assetManager.getAsset("./assets/sprites/oneAttack.png");
+        this.whirlSkill = game.assetManager.getAsset('./assets/sprites/whirl.png');
+        this.oneAttackSKill = game.assetManager.getAsset('./assets/sprites/oneAttack.png');
     }
 
     draw() {
@@ -22,16 +22,16 @@ class PlayerHUD extends Entity {
 
         ctx.drawImage(this.image, x, y, 100, 100);
         ctx.drawImage(this.hpImange, x, y + 200, 40, 40);
-        ctx.fillStyle = "#0F0";
-        ctx.fillText("Level " + this.player.level + ' / Soul level ' + this.player.soul, x + 100, y + 40);
-        ctx.fillStyle = "white";
-        ctx.fillText("HP " + this.player.health + '/' + this.player.maxHealth, x + 101, y + 59);
-        ctx.fillText("H", x + 30, y + 235);
+        ctx.fillStyle = '#0F0';
+        ctx.fillText('Level ' + this.player.level + ' / Soul level ' + this.player.soul, x + 100, y + 40);
+        ctx.fillStyle = 'white';
+        ctx.fillText('HP ' + this.player.health + '/' + this.player.maxHealth, x + 101, y + 59);
+        ctx.fillText('H', x + 30, y + 235);
         ctx.fillText(this.player.inventory.HealingPotion, x + 5, y + 210);
-        ctx.fillStyle = "white";
-        ctx.fillText("EXP " + this.player.currentExp + '/' + this.player.levelExp, x + 100, y + 75);
-        ctx.fillStyle = "white";
-        ctx.fillText("Soul " + this.player.currentSoul + '/' + this.player.levelSoul, x + 100, y + 90);
+        ctx.fillStyle = 'white';
+        ctx.fillText('EXP ' + this.player.currentExp + '/' + this.player.levelExp, x + 100, y + 75);
+        ctx.fillStyle = 'white';
+        ctx.fillText('Soul ' + this.player.currentSoul + '/' + this.player.levelSoul, x + 100, y + 90);
 
         if (this.player.currentSoul > this.player.levelSoul) {
             this.player.currentSoul = this.player.currentSoul - this.player.levelSoul;
@@ -54,15 +54,15 @@ class PlayerHUD extends Entity {
     skillShow(ctx) {
         let newX = this.player.x + 350;
         let newY = this.player.y + 340;
-        this.drawSkillImage(ctx, newX + 40, newY - 20, 25, this.oneAttackSKill,24,50); // skill 1
-        this.drawSkillImage(ctx, newX - 10, newY, 25, this.whirlSkill,24,50); //skill 2
-        this.drawSkillImage(ctx, newX - 25, newY + 50, 25, this.whirlSkill,24,50); // skill 3
-        this.drawSkillImage(ctx, newX + 35, newY + 40, 35, this.whirlSkill,34,70);//x, y, radius, startAngle, endAngle, anticlockwise
+        this.drawSkillImage(ctx, newX + 40, newY - 20, 25, this.oneAttackSKill, 24, 50); // skill 1
+        this.drawSkillImage(ctx, newX - 10, newY, 25, this.whirlSkill, 24, 50); //skill 2
+        this.drawSkillImage(ctx, newX - 25, newY + 50, 25, this.whirlSkill, 24, 50); // skill 3
+        this.drawSkillImage(ctx, newX + 35, newY + 40, 35, this.whirlSkill, 34, 70);//x, y, radius, startAngle, endAngle, anticlockwise
         this.updateSkillCover(ctx, newX, newY);
 
     }
 
-    drawSkillImage(ctx, x, y, radius, skillImage, ratio,size) {
+    drawSkillImage(ctx, x, y, radius, skillImage, ratio, size) {
         ctx.save();
         ctx.beginPath();
         ctx.arc(x, y, radius, 0, Math.PI * 2, true) //x, y, radius, startAngle, endAngle, anticlockwise
@@ -81,7 +81,7 @@ class PlayerHUD extends Entity {
     updateSkillCover(ctx, newX, newY) { //depend on the skill then set the percent
         let percent = 0;
         let full = -Math.PI / 2;
-        ctx.fillStyle = "black";
+        ctx.fillStyle = 'black';
         percent = this.getPercent(this.player.attackCooldown, this.player.attackCooldownTime);
         this.drawSkillCover(ctx, newX + 40, newY - 20, 25, 0.85, full - percent, full + percent); // skill 1
         percent = this.getPercent(ctx, this.player.whirlwindCooldown, this.player.whirlwindCooldownTime);

@@ -1,13 +1,13 @@
-import HostileEntity from "../HostileEnemy.js";
-import BoundingBox from "../BoundingBox.js";
-import Animation from "../Animation.js";
+import HostileEntity from '../HostileEnemy.js';
+import BoundingBox from '../BoundingBox.js';
+import Animation from '../Animation.js';
 
 class Skeleton extends HostileEntity {
     constructor(game, x, y) {
         super(game, x, y);
         this.boundingBox = new BoundingBox(x, y, 30, 50, 10, 15);
-        this.skeletonWalkingLeftAnimation = new Animation(this.game.assetManager.getAsset("./assets/sprites/SkeletonWalkLeft.png"), 0, 0, 44, 66, 0.1, 13, true, false);
-        this.skeletonWalkingRightAnimation = new Animation(this.game.assetManager.getAsset("./assets/sprites/SkeletonWalkRight.png"), 0, 0, 44, 66, 0.1, 13, true, false);
+        this.skeletonWalkingLeftAnimation = new Animation(this.game.assetManager.getAsset('./assets/sprites/SkeletonWalkLeft.png'), 0, 0, 44, 66, 0.1, 13, true, false);
+        this.skeletonWalkingRightAnimation = new Animation(this.game.assetManager.getAsset('./assets/sprites/SkeletonWalkRight.png'), 0, 0, 44, 66, 0.1, 13, true, false);
         this.death = null;
         this.animation = this.skeletonWalkingRightAnimation;
         this.isMovingWest = true;

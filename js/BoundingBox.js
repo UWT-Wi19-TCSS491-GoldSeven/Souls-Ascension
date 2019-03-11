@@ -15,7 +15,7 @@ class BoundingBox {
         this._height = height;
         this._x = 0;
         this._y = 0;
-        this._origin = { x: 0, y: 0 }
+        this._origin = {x: 0, y: 0}
         this.x = theX;
         this.y = theY;
     }
