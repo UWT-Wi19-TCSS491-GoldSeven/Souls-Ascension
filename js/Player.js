@@ -87,13 +87,6 @@ class Player extends LivingEntity {
         return !this.isMoving() && !this.isPerformingAction();
     }
 
-    updateDirection() {
-        if (this.game.left) this.direction = 'left';
-        if (this.game.right) this.direction = 'right';
-        if (this.game.up) this.direction = 'up';
-        if (this.game.down) this.direction = 'down';
-    }
-
     updateAttackStates() {
         if (this.isAttacking) {
             if (this.attackCooldown > 0) {
@@ -277,6 +270,20 @@ class Player extends LivingEntity {
             this.whirlwindReady = false;
             this.attackAABB = null;
         }
+    }
+
+    getAttackAnimation(direction) {
+        if (direction == 'left') return this.animAttackLeft;
+        if (direction == 'right') return this.animAttackRight;
+        if (direction == 'up') return this.animAttackUp;
+        return this.animAttackDown;
+    }
+
+    getRunAnimation(direction) {
+        if (direction == 'left') return this.animRunLeft;
+        if (direction == 'right') return this.animRunRight;
+        if (direction == 'up') return this.animRunUp;
+        return this.animRunDown;
     }
 
 

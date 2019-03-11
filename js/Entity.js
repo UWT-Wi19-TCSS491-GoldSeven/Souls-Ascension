@@ -7,8 +7,8 @@ class Entity {
         this._boundingBox = null;
         this.xMot = 0;
         this.yMot = 0;
-        this.direction = 'down';
-        this.wallCollisionResult;
+        this.wallCollisionResult = null;
+
     }
 
     update() {
@@ -63,10 +63,10 @@ class Entity {
                 || this.wallCollisionResult.bottom);
     }
 
-    updatePosition(aabb = this.boundingBox) {
-        if (!aabb) return;
+    updatePosition(collider = this.boundingBox) {
+        if (!collider) return;
 
-        this.wallCollisionResult = this.game.level.hasCollidedWithWalls(aabb, this.xMot, this.yMot);
+        this.wallCollisionResult = this.game.level.hasCollidedWithWalls(collider, this.xMot, this.yMot);
 
         if (this.wallCollisionResult) {
             if (!(this.wallCollisionResult.left || this.wallCollisionResult.right)) this.x += this.xMot;
@@ -74,11 +74,6 @@ class Entity {
             if (!(this.wallCollisionResult.top || this.wallCollisionResult.bottom)) this.y += this.yMot;
             else this.yMot = 0;
         }
-
-        if (this.yMot < 0) this.direction = 'up';
-        else if (this.yMot > 0) this.direction = 'down';
-        else if (this.xMot < 0) this.direction = 'left';
-        else if (this.xMot > 0) this.direction = 'right';
     }
 }
 

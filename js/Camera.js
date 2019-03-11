@@ -6,12 +6,12 @@ let container = {
 };
 
 class Camera {
-    constructor(game) {
+    constructor(game, sx = 1.0, sy = 1.0) {
         this.game = game;
         this._x = 0;
         this._y = 0;
-        this.sx = 1.0;
-        this.sy = 1.0;
+        this.sx = sx;
+        this.sy = sy;
         this._origin = {x: 0, y: 0};
     }
 
