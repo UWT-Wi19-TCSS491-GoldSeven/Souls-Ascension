@@ -124,6 +124,14 @@ class Level {
         return Math.floor(y / this.tileDimension);
     }
 
+    fromColumn(column) {
+        return column * this.tileDimension;
+    }
+
+    fromRow(row) {
+        return row * this.tileDimension;
+    }
+
     isCellImpassable(x, y) {
         let index = y * this.columns + x;
         if (index < 0 || index >= this.grid.length) return true;
