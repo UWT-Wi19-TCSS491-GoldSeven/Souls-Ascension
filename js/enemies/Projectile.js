@@ -14,7 +14,12 @@ class Projectile extends Entity {
     }
 
     update() {
-        super.update()
+        super.update();
+
+        this.xMot = this.xs;
+        this.yMot = this.ys;
+
+        this.updatePosition();
 
         let player = this.game.level.getEntityWithTag('Player');
 
@@ -26,10 +31,9 @@ class Projectile extends Entity {
         if (this.boundingBox.hasCollided(player.boundingBox)) {
             this.destroy();
             player.damage(this.damage);
+            return
         }
 
-        this.x += this.xs;
-        this.y += this.ys;
         this.life -= this.game.clockTick;
         if (this.life <= 0) this.destroyed = true;
     }

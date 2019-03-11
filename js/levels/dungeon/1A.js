@@ -2,10 +2,13 @@ import Level from '../../Level.js';
 import Player from '../../Player.js';
 import Templates from './DungeonTemplates.js';
 import Sorcerer from '../../enemies/Sorcerer.js';
+import PlayerHUD from '../../ui/PlayerHUD.js';
+import Slime from '../../enemies/Slime.js';
 
 class Level1A extends Level {
     constructor(game) {
         super(game, 48);
+        let hud = null;
     }
 
     init() {
@@ -15,16 +18,27 @@ class Level1A extends Level {
     }
 
     prePopulate() {
-        this.queueTemplate(0, 0, Templates.roomTemplateBoss3);
+        this.queueTemplate(0, 0, Templates.roomTemplateSquare2);
     }
 
     postPopulate() {
-        this.addEntity(new Player(this.game, 150, 150), 'Player');
-        this.addEntity(new Sorcerer(this.game, 550, 150));
+        let player = new Player(this.game, 150, 150);
+
+        this.hud = new PlayerHUD(this.game, player,
+            this.game.assetManager.getAsset('./assets/sprites/characterInfo2.png'),
+            this.game.assetManager.getAsset('./assets/sprites/HP.png'))
+
+        this.addEntity(player, 'Player');
+        this.addEntity(new Sorcerer(this.game, 500, 400));
+        this.addEntity(new Slime(this.game, 400, 200))
     }
 
     isImpassable(id) {
         return (id >= 0 && id < 16) || (id > 28);
+    }
+
+    drawUserInterface(ctx) {
+        this.hud.draw(ctx);
     }
 }
 

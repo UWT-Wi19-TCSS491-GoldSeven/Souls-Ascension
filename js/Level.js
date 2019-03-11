@@ -238,7 +238,6 @@ class Level {
         let tx = viewport.x / sx;
         let ty = viewport.y / sy;
 
-        ctx.save();
         ctx.resetTransform();
         ctx.clearRect(0, 0, this.game.canvas.width, this.game.canvas.height);
         // Scaling the context ahead of time can simulate zooming.
@@ -275,6 +274,8 @@ class Level {
             }
         }
 
+        ctx.save();
+        this.drawUserInterface(ctx);
         ctx.restore();
     }
 
@@ -323,7 +324,6 @@ class Level {
         }
 
         if (this.game.debug.enabled) {
-            ctx.save();
             ctx.strokeStyle = 'green';
             ctx.moveTo(column * this.tileDimension, row * this.tileDimension);
             ctx.lineTo(column * this.tileDimension + this.tileDimension, row * this.tileDimension);
@@ -336,15 +336,19 @@ class Level {
                 ctx.fillStyle = 'tan';
                 ctx.textAlign = 'center';
                 ctx.fillText(`${column},${row}`, column * this.tileDimension + (this.tileDimension / 2), row * this.tileDimension + (this.tileDimension / 2));
-                ctx.restore();
             }
         }
     }
 
     _drawEntities(ctx) {
         for (let i = 0; i < this.entities.length; i++) {
+            ctx.save();
             this.entities[i].draw(ctx);
+            ctx.restore();
         }
+    }
+
+    drawUserInterface(ctx) {
     }
 }
 

@@ -21,6 +21,7 @@ class Sorcerer extends HostileEntity {
         this.stopAttackRange = 300;
         this.startFollowRange = 150;
         this.stopFollowRange = 350;
+        this.detectRange = 400;
         this.maxHealth = 200;
         this.health = 200;
     }
@@ -47,6 +48,10 @@ class Sorcerer extends HostileEntity {
                 this.destroyed = true;
             }
 
+            return;
+        }
+
+        if (distance > this.detectRange || !this.checkSight(player.boundingBox)) {
             return;
         }
 

@@ -133,11 +133,10 @@ class HostileEntity extends LivingEntity {
         super.draw(ctx);
 
         if (this.game.debug.enabled && this.visited.length > 0) {
-            let scale = this.game.levelManager.level.tileDimension;
+            let scale = this.game.level.tileDimension;
 
             for (let i in this.visited) {
                 let tile = this.visited[i];
-                ctx.save();
                 ctx.fillStyle = 'rgba(0, 255, 0, 0.2)';
                 ctx.fillRect(this.origin.x * scale, this.origin.y * scale,
                     scale, scale);
@@ -147,7 +146,6 @@ class HostileEntity extends LivingEntity {
                 ctx.fillStyle = 'rgba(255, 0, 0, 0.2)';
                 ctx.fillRect(this.destination.x * scale, this.destination.y * scale,
                     scale, scale);
-                ctx.restore();
             }
 
             this.visited.length = 0;
@@ -157,8 +155,10 @@ class HostileEntity extends LivingEntity {
     }
 
     drawHPBar(ctx) {
-        ctx.strokeRect(this.x + 15, this.y, 50, 3);
+        ctx.fillStyle = 'red'
         ctx.fillRect(this.x + 15, this.y, 50 * this.health / this.maxHealth, 3);
+        ctx.strokeStyle = 'black'
+        ctx.strokeRect(this.x + 15, this.y, 50, 3);
     }
 }
 

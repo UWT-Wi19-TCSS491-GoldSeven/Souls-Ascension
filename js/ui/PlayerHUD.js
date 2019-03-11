@@ -14,9 +14,7 @@ class PlayerHUD extends Entity {
         this.oneAttackSKill = game.assetManager.getAsset('./assets/sprites/oneAttack.png');
     }
 
-    draw() {
-        let ctx = this.game.ctx;
-
+    draw(ctx) {
         let x = this.player.x - 380;
         let y = this.player.y - 380;
 
