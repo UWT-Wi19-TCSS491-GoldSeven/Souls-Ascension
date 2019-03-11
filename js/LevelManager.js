@@ -15,6 +15,7 @@ class LevelManager {
         this.unload();
         this.level = level;
         this.level.game = this.game;
+        this.level.init();
         this.level.setup();
     }
 
@@ -22,8 +23,8 @@ class LevelManager {
         if (this.level != null) this.level._update();
     }
 
-    draw() {
-        if (this.level != null) this.level._draw();
+    draw(ctx) {
+        if (this.level != null) this.level._draw(ctx);
     }
 }
 

@@ -83,7 +83,7 @@ class GameEngine {
         this.clockTick = this.timer.tick();
 
         this.levelManager.update();
-        this.levelManager.draw();
+        this.levelManager.draw(this.ctx);
     }
 
     isInViewPort(x, y, mx, my) {

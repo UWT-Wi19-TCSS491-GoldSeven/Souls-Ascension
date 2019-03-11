@@ -6,7 +6,7 @@ import TextIndicator from "./ui/TextIndicator.js";
 class Player extends LivingEntity {
     constructor(game, x, y) {
         super(game, x, y);
-        this.boundingBox = new BoundingBox(this.x, this.y, 20, 40, 10);
+        this.boundingBox = new BoundingBox(this.x, this.y, 20, 40, 5);
         this.standAnimation = new Animation(game.assetManager.getAsset("player.idle.down"), 0, 0, 42, 42, 0.08, 4, true, false);
         this.standLeftAnimation = new Animation(game.assetManager.getAsset("player.idle.left"), 0, 0, 42, 42, 0.08, 1, true, false);
         this.standRightAnimation = new Animation(game.assetManager.getAsset("player.idle.right"), 0, 0, 42, 42, 0.08, 1, true, false);
@@ -22,36 +22,24 @@ class Player extends LivingEntity {
         this.whirlwindAttackAnimation = new Animation(game.assetManager.getAsset("./assets/sprites/characterWhirlWindAttackAnimation.png"), 0, 0, 42, 42, 0.04, 4, false, false);
         this.animation = this.standAnimation; // initial animation.
 
-        this.isAttacking = false;
-        this.isWhirlwinding = false;
-        this.isMovingLeft = false;
-        this.isMovingRight = false;
-        this.isMovingUp = false;
-        this.isMovingDown = false;
-        this.isMovingUpLeft = false;
-        this.isMovingUpRight = false;
-        this.isMovingDownLeft = false;
-        this.isMovingDownRight = false;
+        this.direction = "down";
 
         this.attackDamage = 8;
         this.attackCooldown = 0;
         this.attackCooldownTime = 5;
         this.attackReady = true;
-        this.attackLeftAABB = new BoundingBox(0, 0, 20, 40, 10);
-        this.attackRightAABB = new BoundingBox(0, 0, 20, 40, 10);
-        this.attackDownAABB = new BoundingBox(0, 0, 20, 40, 10);
-        this.attackUPAABB = new BoundingBox(0, 0, 20, 40, 10);
-
-        this.direction = null;
-        this.facing = null;
+        this.attackLeftAABB = new BoundingBox(0, 0, 20, 40, 5);
+        this.attackRightAABB = new BoundingBox(0, 0, 20, 40, 5);
+        this.attackDownAABB = new BoundingBox(0, 0, 20, 40, 5);
+        this.attackUPAABB = new BoundingBox(0, 0, 20, 40, 5);
 
         this.whirlwindDamage = 30;
         this.whirlwindCooldown = 0;
         this.whirlwindCooldownTime = 200;
         this.whirlwindReady = true;
-        this.whirlwindAABB = new BoundingBox(this.x - 10, this.y - 20, 60, 80);
+        this.whirlwindAABB = new BoundingBox(0, 0, 60, 80);
 
-        this.updateAABBs();
+        this.updateAttackColliders();
 
         this.inventory = {
             HealingPotion: 1,
@@ -78,61 +66,35 @@ class Player extends LivingEntity {
         this.game.viewport.y = (this.y + this.boundingBox.height / 2) * sy - this.game.ctx.canvas.height / 2;
     }
 
-    update() {
-        this.isMovingUp = false;
-        this.isMovingLeft = false;
-        this.isMovingDown = false;
-        this.isMovingRight = false;
-        this.isMovingUpLeft = false;
-        this.isMovingUpRight = false;
-        this.isMovingDownLeft = false;
-        this.isMovingDownRight = false;
+    isMoving() {
+        return this.game.left || this.game.right || this.game.up || this.game.down;
+    }
 
-        if (this.game.up && this.game.left) this.isMovingUpLeft = true;
-        if (this.game.up && this.game.right) this.isMovingUpRight = true;
-        if (this.game.down && this.game.left) this.isMovingDownLeft = true;
-        if (this.game.down && this.game.right) this.isMovingDownRight = true;
+    isPerformingAction() {
+        return this.isAttacking || this.isWhirlwinding;
+    }
 
-        if (this.game.left && !this.game.levelManager.level.hasCollidedWithWalls(this)) {
-            this.isMovingLeft = true
-            this.direction = "left";
-        }
-        if (this.game.right && !this.game.levelManager.level.hasCollidedWithWalls(this)) {
-            this.isMovingRight = true
-            this.direction = "right";
-        }
-        if (this.game.up && !this.game.levelManager.level.hasCollidedWithWalls(this)) {
-            this.isMovingUp = true;
-            this.direction = "up";
-        }
-        if (this.game.down && !this.game.levelManager.level.hasCollidedWithWalls(this)) {
-            this.isMovingDown = true;
-            this.direction = "down";
-        }
+    isIdle() {
+        return !this.isMoving() && !this.isPerformingAction();
+    }
 
-        if (this.isMovingUp) {
-            this.y -= this.travelSpeed; // Moves the entity.
-        } else if (this.isMovingDown) {
-            this.y += this.travelSpeed; // Moves the entity.
-        }
+    updateDirection() {
+        if (this.game.left) this.direction = "left";
+        if (this.game.right) this.direction = "right";
+        if (this.game.up) this.direction = "up";
+        if (this.game.down) this.direction = "down";
+    }
 
-        if (this.isMovingLeft) {
-            this.x -= this.travelSpeed; // Moves the entity.
-        } else if (this.isMovingRight) {
-            this.x += this.travelSpeed; // Moves the entity.
-        }
-
-        if (this.game.whirlwind) this.isWhirlwinding = true;
-        if (this.game.attack) this.isAttacking = true;
-
-        // Update player bounding box position
-        super.update();
-        // Update player attack bounding box positions
-        this.updateAABBs();
-        // Synchronize the viewport/camera with the players position
-        this.updateViewport();
-
+    updateAttackStates() {
         if (this.isAttacking) {
+            if (this.attackCooldown > 0) {
+                this.attackCooldown -= 1;
+                if (this.attackCooldown == 0) {
+                    this.attackReady = true;
+                    this.isAttacking = false;
+                }
+            }
+
             if (this.attackRightAnimation.isDone()) {
                 this.attackRightAnimation.elapsedTime = 0
                 this.isAttacking = false;
@@ -158,11 +120,59 @@ class Player extends LivingEntity {
             }
         }
 
-        if (this.isWhirlwinding && this.whirlwindAttackAnimation.isDone()) {
-            this.whirlwindAttackAnimation.elapsedTime = 0
-            this.isWhirlwinding = false;
-            this.whirlwindCooldown = this.whirlwindCooldownTime;
+        if (this.isWhirlwinding) {
+            if (this.whirlwindCooldown > 0) {
+                this.whirlwindCooldown -= 1;
+                if (this.whirlwindCooldown == 0) {
+                    this.whirlwindReady = true;
+                    this.isWhirlwinding = false;
+                }
+            }
+
+            if (this.isWhirlwinding && this.whirlwindAttackAnimation.isDone()) {
+                this.whirlwindAttackAnimation.elapsedTime = 0
+                this.isWhirlwinding = false;
+                this.whirlwindCooldown = this.whirlwindCooldownTime;
+            }
         }
+    }
+
+    update() {
+        let xMot = 0, yMot = 0;
+
+        if (this.game.left) {
+            xMot -= this.travelSpeed;
+        } else if (this.game.right) {
+            xMot += this.travelSpeed;
+        }
+
+        if (this.game.up) {
+            yMot -= this.travelSpeed;
+        } else if (this.game.down) {
+            yMot += this.travelSpeed;
+        }
+
+        if (xMot != 0 || yMot != 0) {
+            let result = this.game.level.hasCollidedWithWalls(this.boundingBox, xMot, yMot);
+
+            if (result) {
+                if (!(result.left || result.right)) this.x += xMot;
+                else xMot = 0;
+                if (!(result.top || result.bottom)) this.y += yMot;
+                else yMot = 0;
+            }
+
+            if (yMot < 0) this.direction = "up";
+            else if (yMot > 0) this.direction = "down";
+            else if (xMot < 0) this.direction = "left";
+            else if (xMot > 0) this.direction = "right";
+        }
+
+        this.updateAttackColliders();
+        this.updateViewport();
+
+        if (this.game.whirlwind) this.isWhirlwinding = true;
+        if (this.game.attack) this.isAttacking = true;
 
         if (this.game.heal && this.inventory.HealingPotion > 0) {
             this.health = this.maxHealth;
@@ -170,17 +180,16 @@ class Player extends LivingEntity {
             this.game.heal = null;
         }
 
-        // Animation Selection Start
         this.animation = this.standAnimation;
 
         if (this.isAttacking && this.attackCooldown == 0) {
-            if (this.isMovingLeft || this.direction === "left") {
+            if (this.direction === "left") {
                 this.animation = this.attackLeftAnimation;
                 this.attackAABB = this.attackLeftAABB;
-            } else if (this.isMovingRight || this.direction === "right") {
+            } else if (this.direction === "right") {
                 this.animation = this.attackRightAnimation;
                 this.attackAABB = this.attackRightAABB;
-            } else if (this.isMovingUp || this.direction === "up") {
+            } else if (this.direction === "up") {
                 this.animation = this.attackUpAnimation;
                 this.attackAABB = this.attackUPAABB;
             } else {
@@ -191,49 +200,22 @@ class Player extends LivingEntity {
             this.animation = this.whirlwindAttackAnimation;
             this.attackAABB = this.whirlwindAABB;
         } else {
-            if (this.isMovingUpLeft) {
-                this.animation = this.walkLeftAnimation;
-            } else if (this.isMovingUpRight) {
-                this.animation = this.walkRightAnimation;
-            } else if (this.isMovingDownLeft) {
-                this.animation = this.walkLeftAnimation;
-            } else if (this.isMovingDownRight) {
-                this.animation = this.walkRightAnimation;
-            } else if (this.isMovingUp) {
-                this.animation = this.walkUpAnimation;
-            } else if (this.isMovingDown) {
-                this.animation = this.walkDownAnimation;
-            } else if (this.isMovingLeft) {
-                this.animation = this.walkLeftAnimation;
-            } else if (this.isMovingRight) {
-                this.animation = this.walkRightAnimation;
+            if (this.isMoving()) {
+                if (this.direction === "left") {
+                    this.animation = this.walkLeftAnimation;
+                } else if (this.direction === "right") {
+                    this.animation = this.walkRightAnimation;
+                } else if (this.direction === "up") {
+                    this.animation = this.walkUpAnimation;
+                } else {
+                    this.animation = this.walkDownAnimation;
+                }
             } else {
-                this.animation = this.standAnimation;
+                this.animation = this.getIdleAnimation(this.direction);
             }
         }
 
-        if (this.animation == this.standAnimation) {
-            this.animation = this.getIdleAnimation(this.direction);
-        }
-
-        // Animation Selection End
-
-        // Attack Start
-        if (this.attackCooldown > 0) {
-            this.attackCooldown -= 1;
-            if (this.attackCooldown == 0) {
-                this.attackReady = true;
-                this.isAttacking = false;
-            }
-        }
-
-        if (this.whirlwindCooldown > 0) {
-            this.whirlwindCooldown -= 1;
-            if (this.whirlwindCooldown == 0) {
-                this.whirlwindReady = true;
-                this.isWhirlwinding = false;
-            }
-        }
+        this.updateAttackStates();
 
         // Hide the damage/exp text popup
         if (new Date().getTime() - this.textIndicator.time > 500) {
@@ -300,6 +282,7 @@ class Player extends LivingEntity {
         }
     }
 
+
     getIdleAnimation(direction) {
         if (direction === "left") return this.standLeftAnimation;
         if (direction === "right") return this.standRightAnimation;
@@ -307,7 +290,7 @@ class Player extends LivingEntity {
         return this.standAnimation;
     }
 
-    updateAABBs() {
+    updateAttackColliders() {
         this.attackLeftAABB.setPos(this.x - 15, this.y);
         this.attackRightAABB.setPos(this.x + 15, this.y);
         this.attackDownAABB.setPos(this.x, this.y + 15);

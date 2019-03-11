@@ -11,23 +11,20 @@ class BoundingBox {
     constructor(theX, theY, width, height, xOffset = 0, yOffset = 0) {
         this._xOffset = xOffset || 0;
         this._yOffset = yOffset || 0;
-        this._x;
-        this._y;
         this._width = width;
         this._height = height;
-        this.left = theX + xOffset;
-        this.top = theY + yOffset;
-        this.right = this.left + width;
-        this.bottom = this.top + height;
-        /**
-         * The center of the entity.
-         */
-        this._origin = {x: this.left + this.width / 2, y: this.top + this.height / 2};
+        this._x = 0;
+        this._y = 0;
+        this._origin = { x: 0, y: 0 }
+        this.x = theX;
+        this.y = theY;
     }
 
     set x(value) {
         this._x = value + this._xOffset;
-        this._origin.x = this._x - (this.width / 2);
+        this.left = this._x + this._xOffset;
+        this.right = this.left + this.width;
+        this._origin.x = this.right - (this.width / 2);
     }
 
     get x() {
@@ -36,7 +33,9 @@ class BoundingBox {
 
     set y(value) {
         this._y = value + this._yOffset;
-        this._origin.y = this._y - (this.height / 2);
+        this.top = this._y + this._yOffset;
+        this.bottom = this.top + this.height;
+        this._origin.y = this.bottom - (this.height / 2);
     }
 
     get y() {
@@ -81,12 +80,8 @@ class BoundingBox {
     }
 
     setPos(x, y) {
-        this.left = x + this._xOffset;
-        this.top = y + this._yOffset;
-        this.right = this.left + this.width;
-        this.bottom = this.top + this.height;
-        this.origin.x = this.left + this.width / 2;
-        this.origin.y = this.top + this.height / 2;
+        this.x = x;
+        this.y = y;
     }
 
     draw(ctx, style = 'green') {

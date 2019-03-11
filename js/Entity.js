@@ -3,16 +3,13 @@ import BoundingBox from "./BoundingBox.js";
 class Entity {
     constructor(game, x, y) {
         this.game = game;
-        this.x = x;
-        this.y = y;
+        this._x = x;
+        this._y = y;
         this.destroyed = false;
-        this.boundingBox = null;
+        this._boundingBox = null;
     }
 
     update() {
-        if (this.boundingBox) {
-            this.boundingBox.setPos(this.x, this.y);
-        }
     }
 
     draw(ctx) {
@@ -25,6 +22,33 @@ class Entity {
 
     destroy() {
         this.destroyed = true;
+    }
+
+    set boundingBox(boundingBox) {
+        this._boundingBox = boundingBox;
+        this._boundingBox.setPos(this._x, this._y);
+    }
+
+    get boundingBox() {
+        return this._boundingBox;
+    }
+
+    set x(value) {
+        this._x = value;
+        if (this.boundingBox) this.boundingBox.x = value;
+    }
+
+    get x() {
+        return this._x;
+    }
+
+    set y(value) {
+        this._y = value;
+        if (this.boundingBox) this.boundingBox.y = value;
+    }
+
+    get y() {
+        return this._y;
     }
 }
 

@@ -66,60 +66,72 @@ class Level {
         for (let i in tiles) this.tiles.push(tiles[i])
     }
 
-    hasCollidedWithWalls(entity) {
-        let aabb = entity.boundingBox;
+    hasCollidedWithWalls(aabb, xMot, yMot) {
+        let result = null;
 
         if (aabb) {
-            let scale = entity.game.levelManager.level.tileDimension;
-            let tx = Math.floor(aabb.left / scale);
-            let ty = Math.floor(aabb.top / scale);
-            let bx = Math.floor(aabb.right / scale);
-            let by = Math.floor(aabb.bottom / scale);
+            let el = Math.floor(aabb.left / this.tileDimension);
+            let er = Math.floor(aabb.right / this.tileDimension);
+            let et = Math.floor(aabb.top / this.tileDimension);
+            let eb = Math.floor(aabb.bottom / this.tileDimension);
 
-            for (let y = ty; y < by; y++) {
-                for (let x = tx; x <= bx; x++) {
-                    if (this._isImpassable(x, y)) {
-                        return true;
+            result = {
+                left: false,
+                right: false,
+                top: false,
+                bottom: false
+            }
+
+            if (yMot != 0) {
+                let y = yMot < 0 ? aabb.top + yMot : aabb.bottom + yMot
+                let yIndex = Math.floor(y / this.tileDimension);
+
+                for (let x = el; x <= er; x++) {
+                    if (this.isCellImpassable(x, yIndex)) {
+                        if (yMot < 0) {
+                            result.top = true;
+                        } else {
+                            result.bottom = true;
+                        }
+                    }
+                }
+            }
+
+            if (xMot != 0) {
+                let x = xMot < 0 ? aabb.left + xMot : aabb.right + xMot;
+                let xIndex = Math.floor(x / this.tileDimension);
+
+                for (let y = et; y <= eb; y++) {
+                    if (this.isCellImpassable(xIndex, y)) {
+                        if (xMot < 0) {
+                            result.left = true;
+                        } else {
+                            result.right = true;
+                        }
                     }
                 }
             }
         }
 
-        return false;
+        return result;
+    }
 
-        // let targetX, targetY;
-        // let j; // area to check collision
-        //
-        // for (j = 0; j < leafs.length; j++) {
-        //     if (leafs[j].x <= characterX && characterX <= leafs[j].x + leafs[j].w
-        //         && leafs[j].y <= characterY && characterY <= leafs[j].y + leafs[j].h) {
-        //         break;
-        //     }
-        // }
-        //
-        // if (typeof leafs[j] === 'undefined') return true;
-        //
-        // for (let i = 0; i < leafs[j].walls.length; i++) {
-        //     targetX = leafs[j].walls[i].x;
-        //     targetY = leafs[j].walls[i].y;
-        //     targetX = leafs[j].walls[i].x;
-        //     targetY = leafs[j].walls[i].y;
-        //
-        //     if (characterX < targetX + world1.currentScale &&// - width for more percise when work with character
-        //         characterX + world1.currentScale - width > targetX &&
-        //         characterY < targetY + world1.currentScale &&
-        //         characterY > targetY) {
-        //         if (isCharacter && leafs[j].walls[i] instanceof Door == true && character.inventory.SilverKey > 0) {
-        //             leafs[j].walls[i].removed = true;
-        //             character.inventory.SilverKey -= 1;
-        //             world1.slimeDungeonLevelOne[leafs[j].walls[i].position] = 24; // center floor.
-        //             removeDoor(characterX, characterY, width); //destroy opened door
-        //             return false;
-        //         }
-        //
-        //         return true;
-        //     }
-        // }
+    isCellImpassable(x, y) {
+        let index = y * this.columns + x;
+        if (index < 0 || index >= this.grid.length) return true;
+        return this._isCellImpassable(this.grid[index]);
+    }
+
+    _isCellImpassable(data) {
+        if (data instanceof Array) {
+            for (let i in data) {
+                if (this._isImpassable(data[i])) return true;
+            }
+        } else {
+            return this.isImpassable(data);
+        }
+
+        return false;
     }
 
     isImpassable(id) {
@@ -127,8 +139,8 @@ class Level {
     }
 
     _isImpassable(column, row) {
-        let index = row * this.tileDimension + column;
-        if (index < 0 || index >= this.grid.length) return false;
+        let index = row * this.columns + column;
+        if (index < 0 || index >= this.grid.length) return true;
 
         let data = this.grid[index];
         if (data instanceof Array) {
@@ -158,15 +170,15 @@ class Level {
             template: template
         })
 
-        let columns = column + template[0].width - 1;
-        let rows = row + template.length - 1;
+        let columns = column + template[0].length;
+        let rows = row + template.length;
         if (this.columns < columns) this.columns = columns;
         if (this.rows < rows) this.rows = rows;
     }
 
     _populateTemplate(column, row, template) {
         for (let r = 0; r < template.length; r++) {
-            for (let c = 0; c < template[r].length; r++) {
+            for (let c = 0; c < template[r].length; c++) {
                 let data = template[r][c];
                 if (data < 0) continue;
                 this._populateCell(column + c, row + r, data);
@@ -216,58 +228,7 @@ class Level {
         }
     }
 
-    _draw() {
-        this._drawLevel();
-        this._drawEntities();
-    }
-
-    _drawLevel() {
-        let viewport = this.game.viewport;
-        let screenSize = this.game.screenSize;
-
-        let xMin = Math.floor(viewport.x / this.tileDimension);
-        let xMax = Math.floor((viewport.x + screenSize.width) / this.tileDimension);
-        let yMin = Math.floor(viewport.y / this.tileDimension);
-        let yMax = Math.floor((viewport.y + screenSize.height) / this.tileDimension);
-
-        this.game.ctx.save();
-        for (let r = Math.max(yMin, 0); r <= Math.min(yMax, this.rows); r++) {
-            for (let c = Math.max(xMin, 0); c <= Math.min(xMax, this.columns); c++) {
-                let index = r * this.columns + c;
-                if (index >= this.grid.length) break;
-
-                let data = this.grid[index];
-
-                if (data instanceof Array) {
-                    for (let i in data) this._drawTile(c, r, data[i]);
-                } else {
-                    this._drawTile(c, r, data);
-                }
-            }
-        }
-        this.game.ctx.restore();
-    }
-
-    _drawTile(column, row, id) {
-        if (id <= 0 || id > this.tiles.length) return;
-        let sprite = this.tiles[id - 1];
-        if (sprite) {
-            this.game.ctx.drawImage(
-                sprite,
-                0,
-                0,
-                this.tileDimension,
-                this.tileDimension,
-                column * this.tileDimension,
-                row * this.tileDimension,
-                this.tileDimension,
-                this.tileDimension
-            );
-        }
-    }
-
-    _drawEntities() {
-        let ctx = this.game.ctx;
+    _draw(ctx) {
         let viewport = this.game.viewport;
         let sx = viewport.sx;
         let sy = viewport.sy;
@@ -277,16 +238,17 @@ class Level {
         let tx = viewport.x / sx;
         let ty = viewport.y / sy;
 
-        ctx.clearRect(0, 0, cw, ch);
+        ctx.clearRect(0, 0, this.game.canvas.width, this.game.canvas.height);
         ctx.save();
         ctx.resetTransform();
+
         // Scaling the context ahead of time can simulate zooming.
         ctx.scale(sx, sy);
         // We must translate the canvas to it's expected position.
         ctx.translate(-tx, -ty);
-        for (let i = 0; i < this.entities.length; i++) {
-            this.entities[i].draw(ctx);
-        }
+
+        this._drawLevel(ctx);
+        this._drawEntities(ctx);
 
         if (this.game.debug) {
             // Calculates the width and height of a scaled window.
@@ -302,7 +264,59 @@ class Level {
             ctx.lineTo(tx + sw / 2, ty + sh);
             ctx.stroke();
         }
+
         ctx.restore();
+    }
+
+    _drawLevel(ctx) {
+        let viewport = this.game.viewport;
+        let screenSize = this.game.screenSize;
+
+        let xMin = Math.floor(viewport.x / this.tileDimension);
+        let xMax = Math.floor((viewport.x + screenSize.width) / this.tileDimension);
+        let yMin = Math.floor(viewport.y / this.tileDimension);
+        let yMax = Math.floor((viewport.y + screenSize.height) / this.tileDimension);
+
+        this.game.ctx.save();
+        for (let r = Math.max(yMin, 0); r <= Math.min(yMax, this.rows - 1); r++) {
+            for (let c = Math.max(xMin, 0); c <= Math.min(xMax, this.columns - 1); c++) {
+                let index = r * this.columns + c;
+                if (index >= this.grid.length) break;
+
+                let data = this.grid[index];
+
+                if (data instanceof Array) {
+                    for (let i in data) this._drawTile(ctx, c, r, data[i]);
+                } else {
+                    this._drawTile(ctx, c, r, data);
+                }
+            }
+        }
+        this.game.ctx.restore();
+    }
+
+    _drawTile(ctx, column, row, id) {
+        if (id <= 0 || id > this.tiles.length) return;
+        let sprite = this.tiles[id - 1];
+        if (sprite) {
+            ctx.drawImage(
+                sprite,
+                0,
+                0,
+                this.tileDimension,
+                this.tileDimension,
+                column * this.tileDimension,
+                row * this.tileDimension,
+                this.tileDimension,
+                this.tileDimension
+            );
+        }
+    }
+
+    _drawEntities(ctx) {
+        for (let i = 0; i < this.entities.length; i++) {
+            this.entities[i].draw(ctx);
+        }
     }
 }
 

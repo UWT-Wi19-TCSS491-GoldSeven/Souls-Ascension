@@ -18,11 +18,11 @@ class Level1A extends Level {
     }
 
     postPopulate() {
-        this.addEntity(new Player(this.game, 0, 0), "Player");
+        this.addEntity(new Player(this.game, 150, 150), "Player");
     }
 
     isImpassable(id) {
-        return id > 0 && id < 16;
+        return (id > 0 && id < 16) || (id > 28);
     }
 }
 
