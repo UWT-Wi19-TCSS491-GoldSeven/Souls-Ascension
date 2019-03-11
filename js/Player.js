@@ -120,18 +120,18 @@ class Player extends LivingEntity {
         }
 
         if (this.isWhirlwinding) {
-            if (this.whirlwindCooldown > 0) {
-                this.whirlwindCooldown -= 1;
-                if (this.whirlwindCooldown == 0) {
-                    this.whirlwindReady = true;
-                    this.isWhirlwinding = false;
-                }
-            }
-
             if (this.isWhirlwinding && this.whirlwindAttackAnimation.isDone()) {
                 this.whirlwindAttackAnimation.elapsedTime = 0
                 this.isWhirlwinding = false;
                 this.whirlwindCooldown = this.whirlwindCooldownTime;
+            }
+        }
+
+        if (this.whirlwindCooldown > 0) {
+            this.whirlwindCooldown -= 1;
+            if (this.whirlwindCooldown == 0) {
+                this.whirlwindReady = true;
+                this.isWhirlwinding = false;
             }
         }
     }

@@ -8,7 +8,9 @@ import Slime from '../../enemies/Slime.js';
 class Level1A extends Level {
     constructor(game) {
         super(game, 48);
-        let hud = null;
+        this.hud = new PlayerHUD(this.game,
+            this.game.assetManager.getAsset('./assets/sprites/characterInfo2.png'),
+            this.game.assetManager.getAsset('./assets/sprites/HP.png'));
     }
 
     init() {
@@ -23,10 +25,6 @@ class Level1A extends Level {
 
     postPopulate() {
         let player = new Player(this.game, 150, 150);
-
-        this.hud = new PlayerHUD(this.game, player,
-            this.game.assetManager.getAsset('./assets/sprites/characterInfo2.png'),
-            this.game.assetManager.getAsset('./assets/sprites/HP.png'))
 
         this.addEntity(player, 'Player');
         this.addEntity(new Sorcerer(this.game, 500, 400));
