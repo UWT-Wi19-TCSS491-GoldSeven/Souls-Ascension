@@ -682,6 +682,7 @@ export default {
     roomTemplateSquare23,
     roomTemplateSquare24,
     roomTemplateSquare25,
+	roomTemplateExitSquare1,
     hallwayTemplate1,
     hallwayTemplate2,
     hallwayTemplate3,
