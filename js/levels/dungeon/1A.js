@@ -53,23 +53,23 @@ class Level1A extends DungeonLevel {
 		this.addEntity(new SlimeBehemoth(this.game, this.fromColumn(75), this.fromRow(58)));
 		this.addEntity(new SlimeBehemoth(this.game, this.fromColumn(80), this.fromRow(54)));
 		this.addEntity(new SlimeBehemoth(this.game, this.fromColumn(80), this.fromRow(59)));
-		
+
 		
 		// items
-		this.addEntity(new SoulJar(this.game, this.fromColumn(30), this.fromRow(83)));
-		this.addEntity(new SoulJar(this.game, this.fromColumn(32), this.fromRow(57)));
-		this.addEntity(new SoulJar(this.game, this.fromColumn(33), this.fromRow(57)));
-		this.addEntity(new SoulJar(this.game, this.fromColumn(81), this.fromRow(57)));
-		this.addEntity(new SoulJar(this.game, this.fromColumn(75), this.fromRow(26)));
-		this.addEntity(new SoulJar(this.game, this.fromColumn(77), this.fromRow(26)));
-		this.addEntity(new HealingPotion(this.game, this.fromColumn(35), this.fromRow(78)));
-		this.addEntity(new HealingPotion(this.game, this.fromColumn(56), this.fromRow(56)));
-		this.addEntity(new HealingPotion(this.game, this.fromColumn(56), this.fromRow(57)));
-		this.addEntity(new HealingPotion(this.game, this.fromColumn(57), this.fromRow(56)));
-		this.addEntity(new HealingPotion(this.game, this.fromColumn(57), this.fromRow(57)));
-		this.addEntity(new HealingPotion(this.game, this.fromColumn(80), this.fromRow(56)));
-		this.addEntity(new GoldKey(this.game, this.fromColumn(35), this.fromRow(83)));
-		this.addEntity(new SilverKey(this.game, this.fromColumn(30), this.fromRow(78)));
+		this.addEntity(new SoulJar(this.game, this.fromColumn(30), this.fromRow(83)))
+		this.addEntity(new SoulJar(this.game, this.fromColumn(32), this.fromRow(57)))
+		this.addEntity(new SoulJar(this.game, this.fromColumn(33), this.fromRow(57)))
+		this.addEntity(new SoulJar(this.game, this.fromColumn(81), this.fromRow(57)))
+		this.addEntity(new SoulJar(this.game, this.fromColumn(75), this.fromRow(26)))
+		this.addEntity(new SoulJar(this.game, this.fromColumn(77), this.fromRow(26)))
+		this.addEntity(new HealingPotion(this.game, this.fromColumn(35), this.fromRow(78)))
+		this.addEntity(new HealingPotion(this.game, this.fromColumn(56), this.fromRow(56)))
+		this.addEntity(new HealingPotion(this.game, this.fromColumn(56), this.fromRow(57)))
+		this.addEntity(new HealingPotion(this.game, this.fromColumn(57), this.fromRow(56)))
+		this.addEntity(new HealingPotion(this.game, this.fromColumn(57), this.fromRow(57)))
+		this.addEntity(new HealingPotion(this.game, this.fromColumn(80), this.fromRow(56)))
+		this.addEntity(new GoldKey(this.game, this.fromColumn(35), this.fromRow(83)))
+		this.addEntity(new SilverKey(this.game, this.fromColumn(30), this.fromRow(78)))
     }
 }
 

@@ -132,7 +132,7 @@ class HostileEntity extends LivingEntity {
     draw(ctx) {
         super.draw(ctx);
 
-        if (this.game.debug.enabled && this.visited.length > 0) {
+        if (this.game.debug.enabled && this.game.debug.verbosity > 2 && this.visited.length > 0) {
             let scale = this.game.level.tileDimension;
 
             for (let i in this.visited) {

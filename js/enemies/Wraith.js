@@ -18,16 +18,18 @@ class Wraith extends HostileEntity {
         this.moveSpeed = 140;
         this.attackSpeed = 3;
         this.attackInterval = 0.6;
-        this.startAttackRange = 80;
-        this.stopAttackRange = 300;
-        this.startFollowRange = 150;
-        this.stopFollowRange = 350;
+        this.startAttackRange = 20;
+        this.stopAttackRange = 250;
+        this.startFollowRange = 100;
+        this.stopFollowRange = 200;
         this.maxHealth = 60;
         this.health = 60;
         this.life = 1;
     }
 
     update() {
+        super.update();
+
         if (!this.alive) {
             if (this.animDeath && this.animation == this.animDeath) {
                 this.life -= this.game.clockTick;
@@ -39,24 +41,29 @@ class Wraith extends HostileEntity {
             return;
         }
 
-        if (this.x < 1050 && this.isMovingWest) {
-            this.isMovingEast = true;
-            this.isMovingWest = false;
-            this.x += this.game.clockTick * this.moveSpeed;
-        }
-        if (this.x > 1970 && this.isMovingEast) {
-            this.isMovingEast = false;
-            this.isMovingWest = true;
-            this.x -= this.game.clockTick * this.moveSpeed;
-        }
-        if (this.isMovingEast) {
-            this.x += this.game.clockTick * this.moveSpeed;
-        }
-        if (this.isMovingWest) {
-            this.x -= this.game.clockTick * this.moveSpeed;
+        let player = this.game.level.getEntityWithTag('Player');
+
+        if (player) {
+            if (this.cooldown > 0) this.cooldown = Math.max(this.cooldown - this.game.clockTick, 0);
+            let xOrigC = (player.x + player.animation.frameWidth / 2);
+            let yOrigC = (player.y + player.animation.frameHeight / 2);
+            let xOrigS = this.boundingBox.origin.x;
+            let yOrigS = this.boundingBox.origin.y;
+            let xDiff = xOrigC - xOrigS;
+            let yDiff = yOrigC - yOrigS;
+            let distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+
+            if (distance > this.detectRange || !this.checkSight(player.boundingBox)) {
+                return;
+            }
+
+            if (this.startFollowRange <= distance && distance <= this.stopFollowRange) {
+                this.xMot = this.game.clockTick * (this.moveSpeed * xDiff) / distance;
+                this.yMot = this.game.clockTick * (this.moveSpeed * yDiff) / distance;
+            }
         }
 
-        super.update();
+        this.updatePosition(this.boundingBox);
     }
 
     draw(ctx) {

@@ -6,7 +6,7 @@ import Entity from '../Entity.js';
 class SlimeBehemoth extends HostileEntity {
     constructor(game, x, y) {
         super(game, x, y);
-        this.boundingBox = new BoundingBox(x, y, 40, 60, 20, 5);
+        this.boundingBox = new BoundingBox(x, y, 40, 60, 10, 5);
         this.animWalkLeft = new Animation(this.game.assetManager.getAsset('behemoth.walk.left'), 0, 0, 80, 68, 0.1, 8, true, false);
         this.animWalkRight = new Animation(this.game.assetManager.getAsset('behemoth.walk.right'), 0, 0, 80, 68, 0.1, 8, true, false);
         this.animAttackLeft = new Animation(this.game.assetManager.getAsset('behemoth.attack.left'), 0, 0, 117, 68, 0.1, 8, true, false);
@@ -18,10 +18,10 @@ class SlimeBehemoth extends HostileEntity {
         this.moveSpeed = 70;
         this.attackSpeed = 3;
         this.attackInterval = 0.6;
-        this.startAttackRange = 80;
-        this.stopAttackRange = 300;
-        this.startFollowRange = 150;
-        this.stopFollowRange = 350;
+        this.startAttackRange = 20;
+        this.stopAttackRange = 250;
+        this.startFollowRange = 100;
+        this.stopFollowRange = 200;
         this.maxHealth = 150;
         this.health = 150;
     }
@@ -40,33 +40,26 @@ class SlimeBehemoth extends HostileEntity {
             return;
         }
 
-        let player = this.game.levelManager.level.getEntityWithTag('Player');
+        let player = this.game.level.getEntityWithTag('Player');
 
         if (player) {
+            if (this.cooldown > 0) this.cooldown = Math.max(this.cooldown - this.game.clockTick, 0);
             let xOrigC = (player.x + player.animation.frameWidth / 2);
             let yOrigC = (player.y + player.animation.frameHeight / 2);
-            let xOrigS = (this.x + this.animation.frameWidth / 2)
-            let yOrigS = (this.y + this.animation.frameHeight / 2)
+            let xOrigS = this.boundingBox.origin.x;
+            let yOrigS = this.boundingBox.origin.y;
             let xDiff = xOrigC - xOrigS;
             let yDiff = yOrigC - yOrigS;
             let distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
-        }
 
-        if (this.x < 230 && this.isMovingWest) {
-            this.isMovingEast = true;
-            this.isMovingWest = false;
-            this.x += this.game.clockTick * this.moveSpeed;
-        }
-        if (this.x > 1210 && this.isMovingEast) {
-            this.isMovingEast = false;
-            this.isMovingWest = true;
-            this.x -= this.game.clockTick * this.moveSpeed;
-        }
-        if (this.isMovingEast) {
-            this.x += this.game.clockTick * this.moveSpeed;
-        }
-        if (this.isMovingWest) {
-            this.x -= this.game.clockTick * this.moveSpeed;
+            if (distance > this.detectRange || !this.checkSight(player.boundingBox)) {
+                return;
+            }
+
+            if (this.startFollowRange <= distance && distance <= this.stopFollowRange) {
+                this.xMot = this.game.clockTick * (this.moveSpeed * xDiff) / distance;
+                this.yMot = this.game.clockTick * (this.moveSpeed * yDiff) / distance;
+            }
         }
 
         this.updatePosition(this.boundingBox);
