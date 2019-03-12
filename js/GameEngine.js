@@ -42,15 +42,44 @@ class GameEngine {
         this.levelManager = new LevelManager(this);
         this.sounds = new Map();
         this.camera = new Camera(this);
-        this.settings = {
-            audio: {
-                muted: false
-            },
-            debug: {
-                enabled: false,
-                verbosity: 0
-            }
+        this.loadSettings();
+    }
+
+    registerSound(key, sound) {
+        this.sounds.set(key, sound);
+        this.updateSound(sound);
+    }
+
+    updateSound(sound) {
+        sound._audio.muted = this.settings.audio.muted;
+    }
+
+    updateSounds() {
+        for (let s of this.sounds.values()) {
+            this.updateSound(s);
         }
+    }
+
+    loadSettings() {
+        let data = window.sessionStorage.getItem("settings");
+
+        if (!data) {
+            this.settings = {
+                audio: {
+                    muted: false
+                },
+                debug: {
+                    enabled: false,
+                    verbosity: 0
+                }
+            }
+        } else {
+            this.settings = JSON.parse(data);
+        }
+    }
+
+    saveSettings() {
+        window.sessionStorage.setItem("settings", JSON.stringify(this.settings));
     }
 
     init() {
@@ -98,6 +127,8 @@ class GameEngine {
                 this.debug.enabled = false;
             }
         }
+
+        this.saveSettings();
     }
 }
 

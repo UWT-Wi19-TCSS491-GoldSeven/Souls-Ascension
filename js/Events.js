@@ -43,11 +43,9 @@ function startInput(engine) {
                 break;
             case 'M':
             case 'm':
-                let muted = !engine.settings.audio.muted;
-                for (let s of engine.sounds.values()) {
-                    s._audio.muted = muted;
-                }
-                engine.settings.audio.muted = muted;
+                engine.settings.audio.muted = !engine.settings.audio.muted;
+                engine.updateSounds();
+                engine.saveSettings();
                 break;
             case 'H':
             case 'h':

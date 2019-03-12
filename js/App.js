@@ -5,9 +5,9 @@ import Level1A from './levels/dungeon/1A.js';
 
 let GAME = new GameEngine(document.getElementById('viewport'));
 
-GAME.sounds.set('dungeon1.music', new Sound('./assets/audio/lost_mine.mp3', true));
-GAME.sounds.set('player.attack', new Sound('./assets/audio/player_attack.wav'));
-GAME.sounds.set('player.whirlwind', new Sound('./assets/audio/player_whirlwind_attack.wav'));
+GAME.registerSound('dungeon1.music', new Sound('./assets/audio/lost_mine.mp3', true));
+GAME.registerSound('player.attack', new Sound('./assets/audio/player_attack.wav'));
+GAME.registerSound('player.whirlwind', new Sound('./assets/audio/player_whirlwind_attack.wav'));
 
 function startGame() {
     document.getElementById('start-game').hidden = true;
