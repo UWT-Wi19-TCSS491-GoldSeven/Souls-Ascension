@@ -19,19 +19,16 @@ class LevelManager {
         this.level.setup();
     }
 
-    reset() {
-        if (this.level) {
-            this.level.init();
-            this.level.setup();
+    update() {
+        if (this.level != null) {
+            if (this.level.doReset)
+                this.level.reset();
+            this.level.update();
         }
     }
 
-    update() {
-        if (this.level != null) this.level._update();
-    }
-
     draw(ctx) {
-        if (this.level != null) this.level._draw(ctx);
+        if (this.level != null) this.level.draw(ctx);
     }
 }
 

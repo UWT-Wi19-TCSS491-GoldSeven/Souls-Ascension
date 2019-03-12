@@ -309,8 +309,17 @@ class Player extends LivingEntity {
         if (this.health <= 0) {
             this.alive = false;
 
-            let text = document.getElementById('game-over');
+            this.toggleGameOver();
 
+            this.destroy();
+        }
+    }
+
+    toggleGameOver() {
+        let text = document.getElementById('game-over');
+        if (text.style.display === 'inline') {
+            text.style.display = 'none';
+        } else {
             text.style.display = 'inline';
 
             let tPos = text.getBoundingClientRect();
@@ -321,8 +330,6 @@ class Player extends LivingEntity {
             text.style.position = 'absolute';
             text.style.left = x + 'px';
             text.style.top = y + 'px';
-
-            this.destroy();
         }
     }
 

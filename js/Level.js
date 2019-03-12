@@ -12,9 +12,16 @@ class Level {
         this.columns = 0;
         this.rows = 0;
         this.grid = null;
+        this.doReset = false;
     }
 
     init() {
+    }
+
+    reset() {
+        this.tearDown();
+        this.init();
+        this.setup();
     }
 
     setup() {
@@ -51,22 +58,20 @@ class Level {
         return true;
     }
 
-    addEntity(entity, tag = null) {
+    addEntity(entity, tag = null, replaceTagEntities = false) {
         entity.game = this.game;
         this.entities.push(entity);
         if (tag) {
             entity.tag = tag;
-
             let tagValue = this.taggedEntities.get(tag);
-            if (tagValue) {
-                if (tagValue instanceof Array) {
-                    tagValue.push(entity);
-                } else {
-                    let arr = [tagValue, entity];
-                    this.taggedEntities.set(tag, arr);
-                }
-            } else {
+
+            if (replaceTagEntities || !tagValue) {
                 this.taggedEntities.set(tag, entity);
+            } else if (tagValue instanceof Array) {
+                tagValue.push(entity);
+            } else {
+                let arr = [tagValue, entity];
+                this.taggedEntities.set(tag, arr);
             }
         }
     }
@@ -237,7 +242,7 @@ class Level {
         }
     }
 
-    _update() {
+    update() {
         let entitiesCount = this.entities.length;
 
         for (let i = 0; i < entitiesCount; i++) {
@@ -276,7 +281,7 @@ class Level {
         }
     }
 
-    _draw(ctx) {
+    draw(ctx) {
         let camera = this.game.camera;
         // Calculate the x and y (top left) of a scaled window.
 

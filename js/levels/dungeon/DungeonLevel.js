@@ -27,6 +27,15 @@ class DungeonLevel extends Level {
     drawUserInterface(ctx) {
         this.hud.draw(ctx);
     }
+
+    update() {
+        super.update();
+
+        if (this.player.destroyed && this.game.space) {
+            this.player.toggleGameOver();
+            this.doReset = true;
+        }
+    }
 }
 
 export default DungeonLevel;

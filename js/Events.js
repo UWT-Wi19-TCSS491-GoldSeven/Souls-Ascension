@@ -50,6 +50,10 @@ function startInput(engine) {
             case 'H':
             case 'h':
                 engine.heal = true;
+                break;
+            case ' ':
+                engine.space = true;
+                break;
             default:
                 break;
         }
