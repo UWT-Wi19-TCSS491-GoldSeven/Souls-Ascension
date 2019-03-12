@@ -62,7 +62,7 @@ class Player extends LivingEntity {
         // Inventory
         this.inventory = {
             HealingPotion: 1,
-            SilverKey: 2,
+            SilverKey: 0,
             GoldKey: 0
         };
 
