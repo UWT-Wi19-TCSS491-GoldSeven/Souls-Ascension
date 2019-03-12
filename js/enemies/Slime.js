@@ -62,7 +62,7 @@ class Slime extends HostileEntity {
                 this.attack(xDiff, yDiff, distance, xOrigS, yOrigS);
             }
 
-            if (this.startFollowRange <= distance && distance <= this.followRange) {
+            if (this.attackRange <= distance && distance <= this.followRange) {
                 this.xMot = this.game.clockTick * (this.moveSpeed * xDiff) / distance;
                 this.yMot = this.game.clockTick * (this.moveSpeed * yDiff) / distance;
             }
