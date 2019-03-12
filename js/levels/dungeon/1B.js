@@ -5,7 +5,7 @@ import Sorcerer from '../../enemies/Sorcerer.js';
 import PlayerHUD from '../../ui/PlayerHUD.js';
 import Slime from '../../enemies/Slime.js';
 
-class Level1A extends Level {
+class Level1B extends Level {
     constructor(game) {
         super(game, 48);
         this.hud = new PlayerHUD(this.game)
@@ -18,16 +18,18 @@ class Level1A extends Level {
     }
 
     prePopulate() {
-		this.queueTemplate(25, 73, Templates.roomTemplateSquare9);
-		this.queueTemplate(25, 49, Templates.roomTemplateSquare1);
-		this.queueTemplate(49, 49, Templates.roomTemplateSquare5);
-		this.queueTemplate(73, 49, Templates.roomTemplateSquare12);
-        this.queueTemplate(73, 25, Templates.roomTemplateExitSquare1);
-		this.queueTemplate(27, 63, Templates.hallwayTemplate2);
+        this.queueTemplate(1, 49, Templates.roomTemplateSquare1);
+		this.queueTemplate(25, 73, Templates.roomTemplateSquare3);
+		this.queueTemplate(49, 49, Templates.roomTemplateSquare4);
+		this.queueTemplate(25, 49, Templates.roomTemplateSquare13);
+		this.queueTemplate(40, 33, Templates.roomTemplateSquare21);
+        this.queueTemplate(54, 17, Templates.roomTemplateExitSquare1);
+		this.queueTemplate(15, 51, Templates.hallwayTemplate1);
 		this.queueTemplate(39, 51, Templates.hallwayTemplate1);
-		this.queueTemplate(63, 51, Templates.hallwayTemplate1);
-		this.queueTemplate(75, 39, Templates.hallwayTemplate2);
-        
+		this.queueTemplate(27, 15, Templates.hallwayTemplate2);
+		this.queueTemplate(31, 39, Templates.hallwayTemplate3);
+		this.queueTemplate(52, 31, Templates.hallwayTemplate5);
+        this.queueTemplate(27, 63, Templates.hallwayTemplate2);
 		
     }
 
