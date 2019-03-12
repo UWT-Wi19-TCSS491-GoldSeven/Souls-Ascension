@@ -1,20 +1,12 @@
-import Level from '../../Level.js';
 import Player from '../../Player.js';
 import Templates from './DungeonTemplates.js';
 import Sorcerer from '../../enemies/Sorcerer.js';
-import PlayerHUD from '../../ui/PlayerHUD.js';
 import Slime from '../../enemies/Slime.js';
+import DungeonLevel from './DungeonLevel.js';
 
-class Level1B extends Level {
+class Level1B extends DungeonLevel {
     constructor(game) {
-        super(game, 48);
-        this.hud = new PlayerHUD(this.game)
-    }
-
-    init() {
-        this.appendTileSheet(this.game.assetManager.getAsset('map.dungeon'));
-
-        this.game.sounds.get('dungeon1.music').play();
+        super(game);
     }
 
     prePopulate() {
@@ -40,14 +32,6 @@ class Level1B extends Level {
         //this.addEntity(new Sorcerer(this.game, this.fromColumn(112), this.fromRow(112)));
         //this.addEntity(new Slime(this.game, this.fromColumn(103), this.fromRow(103)))
     }
-
-    isImpassable(id) {
-        return (id >= 0 && id < 16) || (id > 28);
-    }
-
-    drawUserInterface(ctx) {
-        this.hud.draw(ctx);
-    }
 }
 
-export default Level1A;
+export default Level1B;

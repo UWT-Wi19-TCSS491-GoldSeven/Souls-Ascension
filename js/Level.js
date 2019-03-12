@@ -324,8 +324,8 @@ class Level {
                 0,
                 this.tileDimension,
                 this.tileDimension,
-                column * this.tileDimension,
-                row * this.tileDimension,
+                this.fromColumn(column),
+                this.fromRow(row),
                 this.tileDimension,
                 this.tileDimension
             );
