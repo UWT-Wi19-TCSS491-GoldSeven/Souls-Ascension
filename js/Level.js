@@ -333,17 +333,20 @@ class Level {
 
         if (this.game.debug.enabled) {
             ctx.strokeStyle = 'green';
+            ctx.beginPath();
             ctx.moveTo(column * this.tileDimension, row * this.tileDimension);
             ctx.lineTo(column * this.tileDimension + this.tileDimension, row * this.tileDimension);
             ctx.lineTo(column * this.tileDimension + this.tileDimension, row * this.tileDimension + this.tileDimension);
             ctx.lineTo(column * this.tileDimension, row * this.tileDimension + this.tileDimension);
             ctx.stroke();
 
-            if (this.game.debug.verbosity > 3) {
-                ctx.font = '15px Arial';
-                ctx.fillStyle = 'tan';
-                ctx.textAlign = 'center';
-                ctx.fillText(`${column},${row}`, column * this.tileDimension + (this.tileDimension / 2), row * this.tileDimension + (this.tileDimension / 2));
+            if (column % 5 == 0 && row % 5 == 0) {
+                if (this.game.debug.verbosity > 3) {
+                    ctx.font = '15px Arial';
+                    ctx.fillStyle = 'tan';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(`${column},${row}`, column * this.tileDimension + (this.tileDimension / 2), row * this.tileDimension + (this.tileDimension / 2));
+                }
             }
         }
     }
