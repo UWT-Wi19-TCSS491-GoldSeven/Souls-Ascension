@@ -30,24 +30,46 @@ class Level1A extends DungeonLevel {
     }
 
     postPopulate() {
-        this.addEntity(new Slime(this.game, this.fromColumn(28), this.fromRow(76)))
-		this.addEntity(new Slime(this.game, this.fromColumn(36), this.fromRow(76)))
+		// enemies
+        this.addEntity(new Slime(this.game, this.fromColumn(28), this.fromRow(76)));
+		this.addEntity(new Slime(this.game, this.fromColumn(36), this.fromRow(76)));
+		this.addEntity(new Slime(this.game, this.fromColumn(29), this.fromRow(55)));
+		this.addEntity(new Slime(this.game, this.fromColumn(36), this.fromRow(55)));
+		this.addEntity(new Slime(this.game, this.fromColumn(50), this.fromRow(56)));
+		this.addEntity(new Slime(this.game, this.fromColumn(50), this.fromRow(57)));
+		this.addEntity(new Slime(this.game, this.fromColumn(60), this.fromRow(52)));
+		this.addEntity(new Slime(this.game, this.fromColumn(60), this.fromRow(60)));
+		this.addEntity(new Slime(this.game, this.fromColumn(80), this.fromRow(51)));
+		this.addEntity(new Slime(this.game, this.fromColumn(80), this.fromRow(62)));
+		this.addEntity(new Slime(this.game, this.fromColumn(75), this.fromRow(30)));
+		this.addEntity(new Slime(this.game, this.fromColumn(75), this.fromRow(35)));
+		this.addEntity(new Slime(this.game, this.fromColumn(80), this.fromRow(30)));
+		this.addEntity(new Slime(this.game, this.fromColumn(80), this.fromRow(35)));
+		this.addEntity(new Slime(this.game, this.fromColumn(85), this.fromRow(30)));
+		this.addEntity(new Slime(this.game, this.fromColumn(85), this.fromRow(35)));
+		this.addEntity(new SlimeBehemoth(this.game, this.fromColumn(30), this.fromRow(62)));
+		this.addEntity(new SlimeBehemoth(this.game, this.fromColumn(35), this.fromRow(62)));
+		this.addEntity(new SlimeBehemoth(this.game, this.fromColumn(75), this.fromRow(55)));
+		this.addEntity(new SlimeBehemoth(this.game, this.fromColumn(75), this.fromRow(58)));
+		this.addEntity(new SlimeBehemoth(this.game, this.fromColumn(80), this.fromRow(54)));
+		this.addEntity(new SlimeBehemoth(this.game, this.fromColumn(80), this.fromRow(59)));
+		
 		
 		// items
-		this.addEntity(new SoulJar(this.game, this.fromColumn(30), this.fromRow(83)))
-		this.addEntity(new SoulJar(this.game, this.fromColumn(32), this.fromRow(57)))
-		this.addEntity(new SoulJar(this.game, this.fromColumn(33), this.fromRow(57)))
-		this.addEntity(new SoulJar(this.game, this.fromColumn(81), this.fromRow(57)))
-		this.addEntity(new SoulJar(this.game, this.fromColumn(75), this.fromRow(26)))
-		this.addEntity(new SoulJar(this.game, this.fromColumn(77), this.fromRow(26)))
-		this.addEntity(new HealingPotion(this.game, this.fromColumn(35), this.fromRow(78)))
-		this.addEntity(new HealingPotion(this.game, this.fromColumn(56), this.fromRow(56)))
-		this.addEntity(new HealingPotion(this.game, this.fromColumn(56), this.fromRow(57)))
-		this.addEntity(new HealingPotion(this.game, this.fromColumn(57), this.fromRow(56)))
-		this.addEntity(new HealingPotion(this.game, this.fromColumn(57), this.fromRow(57)))
-		this.addEntity(new HealingPotion(this.game, this.fromColumn(80), this.fromRow(56)))
-		this.addEntity(new GoldKey(this.game, this.fromColumn(35), this.fromRow(83)))
-		this.addEntity(new SilverKey(this.game, this.fromColumn(30), this.fromRow(78)))
+		this.addEntity(new SoulJar(this.game, this.fromColumn(30), this.fromRow(83)));
+		this.addEntity(new SoulJar(this.game, this.fromColumn(32), this.fromRow(57)));
+		this.addEntity(new SoulJar(this.game, this.fromColumn(33), this.fromRow(57)));
+		this.addEntity(new SoulJar(this.game, this.fromColumn(81), this.fromRow(57)));
+		this.addEntity(new SoulJar(this.game, this.fromColumn(75), this.fromRow(26)));
+		this.addEntity(new SoulJar(this.game, this.fromColumn(77), this.fromRow(26)));
+		this.addEntity(new HealingPotion(this.game, this.fromColumn(35), this.fromRow(78)));
+		this.addEntity(new HealingPotion(this.game, this.fromColumn(56), this.fromRow(56)));
+		this.addEntity(new HealingPotion(this.game, this.fromColumn(56), this.fromRow(57)));
+		this.addEntity(new HealingPotion(this.game, this.fromColumn(57), this.fromRow(56)));
+		this.addEntity(new HealingPotion(this.game, this.fromColumn(57), this.fromRow(57)));
+		this.addEntity(new HealingPotion(this.game, this.fromColumn(80), this.fromRow(56)));
+		this.addEntity(new GoldKey(this.game, this.fromColumn(35), this.fromRow(83)));
+		this.addEntity(new SilverKey(this.game, this.fromColumn(30), this.fromRow(78)));
     }
 }
 
