@@ -74,9 +74,9 @@ class Skeleton extends HostileEntity {
             let player = this.game.level.getEntityWithTag('Player');
 
             if (this.direction == 'left') {
-                this.animation = this.animAttackLeft;
+                this.animation = this.animWalkLeft;
             } else {
-                this.animation = this.animAttackRight;
+                this.animation = this.animWalkRight;
             }
 
             player.damage(this.attackDamage);
