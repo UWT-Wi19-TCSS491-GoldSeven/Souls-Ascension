@@ -321,6 +321,8 @@ class Player extends LivingEntity {
             text.style.position = 'absolute';
             text.style.left = x + 'px';
             text.style.top = y + 'px';
+
+            this.destroy();
         }
     }
 

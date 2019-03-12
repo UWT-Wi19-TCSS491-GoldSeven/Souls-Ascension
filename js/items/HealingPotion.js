@@ -14,7 +14,7 @@ class HealingPotion extends Entity {
 
         let player = this.game.levelManager.level.getEntityWithTag('Player');
 
-        if (this.boundingBox.hasCollided(player.boundingBox)) {
+        if (player && this.boundingBox.hasCollided(player.boundingBox)) {
             this.destroy();
             player.inventory.HealingPotion += 1;
         }

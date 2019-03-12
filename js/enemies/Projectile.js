@@ -21,21 +21,23 @@ class Projectile extends Entity {
 
         this.updatePosition();
 
-        let player = this.game.level.getEntityWithTag('Player');
-
         if (this.collidedWithWall()) {
             this.destroy();
             return;
         }
 
-        if (this.boundingBox.hasCollided(player.boundingBox)) {
-            this.destroy();
-            player.damage(this.damage);
-            return
+        let player = this.game.level.getEntityWithTag('Player');
+
+        if (player) {
+            if (this.boundingBox.hasCollided(player.boundingBox)) {
+                this.destroy();
+                player.damage(this.damage);
+                return
+            }
         }
 
         this.life -= this.game.clockTick;
-        if (this.life <= 0) this.destroyed = true;
+        if (this.life <= 0) this.destroy();
     }
 
     draw(ctx) {

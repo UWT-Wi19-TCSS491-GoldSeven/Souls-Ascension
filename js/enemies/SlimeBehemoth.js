@@ -27,15 +27,7 @@ class SlimeBehemoth extends HostileEntity {
     }
 
     update() {
-        let player = this.game.levelManager.level.getEntityWithTag('Player');
-
-        let xOrigC = (player.x + player.animation.frameWidth / 2);
-        let yOrigC = (player.y + player.animation.frameHeight / 2);
-        let xOrigS = (this.x + this.animation.frameWidth / 2)
-        let yOrigS = (this.y + this.animation.frameHeight / 2)
-        let xDiff = xOrigC - xOrigS;
-        let yDiff = yOrigC - yOrigS;
-        let distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+        super.update();
 
         if (!this.alive) {
             if (this.animDeath && this.animation == this.animDeath) {
@@ -46,6 +38,18 @@ class SlimeBehemoth extends HostileEntity {
             }
 
             return;
+        }
+
+        let player = this.game.levelManager.level.getEntityWithTag('Player');
+
+        if (player) {
+            let xOrigC = (player.x + player.animation.frameWidth / 2);
+            let yOrigC = (player.y + player.animation.frameHeight / 2);
+            let xOrigS = (this.x + this.animation.frameWidth / 2)
+            let yOrigS = (this.y + this.animation.frameHeight / 2)
+            let xDiff = xOrigC - xOrigS;
+            let yDiff = yOrigC - yOrigS;
+            let distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
         }
 
         if (this.x < 230 && this.isMovingWest) {
@@ -65,7 +69,7 @@ class SlimeBehemoth extends HostileEntity {
             this.x -= this.game.clockTick * this.moveSpeed;
         }
 
-        super.update();
+        this.updatePosition(this.boundingBox);
     }
 
     draw(ctx) {

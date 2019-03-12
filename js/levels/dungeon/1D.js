@@ -6,7 +6,7 @@ import DungeonLevel from './DungeonLevel.js';
 
 class Level1D extends DungeonLevel {
     constructor(game) {
-        super(game);
+        super(game, 33, 87);
     }
 
     prePopulate() {
@@ -33,9 +33,6 @@ class Level1D extends DungeonLevel {
     }
 
     postPopulate() {
-        let player = new Player(this.game, this.fromColumn(33), this.fromRow(87));
-
-        this.addEntity(player, 'Player');
         //this.addEntity(new Sorcerer(this.game, this.fromColumn(112), this.fromRow(112)));
         //this.addEntity(new Slime(this.game, this.fromColumn(103), this.fromRow(103)))
     }

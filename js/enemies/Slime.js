@@ -18,6 +18,7 @@ class Slime extends HostileEntity {
         this.isMovingEast = false;
         this.moveSpeed = 40;
         this.cooldown = 1;
+        this.attackDamage = 1000;
         this.attackSpeed = 4;
         this.attackInterval = 2;
         this.startAttackRange = 20;
@@ -32,17 +33,6 @@ class Slime extends HostileEntity {
     update() {
         super.update();
 
-        let player = this.game.level.getEntityWithTag('Player');
-
-        if (this.cooldown > 0) this.cooldown = Math.max(this.cooldown - this.game.clockTick, 0);
-        let xOrigC = (player.x + player.animation.frameWidth / 2);
-        let yOrigC = (player.y + player.animation.frameHeight / 2);
-        let xOrigS = this.boundingBox.origin.x;
-        let yOrigS = this.boundingBox.origin.y;
-        let xDiff = xOrigC - xOrigS;
-        let yDiff = yOrigC - yOrigS;
-        let distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
-
         if (!this.alive) {
             if (this.animDeath && this.animation == this.animDeath) {
                 if (this.animDeath.isDone()) this.destroyed = true;
@@ -53,17 +43,30 @@ class Slime extends HostileEntity {
             return;
         }
 
-        if (distance > this.detectRange || !this.checkSight(player.boundingBox)) {
-            return;
-        }
+        let player = this.game.level.getEntityWithTag('Player');
 
-        if (this.startAttackRange <= distance && distance <= this.stopAttackRange) {
-            this.attack(xDiff, yDiff, distance, xOrigS, yOrigS);
-        }
+        if (player) {
+            if (this.cooldown > 0) this.cooldown = Math.max(this.cooldown - this.game.clockTick, 0);
+            let xOrigC = (player.x + player.animation.frameWidth / 2);
+            let yOrigC = (player.y + player.animation.frameHeight / 2);
+            let xOrigS = this.boundingBox.origin.x;
+            let yOrigS = this.boundingBox.origin.y;
+            let xDiff = xOrigC - xOrigS;
+            let yDiff = yOrigC - yOrigS;
+            let distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
 
-        if (this.startFollowRange <= distance && distance <= this.stopFollowRange) {
-            this.xMot = this.game.clockTick * (this.moveSpeed * xDiff) / distance;
-            this.yMot = this.game.clockTick * (this.moveSpeed * yDiff) / distance;
+            if (distance > this.detectRange || !this.checkSight(player.boundingBox)) {
+                return;
+            }
+
+            if (this.startAttackRange <= distance && distance <= this.stopAttackRange) {
+                this.attack(xDiff, yDiff, distance, xOrigS, yOrigS);
+            }
+
+            if (this.startFollowRange <= distance && distance <= this.stopFollowRange) {
+                this.xMot = this.game.clockTick * (this.moveSpeed * xDiff) / distance;
+                this.yMot = this.game.clockTick * (this.moveSpeed * yDiff) / distance;
+            }
         }
 
         this.updatePosition(this.boundingBox);
@@ -80,7 +83,7 @@ class Slime extends HostileEntity {
                 yOrigS,
                 velX,
                 velY,
-                15);
+                this.attackDamage);
             this.game.level.addEntity(projectile);
             this.cooldown = this.attackInterval;
         }

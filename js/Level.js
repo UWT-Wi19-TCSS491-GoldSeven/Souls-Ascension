@@ -54,7 +54,21 @@ class Level {
     addEntity(entity, tag = null) {
         entity.game = this.game;
         this.entities.push(entity);
-        if (tag) this.taggedEntities.set(tag, entity);
+        if (tag) {
+            entity.tag = tag;
+
+            let tagValue = this.taggedEntities.get(tag);
+            if (tagValue) {
+                if (tagValue instanceof Array) {
+                    tagValue.push(entity);
+                } else {
+                    let arr = [tagValue, entity];
+                    this.taggedEntities.set(tag, arr);
+                }
+            } else {
+                this.taggedEntities.set(tag, entity);
+            }
+        }
     }
 
     getEntityWithTag(tag) {
@@ -239,7 +253,25 @@ class Level {
 
         for (let i = this.entities.length - 1; i >= 0; --i) {
             if (this.entities[i].destroyed) {
-                this.entities.splice(i, 1);
+                let removed = this.entities.splice(i, 1);
+                let entity = removed ? removed[0] : null;
+                if (entity && entity.tag) {
+                    let tagValue = this.taggedEntities.get(entity.tag);
+                    if (tagValue instanceof Array) {
+                        for (let j in tagValue) {
+                            if (tagValue[j] == entity) {
+                                tagValue.splice(j, 1);
+                                break;
+                            }
+                        }
+
+                        if (tagValue.length == 0) {
+                            this.taggedEntities.delete(entity.tag);
+                        }
+                    } else {
+                        this.taggedEntities.delete(entity.tag);
+                    }
+                }
             }
         }
     }

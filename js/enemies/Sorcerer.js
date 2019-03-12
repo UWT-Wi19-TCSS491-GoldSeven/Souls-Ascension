@@ -29,17 +29,6 @@ class Sorcerer extends HostileEntity {
     update() {
         super.update();
 
-        let player = this.game.levelManager.level.getEntityWithTag('Player');
-
-        if (this.cooldown > 0) this.cooldown = Math.max(this.cooldown - this.game.clockTick, 0);
-        let xOrigC = (player.x + player.animation.frameWidth / 2);
-        let yOrigC = (player.y + player.animation.frameHeight / 2);
-        let xOrigS = this.boundingBox.origin.x;
-        let yOrigS = this.boundingBox.origin.y;
-        let xDiff = xOrigC - xOrigS;
-        let yDiff = yOrigC - yOrigS;
-        let distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
-
         if (!this.alive) {
             if (this.animDeath && this.animation == this.animDeath) {
                 this.life -= this.game.clockTick;
@@ -51,22 +40,35 @@ class Sorcerer extends HostileEntity {
             return;
         }
 
-        if (distance > this.detectRange || !this.checkSight(player.boundingBox)) {
-            return;
-        }
+        let player = this.game.levelManager.level.getEntityWithTag('Player');
 
-        if (distance < this.fleeRange) {
-            this.xMot = -this.game.clockTick * (this.fleeSpeed * xDiff) / distance;
-            this.yMot = -this.game.clockTick * (this.fleeSpeed * yDiff) / distance;
-        }
+        if (player) {
+            if (this.cooldown > 0) this.cooldown = Math.max(this.cooldown - this.game.clockTick, 0);
+            let xOrigC = (player.x + player.animation.frameWidth / 2);
+            let yOrigC = (player.y + player.animation.frameHeight / 2);
+            let xOrigS = this.boundingBox.origin.x;
+            let yOrigS = this.boundingBox.origin.y;
+            let xDiff = xOrigC - xOrigS;
+            let yDiff = yOrigC - yOrigS;
+            let distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
 
-        if (this.startAttackRange <= distance && distance <= this.stopAttackRange) {
-            this.attack(xDiff, yDiff, distance, xOrigS, yOrigS);
-        }
+            if (distance > this.detectRange || !this.checkSight(player.boundingBox)) {
+                return;
+            }
 
-        if (this.startFollowRange <= distance && distance <= this.stopFollowRange) {
-            this.xMot = (this.moveSpeed * xDiff) / distance;
-            this.yMot = (this.moveSpeed * yDiff) / distance;
+            if (distance < this.fleeRange) {
+                this.xMot = -this.game.clockTick * (this.fleeSpeed * xDiff) / distance;
+                this.yMot = -this.game.clockTick * (this.fleeSpeed * yDiff) / distance;
+            }
+
+            if (this.startAttackRange <= distance && distance <= this.stopAttackRange) {
+                this.attack(xDiff, yDiff, distance, xOrigS, yOrigS);
+            }
+
+            if (this.startFollowRange <= distance && distance <= this.stopFollowRange) {
+                this.xMot = (this.moveSpeed * xDiff) / distance;
+                this.yMot = (this.moveSpeed * yDiff) / distance;
+            }
         }
 
         this.updatePosition(this.boundingBox);

@@ -19,6 +19,13 @@ class LevelManager {
         this.level.setup();
     }
 
+    reset() {
+        if (this.level) {
+            this.level.init();
+            this.level.setup();
+        }
+    }
+
     update() {
         if (this.level != null) this.level._update();
     }

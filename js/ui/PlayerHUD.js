@@ -1,6 +1,7 @@
 class PlayerHUD {
-    constructor(game) {
+    constructor(game, player) {
         this.game = game;
+        this.player = player;
         this.x = 0;
         this.y = 0;
         this.w = 512;
@@ -11,7 +12,7 @@ class PlayerHUD {
     }
 
     draw(ctx) {
-        let player = this.game.level.getEntityWithTag('Player');
+        let player = this.player;
         let canvas = this.game.canvas;
 
         this.drawStats(ctx);
@@ -48,7 +49,7 @@ class PlayerHUD {
     }
 
     drawStats(ctx) {
-        let player = this.game.level.getEntityWithTag('Player');
+        let player = this.player
 
         let alX = 110;
         let lvY = 25, hpY = 45, expY = 60, soulY = 75;
@@ -110,7 +111,7 @@ class PlayerHUD {
     }
 
     updateSkillCover(ctx, x, y, radius, alpha = 1, color = 'black') {
-        let player = this.game.level.getEntityWithTag('Player');
+        let player = this.player;
 
         let full = -Math.PI / 2;
         let percent = this.getPercent(player.whirlwindCooldown, player.whirlwindCooldownTime);
