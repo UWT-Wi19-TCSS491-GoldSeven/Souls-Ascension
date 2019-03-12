@@ -17,8 +17,9 @@ class Slime extends HostileEntity {
         this.isMovingWest = false;
         this.isMovingEast = false;
         this.moveSpeed = 40;
-        this.cooldown = 1;
+        this.cooldown = 0;
         this.attackDamage = 15;
+        this.attackSpeed = 4;
         this.attackInterval = 2;
         this.startAttackRange = 20;
         this.stopAttackRange = 250;
