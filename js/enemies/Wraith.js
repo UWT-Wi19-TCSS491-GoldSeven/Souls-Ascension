@@ -5,7 +5,7 @@ import Animation from '../Animation.js';
 class Wraith extends HostileEntity {
     constructor(game, x, y) {
         super(game, x, y);
-        this.boundingBox = new BoundingBox(x, y, 30, 50, 25, 15);
+        this.boundingBox = new BoundingBox(x, y, 30, 50, 12.5, 7.5);
         this.animIdle = new Animation(this.game.assetManager.getAsset('wraith.idle'), 0, 0, 80, 80, 0.1, 10, true, false);
         this.animWalkLeft = new Animation(this.game.assetManager.getAsset('wraith.walk.left'), 0, 0, 80, 80, 0.1, 6, true, false);
         this.animWalkRight = new Animation(this.game.assetManager.getAsset('wraith.walk.right'), 0, 0, 80, 80, 0.1, 6, true, false);
@@ -13,15 +13,12 @@ class Wraith extends HostileEntity {
         this.animAttackRight = new Animation(this.game.assetManager.getAsset('wraith.attack.right'), 0, 0, 80, 80, 0.1, 6, true, false);
         this.animDeath = new Animation(this.game.assetManager.getAsset('wraith.animDeath'), 0, 0, 80, 80, 0.1, 10, false, false);
         this.animation = this.animWalkLeft;
-        this.isMovingWest = false;
-        this.isMovingEast = true;
-        this.moveSpeed = 140;
-        this.attackSpeed = 3;
-        this.attackInterval = 0.6;
-        this.startAttackRange = 20;
-        this.stopAttackRange = 250;
-        this.startFollowRange = 100;
-        this.stopFollowRange = 200;
+        this.cooldown = 0;
+        this.moveSpeed = 70;
+        this.attackDamage = 40;
+        this.attackInterval = 1.5;
+        this.attackRange = 40;
+        this.followRange = 200;
         this.maxHealth = 60;
         this.health = 60;
         this.life = 1;
@@ -57,13 +54,46 @@ class Wraith extends HostileEntity {
                 return;
             }
 
-            if (this.startFollowRange <= distance && distance <= this.stopFollowRange) {
+            if (this.attackRange <= distance && distance <= this.followRange) {
                 this.xMot = this.game.clockTick * (this.moveSpeed * xDiff) / distance;
                 this.yMot = this.game.clockTick * (this.moveSpeed * yDiff) / distance;
             }
-        }
 
-        this.updatePosition(this.boundingBox);
+            this.updatePosition(this.boundingBox);
+
+            if (distance <= this.attackRange) {
+                this.attack(xDiff, yDiff, distance, xOrigS, yOrigS);
+            } else {
+                if (this.direction = 'left') {
+                    this.animation = this.animWalkLeft;
+                } else {
+                    this.animation = this.animWalkRight;
+                }
+            }
+        }
+    }
+
+    attack() {
+        if (this.cooldown == 0) {
+            let player = this.game.level.getEntityWithTag('Player');
+
+            if (this.direction == 'left') {
+                this.animation = this.animAttackLeft;
+            } else {
+                this.animation = this.animAttackRight;
+            }
+
+            player.damage(this.attackDamage);
+
+            this.cooldown = this.attackInterval;
+        }
+    }
+
+    updatePosition(collider = this.boundingBox) {
+        super.updatePosition(collider);
+
+        if (this.xMot < 0) this.direction = 'left';
+        else if (this.xMot > 0) this.direction = 'right';
     }
 
     draw(ctx) {

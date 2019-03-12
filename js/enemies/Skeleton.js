@@ -5,20 +5,17 @@ import Animation from '../Animation.js';
 class Skeleton extends HostileEntity {
     constructor(game, x, y) {
         super(game, x, y);
-        this.boundingBox = new BoundingBox(x, y, 30, 50, 10, 15);
+        this.boundingBox = new BoundingBox(x, y, 30, 50, 0, 7.5);
         this.animWalkLeft = new Animation(this.game.assetManager.getAsset('skeleton.walk.left'), 0, 0, 44, 66, 0.1, 13, true, false);
         this.animWalkRight = new Animation(this.game.assetManager.getAsset('skeleton.walk.right'), 0, 0, 44, 66, 0.1, 13, true, false);
         this.animDeath = null;
         this.animation = this.animWalkRight;
-        this.isMovingWest = true;
-        this.isMovingEast = false;
-        this.moveSpeed = 30;
-        this.attackSpeed = 3;
-        this.attackInterval = 0.6;
-        this.startAttackRange = 20;
-        this.stopAttackRange = 250;
-        this.startFollowRange = 100;
-        this.stopFollowRange = 200;
+        this.cooldown = 0;
+        this.moveSpeed = 70;
+        this.attackDamage = 20;
+        this.attackInterval = 1;
+        this.attackRange = 40;
+        this.followRange = 200;
         this.maxHealth = 60;
         this.health = 60;
     }
@@ -53,13 +50,46 @@ class Skeleton extends HostileEntity {
                 return;
             }
 
-            if (this.startFollowRange <= distance && distance <= this.stopFollowRange) {
+            if (this.attackRange <= distance && distance <= this.followRange) {
                 this.xMot = this.game.clockTick * (this.moveSpeed * xDiff) / distance;
                 this.yMot = this.game.clockTick * (this.moveSpeed * yDiff) / distance;
             }
-        }
 
-        this.updatePosition(this.boundingBox);
+            this.updatePosition(this.boundingBox);
+
+            if (distance <= this.attackRange) {
+                this.attack(xDiff, yDiff, distance, xOrigS, yOrigS);
+            } else {
+                if (this.direction = 'left') {
+                    this.animation = this.animWalkLeft;
+                } else {
+                    this.animation = this.animWalkRight;
+                }
+            }
+        }
+    }
+
+    attack() {
+        if (this.cooldown == 0) {
+            let player = this.game.level.getEntityWithTag('Player');
+
+            if (this.direction == 'left') {
+                this.animation = this.animAttackLeft;
+            } else {
+                this.animation = this.animAttackRight;
+            }
+
+            player.damage(this.attackDamage);
+
+            this.cooldown = this.attackInterval;
+        }
+    }
+
+    updatePosition(collider = this.boundingBox) {
+        super.updatePosition(collider);
+
+        if (this.xMot < 0) this.direction = 'left';
+        else if (this.xMot > 0) this.direction = 'right';
     }
 
     draw(ctx) {

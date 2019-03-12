@@ -2,6 +2,7 @@ import Animation from '../Animation.js';
 import HostileEntity from '../HostileEnemy.js';
 import BoundingBox from '../BoundingBox.js';
 import Entity from '../Entity.js';
+import Projectile from './Projectile.js';
 
 class SlimeBehemoth extends HostileEntity {
     constructor(game, x, y) {
@@ -13,17 +14,14 @@ class SlimeBehemoth extends HostileEntity {
         this.animAttackRight = new Animation(this.game.assetManager.getAsset('behemoth.attack.right'), 0, 0, 120, 68, 0.1, 8, true, false);
         this.animDeath = null;
         this.animation = this.animWalkRight;
-        this.isMovingWest = true;
-        this.isMovingEast = false;
+        this.cooldown = 0;
         this.moveSpeed = 70;
-        this.attackSpeed = 3;
-        this.attackInterval = 0.6;
-        this.startAttackRange = 20;
-        this.stopAttackRange = 250;
-        this.startFollowRange = 100;
-        this.stopFollowRange = 200;
-        this.maxHealth = 150;
-        this.health = 150;
+        this.attackDamage = 50;
+        this.attackInterval = 4;
+        this.attackRange = 40;
+        this.followRange = 200;
+        this.maxHealth = 200;
+        this.health = 200;
     }
 
     update() {
@@ -56,22 +54,49 @@ class SlimeBehemoth extends HostileEntity {
                 return;
             }
 
-            if (this.startFollowRange <= distance && distance <= this.stopFollowRange) {
+            if (this.attackRange <= distance && distance <= this.followRange) {
                 this.xMot = this.game.clockTick * (this.moveSpeed * xDiff) / distance;
                 this.yMot = this.game.clockTick * (this.moveSpeed * yDiff) / distance;
             }
-        }
 
-        this.updatePosition(this.boundingBox);
+            this.updatePosition(this.boundingBox);
+
+            if (distance <= this.attackRange) {
+                this.attack(xDiff, yDiff, distance, xOrigS, yOrigS);
+            } else {
+                if (this.direction = 'left') {
+                    this.animation = this.animWalkLeft;
+                } else {
+                    this.animation = this.animWalkRight;
+                }
+            }
+        }
+    }
+
+    attack() {
+        if (this.cooldown == 0) {
+            let player = this.game.level.getEntityWithTag('Player');
+
+            if (this.direction == 'left') {
+                this.animation = this.animAttackLeft;
+            } else {
+                this.animation = this.animAttackRight;
+            }
+
+            player.damage(this.attackDamage);
+
+            this.cooldown = this.attackInterval;
+        }
+    }
+
+    updatePosition(collider = this.boundingBox) {
+        super.updatePosition(collider);
+
+        if (this.xMot < 0) this.direction = 'left';
+        else if (this.xMot > 0) this.direction = 'right';
     }
 
     draw(ctx) {
-        if (this.isMovingWest) {
-            this.animation = this.animWalkLeft;
-        } else {
-            this.animation = this.animWalkRight;
-        }
-
         this.animation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
 
         super.draw(ctx);
