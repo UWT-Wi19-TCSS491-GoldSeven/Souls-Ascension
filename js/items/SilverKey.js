@@ -22,7 +22,7 @@ class SilverKey extends Entity {
 
     draw(ctx) {
         this.silverKeyAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
-        super.draw();
+        super.draw(ctx);
     }
 }
 

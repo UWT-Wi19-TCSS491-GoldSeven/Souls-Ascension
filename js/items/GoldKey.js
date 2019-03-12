@@ -22,7 +22,7 @@ class GoldKey extends Entity {
 
     draw(ctx) {
         this.goldKeyAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
-        super.draw();
+        super.draw(ctx);
     }
 }
 

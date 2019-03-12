@@ -22,7 +22,7 @@ class HealingPotion extends Entity {
 
     draw(ctx) {
         this.sparkleAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
-        super.draw();
+        super.draw(ctx);
     }
 }
 
