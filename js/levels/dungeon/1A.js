@@ -17,6 +17,8 @@ class Level1A extends DungeonLevel {
     }
 
     prePopulate() {
+
+		
 		this.queueTemplate(25, 73, Templates.roomTemplateSquare9);
 		this.queueTemplate(25, 49, Templates.roomTemplateSquare1);
 		this.queueTemplate(49, 49, Templates.roomTemplateSquare5);
@@ -30,6 +32,8 @@ class Level1A extends DungeonLevel {
     }
 
     postPopulate() {
+
+		
 		// enemies
         this.addEntity(new Slime(this.game, this.fromColumn(28), this.fromRow(76)));
 		this.addEntity(new Slime(this.game, this.fromColumn(36), this.fromRow(76)));
@@ -70,6 +74,7 @@ class Level1A extends DungeonLevel {
 		this.addEntity(new HealingPotion(this.game, this.fromColumn(80), this.fromRow(56)));
 		this.addEntity(new GoldKey(this.game, this.fromColumn(35), this.fromRow(83)));
 		this.addEntity(new SilverKey(this.game, this.fromColumn(30), this.fromRow(78)));
+		
     }
 }
 

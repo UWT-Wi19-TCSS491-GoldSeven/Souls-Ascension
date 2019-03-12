@@ -2,6 +2,13 @@ import Player from '../../Player.js';
 import Templates from './DungeonTemplates.js';
 import Sorcerer from '../../enemies/Sorcerer.js';
 import Slime from '../../enemies/Slime.js';
+import Wraith from '../../enemies/Wraith.js';
+import SlimeBehemoth from '../../enemies/SlimeBehemoth.js';
+import Skeleton from '../../enemies/Skeleton.js';
+import SoulJar from '../../items/SoulJar.js';
+import HealingPotion from '../../items/HealingPotion.js';
+import SilverKey from '../../items/SilverKey.js';
+import GoldKey from '../../items/GoldKey.js';
 import DungeonLevel from './DungeonLevel.js';
 
 class Level1D extends DungeonLevel {
