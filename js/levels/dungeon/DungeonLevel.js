@@ -24,6 +24,26 @@ class DungeonLevel extends Level {
         return (id >= 0 && id < 16) || (id > 28);
     }
 
+    isDoor(id) {
+        return this.isExitDoor(id) || this.isSilverDoor(id) || this.isGoldDoor(id);
+    }
+
+    isExitDoor(id) {
+        return id == 15;
+    }
+
+    isSilverDoor(id) {
+        return id == 29;
+    }
+
+    isGoldDoor(id) {
+        return id == 30;
+    }
+
+    openDoor(column, row) {
+        this.grid[this.toIndex(column, row)] = 24;
+    }
+
     drawUserInterface(ctx) {
         this.hud.draw(ctx);
     }

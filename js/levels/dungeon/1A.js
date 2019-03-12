@@ -10,6 +10,7 @@ import HealingPotion from '../../items/HealingPotion.js';
 import SilverKey from '../../items/SilverKey.js';
 import GoldKey from '../../items/GoldKey.js';
 import DungeonLevel from './DungeonLevel.js';
+import Level1B from './1B.js';
 
 class Level1A extends DungeonLevel {
     constructor(game) {
@@ -71,6 +72,10 @@ class Level1A extends DungeonLevel {
 		this.addEntity(new GoldKey(this.game, this.fromColumn(35), this.fromRow(83)))
 		this.addEntity(new SilverKey(this.game, this.fromColumn(30), this.fromRow(78)))
     }
+
+    loadNextLevel() {
+		this.game.levelManager.load(new Level1B(this.game));
+	}
 }
 
 export default Level1A;

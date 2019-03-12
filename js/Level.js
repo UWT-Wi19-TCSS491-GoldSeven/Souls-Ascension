@@ -43,6 +43,9 @@ class Level {
     postPopulate() {
     }
 
+    loadNextLevel() {
+    }
+
     getContents(x, y) {
         let col = Math.floor(x / this.tileDimension);
         let row = Math.floor(y / this.tileDimension);
@@ -86,6 +89,10 @@ class Level {
         for (let i in tiles) this.tiles.push(tiles[i])
     }
 
+    toIndex(column, row) {
+        return row * this.columns + column;
+    }
+
     hasCollidedWithWalls(aabb, xMot, yMot) {
         let result = null;
 
@@ -99,7 +106,8 @@ class Level {
                 left: false,
                 right: false,
                 top: false,
-                bottom: false
+                bottom: false,
+                candidates: []
             }
 
             if (yMot != 0) {
@@ -113,6 +121,12 @@ class Level {
                         } else {
                             result.bottom = true;
                         }
+
+                        result.candidates.push({
+                            column: x,
+                            row: yIndex,
+                            data: this.grid[this.toIndex(x, yIndex)]
+                        })
                     }
                 }
             }
@@ -128,6 +142,12 @@ class Level {
                         } else {
                             result.right = true;
                         }
+
+                        result.candidates.push({
+                            column: xIndex,
+                            row: y,
+                            data: this.grid[this.toIndex(xIndex, y)]
+                        })
                     }
                 }
             }
@@ -244,10 +264,10 @@ class Level {
     }
 
     update() {
-        let entitiesCount = this.entities.length;
-
-        for (let i = 0; i < entitiesCount; i++) {
+        for (let i = 0; i < this.entities.length; i++) {
             let entity = this.entities[i];
+
+
 
             if (!entity.update)
                 continue;

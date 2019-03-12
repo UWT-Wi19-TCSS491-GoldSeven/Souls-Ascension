@@ -87,6 +87,19 @@ class Player extends LivingEntity {
         return !this.isMoving() && !this.isPerformingAction();
     }
 
+    attemptOpenDoor(column, row, id) {
+        if (this.game.level.isExitDoor(id)) {
+            this.game.level.openDoor(column, row);
+            this.game.level.loadNextLevel();
+        } else if (this.game.level.isSilverDoor(id) && this.inventory.SilverKey > 0) {
+            this.inventory.SilverKey -= 1;
+            this.game.level.openDoor(column, row);
+        } else if (this.game.level.isGoldDoor(id) && this.inventory.GoldKey > 0) {
+            this.inventory.GoldKey -= 1;
+            this.game.level.openDoor(column, row);
+        }
+    }
+
     updateAttackStates() {
         if (this.isAttacking) {
             if (this.attackCooldown > 0) {
@@ -156,6 +169,28 @@ class Player extends LivingEntity {
 
         if (this.xMot != 0 || this.yMot != 0) {
             this.updatePosition(this.wallAABB);
+        }
+
+        if (this.wallCollisionResult) {
+            let candidates = this.wallCollisionResult.candidates;
+            if (candidates.length > 0) {
+                for (let i in candidates) {
+                    let candidate = candidates[i];
+                    let data = candidate.data;
+
+                    if (data instanceof Array) {
+                        for (let j in data) {
+                            if (this.game.level.isDoor(data[j])) {
+                                this.attemptOpenDoor(candidate.column, candidate.row, data[j]);
+                            }
+                        }
+                    } else {
+                        if (this.game.level.isDoor(data)) {
+                            this.attemptOpenDoor(candidate.column, candidate.row, data);
+                        }
+                    }
+                }
+            }
         }
 
         this.updateAABBs();
