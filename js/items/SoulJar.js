@@ -5,7 +5,7 @@ import Animation from '../Animation.js';
 class SoulJar extends Entity {
     constructor(game, x, y) {
         super(game, x, y);
-        this.boundingBox = new BoundingBox(x, y, 10, 10, 20, 20);
+        this.boundingBox = new BoundingBox(x, y, 10, 10, 10, 10);
         this.sparkleAnimation = new Animation(game.assetManager.getAsset('item.soul.jar'), 0, 0, 48, 48, 0.1, 4, true);
         this.jar = 100;
     }

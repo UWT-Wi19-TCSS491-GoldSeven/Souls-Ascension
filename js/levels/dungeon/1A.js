@@ -2,6 +2,13 @@ import Player from '../../Player.js';
 import Templates from './DungeonTemplates.js';
 import Sorcerer from '../../enemies/Sorcerer.js';
 import Slime from '../../enemies/Slime.js';
+import Wraith from '../../enemies/Wraith.js';
+import SlimeBehemoth from '../../enemies/SlimeBehemoth.js';
+import Skeleton from '../../enemies/Skeleton.js';
+import SoulJar from '../../items/SoulJar.js';
+import HealingPotion from '../../items/HealingPotion.js';
+import SilverKey from '../../items/SilverKey.js';
+import GoldKey from '../../items/GoldKey.js';
 import DungeonLevel from './DungeonLevel.js';
 
 class Level1A extends DungeonLevel {
@@ -25,6 +32,22 @@ class Level1A extends DungeonLevel {
     postPopulate() {
         this.addEntity(new Slime(this.game, this.fromColumn(28), this.fromRow(76)))
 		this.addEntity(new Slime(this.game, this.fromColumn(36), this.fromRow(76)))
+		
+		// items
+		this.addEntity(new SoulJar(this.game, this.fromColumn(30), this.fromRow(83)))
+		this.addEntity(new SoulJar(this.game, this.fromColumn(32), this.fromRow(57)))
+		this.addEntity(new SoulJar(this.game, this.fromColumn(33), this.fromRow(57)))
+		this.addEntity(new SoulJar(this.game, this.fromColumn(81), this.fromRow(57)))
+		this.addEntity(new SoulJar(this.game, this.fromColumn(75), this.fromRow(26)))
+		this.addEntity(new SoulJar(this.game, this.fromColumn(77), this.fromRow(26)))
+		this.addEntity(new HealingPotion(this.game, this.fromColumn(35), this.fromRow(78)))
+		this.addEntity(new HealingPotion(this.game, this.fromColumn(56), this.fromRow(56)))
+		this.addEntity(new HealingPotion(this.game, this.fromColumn(56), this.fromRow(57)))
+		this.addEntity(new HealingPotion(this.game, this.fromColumn(57), this.fromRow(56)))
+		this.addEntity(new HealingPotion(this.game, this.fromColumn(57), this.fromRow(57)))
+		this.addEntity(new HealingPotion(this.game, this.fromColumn(80), this.fromRow(56)))
+		this.addEntity(new GoldKey(this.game, this.fromColumn(35), this.fromRow(83)))
+		this.addEntity(new SilverKey(this.game, this.fromColumn(30), this.fromRow(78)))
     }
 }
 

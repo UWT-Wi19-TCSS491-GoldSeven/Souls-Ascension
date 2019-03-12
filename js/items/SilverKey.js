@@ -5,7 +5,7 @@ import Entity from '../Entity.js';
 class SilverKey extends Entity {
     constructor(game, x, y) {
         super(game, x, y);
-        this.boundingBox = new BoundingBox(x, y, 10, 10, 20, 20);
+        this.boundingBox = new BoundingBox(x, y, 10, 10, 10, 10);
         this.silverKeyAnimation = new Animation(game.assetManager.getAsset('item.silver.key'), 0, 0, 48, 48, 0.1, 4, true);
     }
 

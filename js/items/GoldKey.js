@@ -5,7 +5,7 @@ import Animation from '../Animation.js';
 class GoldKey extends Entity {
     constructor(game, x, y) {
         super(game, x, y);
-        this.boundingBox = new BoundingBox(x, y, 10, 10, 20, 20);
+        this.boundingBox = new BoundingBox(x, y, 10, 10, 10, 10);
         this.goldKeyAnimation = new Animation(game.assetManager.getAsset('item.gold.key'), 0, 0, 48, 48, 0.1, 4, true);
     }
 
