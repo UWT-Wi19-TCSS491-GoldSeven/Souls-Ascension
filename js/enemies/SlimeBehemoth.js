@@ -64,10 +64,10 @@ class SlimeBehemoth extends HostileEntity {
             if (distance <= this.attackRange) {
                 this.attack(xDiff, yDiff, distance, xOrigS, yOrigS);
             } else {
-                if (this.direction = 'left') {
+                if (this.direction == 'left') {
                     this.animation = this.animWalkLeft;
                 } else {
-                    this.animation = this.animWalkRight;
+                    this.animation = this.wanimWalkRight;
                 }
             }
         }

@@ -60,7 +60,7 @@ class Skeleton extends HostileEntity {
             if (distance <= this.attackRange) {
                 this.attack(xDiff, yDiff, distance, xOrigS, yOrigS);
             } else {
-                if (this.direction = 'left') {
+                if (this.direction == 'left') {
                     this.animation = this.animWalkLeft;
                 } else {
                     this.animation = this.animWalkRight;
@@ -93,12 +93,6 @@ class Skeleton extends HostileEntity {
     }
 
     draw(ctx) {
-        if (this.isMovingWest) {
-            this.animation = this.animWalkLeft;
-        } else {
-            this.animation = this.animWalkRight;
-        }
-
         this.animation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
 
         super.draw(ctx);

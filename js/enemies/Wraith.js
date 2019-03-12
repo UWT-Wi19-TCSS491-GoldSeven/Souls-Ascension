@@ -12,7 +12,7 @@ class Wraith extends HostileEntity {
         this.animAttackLeft = new Animation(this.game.assetManager.getAsset('wraith.attack.left'), 0, 0, 80, 80, 0.1, 6, true, false);
         this.animAttackRight = new Animation(this.game.assetManager.getAsset('wraith.attack.right'), 0, 0, 80, 80, 0.1, 6, true, false);
         this.animDeath = new Animation(this.game.assetManager.getAsset('wraith.animDeath'), 0, 0, 80, 80, 0.1, 10, false, false);
-        this.animation = this.animWalkLeft;
+        this.animation = this.animIdle;
         this.cooldown = 0;
         this.moveSpeed = 70;
         this.attackDamage = 40;
@@ -64,7 +64,7 @@ class Wraith extends HostileEntity {
             if (distance <= this.attackRange) {
                 this.attack(xDiff, yDiff, distance, xOrigS, yOrigS);
             } else {
-                if (this.direction = 'left') {
+                if (this.direction == 'left') {
                     this.animation = this.animWalkLeft;
                 } else {
                     this.animation = this.animWalkRight;
@@ -97,14 +97,6 @@ class Wraith extends HostileEntity {
     }
 
     draw(ctx) {
-        if (this.animation !== this.animDeath) {
-            if (this.isMovingWest) {
-                this.animation = this.animWalkLeft;
-            } else {
-                this.animation = this.animWalkRight;
-            }
-        }
-
         this.animation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
 
         if (this.animation === this.animDeath) {
