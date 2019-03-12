@@ -69,10 +69,14 @@ class Entity {
         this.wallCollisionResult = this.game.level.hasCollidedWithWalls(collider, this.xMot, this.yMot);
 
         if (this.wallCollisionResult) {
-            if (!(this.wallCollisionResult.left || this.wallCollisionResult.right)) this.x += this.xMot;
-            else this.xMot = 0;
-            if (!(this.wallCollisionResult.top || this.wallCollisionResult.bottom)) this.y += this.yMot;
-            else this.yMot = 0;
+            if (!(this.wallCollisionResult.left || this.wallCollisionResult.right))
+                this.x += this.xMot;
+            else
+                this.xMot = 0;
+            if (!(this.wallCollisionResult.top || this.wallCollisionResult.bottom))
+                this.y += this.yMot;
+            else
+                this.yMot = 0;
         }
     }
 }

@@ -34,6 +34,7 @@ class Level {
         this.templateQueue.length = 0;
         this.entities.length = 0;
         this.taggedEntities.clear();
+        this.doReset = false;
     }
 
     prePopulate() {

@@ -90,6 +90,8 @@ function startInput(engine) {
             case 'H':
             case 'H':
                 engine.heal = false;
+            case ' ':
+                engine.space = false;
             default:
                 break;
         }
