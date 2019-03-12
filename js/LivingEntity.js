@@ -10,6 +10,7 @@ class LivingEntity extends Entity {
     }
 
     damage(amount) {
+        if (this.invulnerable) return;
         this.health = Math.max(this.health - amount, 0);
     }
 
