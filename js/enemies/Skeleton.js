@@ -14,8 +14,10 @@ class Skeleton extends HostileEntity {
         this.moveSpeed = 70;
         this.attackDamage = 20;
         this.attackInterval = 1;
-        this.attackRange = 40;
-        this.followRange = 200;
+        this.meleeRange = 40;
+        this.attackRange = this.meleeRange;
+        this.followRange = this.attackRange + 160;
+        this.detectRange = this.followRange + 50;
         this.maxHealth = 60;
         this.health = 60;
     }

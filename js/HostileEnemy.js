@@ -14,115 +14,47 @@ class HostileEntity extends LivingEntity {
         this.visited = [];
     }
 
-    checkSight(aabbB) {
+    checkSight(aabbB, accuracy = 100) {
         let aabbA = this.boundingBox;
-        if (aabbA == null || aabbA == undefined) return;
+        if (aabbA == null || aabbB == null) return;
 
-        let level = this.game.levelManager.level;
+        let level = this.game.level;
 
         let start = aabbA.origin.x < aabbB.origin.x ? aabbA : aabbB;
         let end = aabbA.origin.x < aabbB.origin.x ? aabbB : aabbA;
 
-        let scale = this.game.levelManager.level.tileDimension;
+        let incX = (end.origin.x - start.origin.x) / accuracy;
+        let incY = (end.origin.y - start.origin.y) / accuracy;
 
-        // Starting tile x and y tile indices
-        let six = Math.floor(start.origin.x / scale),
-            siy = Math.floor((start.origin.y + (start.height / 2)) / scale);
-        // Ending tile x and y indices
-        let eix = Math.floor(end.origin.x / scale),
-            eiy = Math.floor((end.origin.y + (start.height / 2)) / scale);
+        this.origin.x = level.toColumn(aabbA.origin.x);
+        this.origin.y = level.toRow(aabbA.origin.y);
 
-        this.origin.x = six;
-        this.origin.y = siy;
+        this.destination.x = level.toColumn(aabbB.origin.x);
+        this.destination.y = level.toRow(aabbB.origin.y);
 
-        this.destination.x = eix;
-        this.destination.y = eiy;
+        this.destination
 
-        if (six == eix) {
-            // Organize tile y indices
-            if (siy < eiy) {
-                siy += 1;
-            } else {
-                let tmp = siy;
-                siy = eiy;
-                eiy = tmp - 1;
-            }
+        let lastX = start.x, lastY = start. y;
+        for (let i = 1; i < accuracy; i++) {
+            let col = level.toColumn(start.x + (incX * i));
+            let row = level.toRow(start.y + (incY * i));
 
-            // All tiles are in one column. Skip the starting tile.
-            for (let cy = siy; cy <= eiy; cy++) {
-                if (this.game.debug.enabled) this.visited.push({
-                    x: six,
-                    y: cy
+            if ((col == this.origin.x && row == this.origin.y)
+                || (col == this.destination.x && row == this.destination.y))
+                continue;
+
+            if (lastX != col || lastY != row) {
+                lastX = col;
+                lastY = row;
+
+                this.visited.push({
+                    x: col,
+                    y: row
                 });
-
-                if (level._isImpassable(six, cy))
-                    return false;
             }
-        } else if (siy == eiy) {
-            for (let cx = six + 1; cx <= eix; cx++) {
-                if (this.game.debug.enabled) this.visited.push({
-                    x: cx,
-                    y: siy
-                });
 
-                if (level._isImpassable(cx, siy))
-                    return false;
-            }
-        } else {
-            let uy = Math.floor(((start.origin.y - end.origin.y) / (start.origin.x - end.origin.x)) * scale);
-            let y = start.origin.y + (start.height / 2);
-            let ny = y + uy;
-            let ciy, miy, niy;
-
-            for (let cx = six; cx <= eix; cx++) {
-                ciy = Math.floor(y / scale);
-                miy = (ny - (ny % scale)) / scale;
-                niy = Math.floor(ny / scale);
-
-                if (uy >= 0) {
-                    for (let cy = ciy; cy <= niy; cy++) {
-                        if (cy <= miy) {
-                            if (this.game.debug.enabled) this.visited.push({
-                                x: cx,
-                                y: cy
-                            });
-
-                            if (level._isImpassable(cx, cy)) return false;
-                        }
-
-                        if (cy >= miy) {
-                            if (this.game.debug.enabled) this.visited.push({
-                                x: cx + 1,
-                                y: cy
-                            });
-
-                            if (level._isImpassable(cx + 1, cy)) return false;
-                        }
-                    }
-                } else {
-                    for (let cy = ciy; cy >= niy; cy--) {
-                        if (cy <= miy) {
-                            if (this.game.debug.enabled) this.visited.push({
-                                x: cx,
-                                y: cy
-                            });
-
-                            if (level._isImpassable(cx, cy)) return false;
-                        }
-
-                        if (cy >= miy) {
-                            if (this.game.debug.enabled) this.visited.push({
-                                x: cx + 1,
-                                y: cy
-                            });
-
-                            if (level._isImpassable(cx + 1, cy)) return false;
-                        }
-                    }
-                }
-
-                y = ny;
-                ny = y + uy;
+            if (level._isImpassable(col, row)) {
+                return false;
             }
         }
 

@@ -21,11 +21,10 @@ class Slime extends HostileEntity {
         this.attackDamage = 15;
         this.attackSpeed = 4;
         this.attackInterval = 2;
-        this.startAttackRange = 20;
-        this.stopAttackRange = 250;
-        this.startFollowRange = 100;
-        this.stopFollowRange = 200;
-        this.detectRange = 250;
+        this.meleeRange = 40;
+        this.attackRange = this.meleeRange + 160;
+        this.followRange = this.attackRange + 100;
+        this.detectRange = this.followRange + 50;
         this.maxHealth = 40;
         this.health = 40;
     }
@@ -59,11 +58,11 @@ class Slime extends HostileEntity {
                 return;
             }
 
-            if (this.startAttackRange <= distance && distance <= this.stopAttackRange) {
+            if (this.meleeRange <= distance && distance <= this.attackRange) {
                 this.attack(xDiff, yDiff, distance, xOrigS, yOrigS);
             }
 
-            if (this.startFollowRange <= distance && distance <= this.stopFollowRange) {
+            if (this.startFollowRange <= distance && distance <= this.followRange) {
                 this.xMot = this.game.clockTick * (this.moveSpeed * xDiff) / distance;
                 this.yMot = this.game.clockTick * (this.moveSpeed * yDiff) / distance;
             }

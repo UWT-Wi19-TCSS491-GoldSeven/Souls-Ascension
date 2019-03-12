@@ -17,8 +17,10 @@ class Wraith extends HostileEntity {
         this.moveSpeed = 70;
         this.attackDamage = 40;
         this.attackInterval = 1.5;
-        this.attackRange = 40;
-        this.followRange = 200;
+        this.meleeRange = 40;
+        this.attackRange = this.meleeRange;
+        this.followRange = this.attackRange + 160;
+        this.detectRange = this.followRange + 50;
         this.maxHealth = 60;
         this.health = 60;
         this.life = 1;

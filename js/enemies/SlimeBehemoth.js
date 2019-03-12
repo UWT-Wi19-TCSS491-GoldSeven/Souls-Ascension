@@ -18,8 +18,10 @@ class SlimeBehemoth extends HostileEntity {
         this.moveSpeed = 70;
         this.attackDamage = 50;
         this.attackInterval = 4;
-        this.attackRange = 40;
-        this.followRange = 200;
+        this.meleeRange = 40;
+        this.attackRange = this.meleeRange;
+        this.followRange = this.attackRange + 160;
+        this.detectRange = this.followRange + 50;
         this.maxHealth = 200;
         this.health = 200;
     }
