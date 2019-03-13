@@ -40,6 +40,8 @@ function startGame() {
 
     // Enemy Spritesheets
     GAME.assetManager.queueDownload('sorcerer.attack', './assets/sprites/enemies/sorcerer/SorcererAttack.png');
+    GAME.assetManager.queueDownload('behemoth.idle.left', './assets/sprites/enemies/slime-behemoth/SlimeBehemothIdleLeft.png');
+    GAME.assetManager.queueDownload('behemoth.idle.right', './assets/sprites/enemies/slime-behemoth/SlimeBehemothIdleRight.png');
     GAME.assetManager.queueDownload('behemoth.walk.left', './assets/sprites/enemies/slime-behemoth/SlimeBehemothWalkLeft.png');
     GAME.assetManager.queueDownload('behemoth.walk.right', './assets/sprites/enemies/slime-behemoth/SlimeBehemothWalkRight.png');
     GAME.assetManager.queueDownload('behemoth.attack.left', './assets/sprites/enemies/slime-behemoth/SlimeBehemothAttackLeft.png');

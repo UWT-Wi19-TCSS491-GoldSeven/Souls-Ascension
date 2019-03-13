@@ -59,6 +59,10 @@ class Animation {
     isDone() {
         return (this.elapsedTime >= this.totalTime);
     }
+
+    reset() {
+        this.elapsedTime = 0;
+    }
 }
 
 export default Animation;

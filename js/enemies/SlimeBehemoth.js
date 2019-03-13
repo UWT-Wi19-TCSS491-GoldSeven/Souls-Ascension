@@ -8,12 +8,14 @@ class SlimeBehemoth extends HostileEntity {
     constructor(game, x, y) {
         super(game, x, y);
         this.boundingBox = new BoundingBox(x, y, 40, 60, 10, 5);
+        this.animIdleLeft = new Animation(this.game.assetManager.getAsset('behemoth.idle.left'), 0, 0, 80, 68, 0.1, 1, true, false);
+        this.animIdleRight = new Animation(this.game.assetManager.getAsset('behemoth.idle.right'), 0, 0, 80, 68, 0.1, 1, true, false);
         this.animWalkLeft = new Animation(this.game.assetManager.getAsset('behemoth.walk.left'), 0, 0, 80, 68, 0.1, 8, true, false);
         this.animWalkRight = new Animation(this.game.assetManager.getAsset('behemoth.walk.right'), 0, 0, 80, 68, 0.1, 8, true, false);
-        this.animAttackLeft = new Animation(this.game.assetManager.getAsset('behemoth.attack.left'), 0, 0, 117, 68, 0.1, 8, true, false);
-        this.animAttackRight = new Animation(this.game.assetManager.getAsset('behemoth.attack.right'), 0, 0, 120, 68, 0.1, 8, true, false);
+        this.animAttackLeft = new Animation(this.game.assetManager.getAsset('behemoth.attack.left'), 0, 0, 117, 68, 0.1, 8, false, false);
+        this.animAttackRight = new Animation(this.game.assetManager.getAsset('behemoth.attack.right'), 0, 0, 120, 68, 0.1, 8, false, false);
         this.animDeath = null;
-        this.animation = this.animWalkRight;
+        this.animation = this.animIdleRight;
         this.cooldown = 0;
         this.moveSpeed = 70;
         this.attackDamage = 50;
@@ -53,41 +55,60 @@ class SlimeBehemoth extends HostileEntity {
             let distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
 
             if (distance > this.detectRange || !this.checkSight(player.boundingBox)) {
+                this.setIdle();
                 return;
             }
 
-            if (this.attackRange <= distance && distance <= this.followRange) {
-                this.xMot = this.game.clockTick * (this.moveSpeed * xDiff) / distance;
-                this.yMot = this.game.clockTick * (this.moveSpeed * yDiff) / distance;
-            }
-
-            this.updatePosition(this.boundingBox);
-
-            if (distance <= this.attackRange) {
-                this.attack(xDiff, yDiff, distance, xOrigS, yOrigS);
-            } else {
-                if (this.direction == 'left') {
-                    this.animation = this.animWalkLeft;
-                } else {
-                    this.animation = this.animWalkRight;
+            if (distance <= this.followRange) {
+                if (this.attackRange <= distance) {
+                    this.xMot = this.game.clockTick * (this.moveSpeed * xDiff) / distance;
+                    this.yMot = this.game.clockTick * (this.moveSpeed * yDiff) / distance;
                 }
+
+                this.updatePosition(this.boundingBox);
+
+                if (distance <= this.attackRange) {
+                    this.attack(xDiff, yDiff, distance, xOrigS, yOrigS);
+                } else if (this.xMot != 0 || this.yMot != 0) {
+                    if (this.direction == 'left') {
+                        this.animation = this.animWalkLeft;
+                    } else {
+                        this.animation = this.animWalkRight;
+                    }
+                }
+            } else {
+                this.setIdle();
             }
+        }
+    }
+
+    setIdle() {
+        if (this.direction == 'left') {
+            this.animation = this.animIdleLeft;
+        } else {
+            this.animation = this.animIdleRight;
         }
     }
 
     attack() {
         if (this.cooldown == 0) {
-            let player = this.game.level.getEntityWithTag('Player');
-
             if (this.direction == 'left') {
                 this.animation = this.animAttackLeft;
             } else {
                 this.animation = this.animAttackRight;
             }
 
-            player.damage(this.attackDamage);
+            if (this.animation.isDone()) {
+                let player = this.game.level.getEntityWithTag('Player');
 
-            this.cooldown = this.attackInterval;
+                player.damage(this.attackDamage);
+
+                this.cooldown = this.attackInterval;
+
+                this.animation.reset();
+            }
+        } else {
+            this.setIdle();
         }
     }
 
