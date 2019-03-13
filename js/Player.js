@@ -8,7 +8,7 @@ class Player extends LivingEntity {
         super(game, x, y);
 
         // Collision Detection
-        this.boundingBox = new BoundingBox(this.x, this.y, 20, 40, 5);
+        this.boundingBox = new BoundingBox(this.x, this.y, 16, 34, 6, 4);
         this.wallAABB = new BoundingBox(this.x, this.y, 20, 20, 5, 10);
 
         // Animations

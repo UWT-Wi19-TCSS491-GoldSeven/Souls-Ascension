@@ -87,7 +87,9 @@ class Level1B extends DungeonLevel {
     }
 
 	loadNextLevel() {
-		this.game.levelManager.load(new Level1D(this.game));
+		let next = new Level1D(this.game)
+		next.player = this.player;
+		this.game.levelManager.load(next);
 	}
 }
 

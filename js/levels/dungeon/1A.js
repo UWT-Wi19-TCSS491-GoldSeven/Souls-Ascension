@@ -17,7 +17,7 @@ class Level1A extends DungeonLevel {
         super(game, 33, 87);
     }
 
-    prePopulate() {
+	prePopulate() {
 		this.queueTemplate(25, 73, Templates.roomTemplateSquare9);
 		this.queueTemplate(25, 49, Templates.roomTemplateSquare1);
 		this.queueTemplate(49, 49, Templates.roomTemplateSquare5);
@@ -75,7 +75,9 @@ class Level1A extends DungeonLevel {
     }
 
     loadNextLevel() {
-		this.game.levelManager.load(new Level1B(this.game));
+		let next = new Level1B(this.game)
+		next.player = this.player;
+		this.game.levelManager.load(next);
 	}
 }
 

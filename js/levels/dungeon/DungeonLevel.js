@@ -12,7 +12,13 @@ class DungeonLevel extends Level {
     init() {
         this.appendTileSheet(this.game.assetManager.getAsset('map.dungeon'));
 
-        this.player = new Player(this.game, this.fromColumn(this.playerStartX), this.fromRow(this.playerStartY));
+        if (this.player == null)
+            this.player = new Player(this.game, this.fromColumn(this.playerStartX), this.fromRow(this.playerStartY));
+        else {
+            this.player.x = this.fromColumn(this.playerStartX);
+            this.player.y = this.fromRow(this.playerStartY);
+        }
+
         this.hud = new PlayerHUD(this.game, this.player);
 
         this.addEntity(this.player, "Player");

@@ -40,8 +40,8 @@ class Level1D extends DungeonLevel {
     }
 
     postPopulate() {
-        //this.addEntity(new Sorcerer(this.game, this.fromColumn(112), this.fromRow(112)));
-        //this.addEntity(new Slime(this.game, this.fromColumn(103), this.fromRow(103)))
+        this.addEntity(new Sorcerer(this.game, this.fromColumn(33), this.fromRow(75)));
+        //this.addEntity(new Slime(this.game, this.fromColumn(103), this.fromRow(103)))a
     }
 }
 
