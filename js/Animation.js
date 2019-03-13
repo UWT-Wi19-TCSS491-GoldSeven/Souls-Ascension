@@ -1,5 +1,5 @@
 class Animation {
-    constructor(spriteSheet, startX, startY, frameWidth, frameHeight, frameDuration, frames, loop, reverse) {
+    constructor(spriteSheet, startX, startY, frameWidth, frameHeight, frameDuration, frames, loop, reverse, xOff = 0, yOff = 0) {
         this.spriteSheet = spriteSheet;
         this.startX = startX;
         this.startY = startY;
@@ -11,6 +11,8 @@ class Animation {
         this.elapsedTime = 0;
         this.loop = loop;
         this.reverse = reverse;
+        this.xOff = xOff;
+        this.yOff = yOff;
     }
 
     drawFrame(tick, ctx, x, y, scaleBy = 1) {
@@ -40,8 +42,8 @@ class Animation {
             vindex++;
         }
 
-        let locX = x;
-        let locY = y;
+        let locX = x + this.xOff;
+        let locY = y + this.yOff;
         let offset = vindex === 0 ? this.startX : 0;
 
         ctx.drawImage(this.spriteSheet,

@@ -12,8 +12,8 @@ class SlimeBehemoth extends HostileEntity {
         this.animIdleRight = new Animation(this.game.assetManager.getAsset('behemoth.idle.right'), 0, 0, 80, 68, 0.1, 1, true, false);
         this.animWalkLeft = new Animation(this.game.assetManager.getAsset('behemoth.walk.left'), 0, 0, 80, 68, 0.1, 8, true, false);
         this.animWalkRight = new Animation(this.game.assetManager.getAsset('behemoth.walk.right'), 0, 0, 80, 68, 0.1, 8, true, false);
-        this.animAttackLeft = new Animation(this.game.assetManager.getAsset('behemoth.attack.left'), 0, 0, 117, 68, 0.1, 8, false, false);
-        this.animAttackRight = new Animation(this.game.assetManager.getAsset('behemoth.attack.right'), 0, 0, 120, 68, 0.1, 8, false, false);
+        this.animAttackLeft = new Animation(this.game.assetManager.getAsset('behemoth.attack.left'), 0, 0, 120, 68, 0.1, 9, false, false, -40);
+        this.animAttackRight = new Animation(this.game.assetManager.getAsset('behemoth.attack.right'), 0, 0, 120, 68, 0.1, 9, false, false, 0);
         this.animDeath = null;
         this.animation = this.animIdleRight;
         this.cooldown = 0;
@@ -79,6 +79,8 @@ class SlimeBehemoth extends HostileEntity {
             } else {
                 this.setIdle();
             }
+        } else {
+            this.setIdle();
         }
     }
 
@@ -106,6 +108,8 @@ class SlimeBehemoth extends HostileEntity {
                 this.cooldown = this.attackInterval;
 
                 this.animation.reset();
+
+                this.setIdle();
             }
         } else {
             this.setIdle();
