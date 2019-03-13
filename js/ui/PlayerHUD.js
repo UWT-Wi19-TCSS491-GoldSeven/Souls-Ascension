@@ -30,13 +30,13 @@ class PlayerHUD {
         ctx.textBaseline = 'middle';
         ctx.fillText(`x${player.inventory.HealingPotion}`, iX + 50, iY + 20);
 
-        if (player.currentSoul > player.levelSoul) {
+        if (player.currentSoul >= player.levelSoul) {
             player.currentSoul = player.currentSoul - player.levelSoul;
             player.soul++;
             player.levelSoul *= player.soul;
         }
 
-        if (player.currentExp > player.levelExp) {
+        if (player.currentExp >= player.levelExp) {
             player.currentExp = player.currentExp - player.levelExp;
             player.level++;
             player.maxHealth += player.maxHealth * player.level / 10;
