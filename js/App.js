@@ -77,7 +77,7 @@ function startGame() {
     GAME.assetManager.queueDownload('item.hp', './assets/sprites/items/HealthPotion.png');
     GAME.assetManager.queueDownload('item.soul.jar', './assets/sprites/items/SoulJar.png');
     GAME.assetManager.downloadAll(function () {
-        GAME.levelManager.load(new Level1B(GAME))
+        GAME.levelManager.load(new Level1A(GAME))
 
         GAME.init();
         GAME.start();
