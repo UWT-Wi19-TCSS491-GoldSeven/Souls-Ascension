@@ -6,9 +6,13 @@ class Skeleton extends HostileEntity {
     constructor(game, x, y) {
         super(game, x, y);
         this.boundingBox = new BoundingBox(x, y, 30, 50, 0, 7.5);
-        this.animWalkLeft = new Animation(this.game.assetManager.getAsset('skeleton.walk.left'), 0, 0, 44, 66, 0.1, 13, true, false);
-        this.animWalkRight = new Animation(this.game.assetManager.getAsset('skeleton.walk.right'), 0, 0, 44, 66, 0.1, 13, true, false);
-        this.animDeath = null;
+        this.animWalkLeft = new Animation(this.game.assetManager.getAsset('skeleton.walk.left'), 0, 0, 60, 64, 0.3, 4, true, false);
+        this.animWalkRight = new Animation(this.game.assetManager.getAsset('skeleton.walk.right'), 0, 0, 60, 64, 0.3, 4, true, false);
+		this.animAttackRight = new Animation(this.game.assetManager.getAsset('skeleton.Attack.right'), 0, 0, 136, 74, 0.3, 6, true, false);
+        this.animAttackLeft = new Animation(this.game.assetManager.getAsset('skeleton.Attack.Left'), 0, 0, 136, 74, 0.2, 6, true, false);
+        this.animDeath = new Animation(this.game.assetManager.getAsset('skeleton.Death'), 0, 0, 80, 64, 0.2, 3, true, false);
+		this.animIdleRight = new Animation(this.game.assetManager.getAsset('skeleton.Idle.right'), 0, 0, 60, 64, 0.3, 4, true, false);
+        this.animIdleLeft = new Animation(this.game.assetManager.getAsset('skeleton.Idle.Left'), 0, 0, 80, 64, 0.2, 3, true, false);
         this.animation = this.animWalkRight;
         this.cooldown = 0;
         this.moveSpeed = 70;
@@ -76,9 +80,9 @@ class Skeleton extends HostileEntity {
             let player = this.game.level.getEntityWithTag('Player');
 
             if (this.direction == 'left') {
-                this.animation = this.animWalkLeft;
+                this.animation = this.animAttackLeft;
             } else {
-                this.animation = this.animWalkRight;
+                this.animation = this.animAttackRight;
             }
 
             player.damage(this.attackDamage);
