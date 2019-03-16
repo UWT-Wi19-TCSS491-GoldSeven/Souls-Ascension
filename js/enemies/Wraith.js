@@ -11,7 +11,7 @@ class Wraith extends HostileEntity {
         this.animWalkRight = new Animation(this.game.assetManager.getAsset('wraith.walk.right'), 0, 0, 80, 80, 0.1, 6, true, false);
         this.animAttackLeft = new Animation(this.game.assetManager.getAsset('wraith.attack.left'), 0, 0, 80, 80, 0.1, 6, true, false);
         this.animAttackRight = new Animation(this.game.assetManager.getAsset('wraith.attack.right'), 0, 0, 80, 80, 0.1, 6, true, false);
-        this.animDeath = new Animation(this.game.assetManager.getAsset('wraith.animDeath'), 0, 0, 80, 80, 0.1, 10, false, false);
+        this.animDeath = new Animation(this.game.assetManager.getAsset('wraith.death'), 0, 0, 80, 80, 0.1, 10, false, false);
         this.animation = this.animIdle;
         this.cooldown = 0;
         this.moveSpeed = 70;

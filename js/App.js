@@ -2,6 +2,7 @@ import GameEngine from './GameEngine.js';
 import Entity from './Entity.js'
 import Sound from './Sound.js';
 import Level1A from './levels/dungeon/1A.js';
+import Level1B from './levels/dungeon/1B.js';
 
 let GAME = new GameEngine(document.getElementById('viewport'));
 
@@ -51,7 +52,7 @@ function startGame() {
     GAME.assetManager.queueDownload('slime.walk.right', './assets/sprites/enemies/slime/SlimeWalkRight.png');
     GAME.assetManager.queueDownload('slime.attack.left', './assets/sprites/enemies/slime/SlimeAttackLeft.png');
     GAME.assetManager.queueDownload('slime.attack.right', './assets/sprites/enemies/slime/SlimeAttackRight.png');
-    GAME.assetManager.queueDownload('slime.animDeath', './assets/sprites/enemies/slime/SlimeDeath.png');
+    GAME.assetManager.queueDownload('slime.death', './assets/sprites/enemies/slime/SlimeDeath.png');
     GAME.assetManager.queueDownload('wraith.idle', './assets/sprites/enemies/wraith/WraithIdle.png');
     GAME.assetManager.queueDownload('wraith.walk.left', './assets/sprites/enemies/wraith/WraithWalkLeft.png');
     GAME.assetManager.queueDownload('wraith.walk.right', './assets/sprites/enemies/wraith/WraithWalkRight.png');
@@ -61,9 +62,14 @@ function startGame() {
     GAME.assetManager.queueDownload('wraith.cast.down', './assets/sprites/enemies/wraith/WraithCastDown.png');
     GAME.assetManager.queueDownload('wraith.cast.left', './assets/sprites/enemies/wraith/WraithCastLeft.png');
     GAME.assetManager.queueDownload('wraith.cast.right', './assets/sprites/enemies/wraith/WraithCastRight.png');
-    GAME.assetManager.queueDownload('wraith.animDeath', './assets/sprites/enemies/wraith/WraithDeath.png');
+    GAME.assetManager.queueDownload('wraith.death', './assets/sprites/enemies/wraith/WraithDeath.png');
+    GAME.assetManager.queueDownload('skeleton.idle.left', './assets/sprites/enemies/skeleton/SkeletonIdleLeft.png');
+    GAME.assetManager.queueDownload('skeleton.idle.right', './assets/sprites/enemies/skeleton/SkeletonIdleRight.png');
     GAME.assetManager.queueDownload('skeleton.walk.left', './assets/sprites/enemies/skeleton/SkeletonWalkLeft.png');
     GAME.assetManager.queueDownload('skeleton.walk.right', './assets/sprites/enemies/skeleton/SkeletonWalkRight.png');
+    GAME.assetManager.queueDownload('skeleton.attack.left', './assets/sprites/enemies/skeleton/SkeletonAttackLeft.png');
+    GAME.assetManager.queueDownload('skeleton.attack.right', './assets/sprites/enemies/skeleton/SkeletonAttackRight.png');
+    GAME.assetManager.queueDownload('skeleton.death', './assets/sprites/enemies/skeleton/SkeletonDeath.png');
 
     // Item Spritesheets
     GAME.assetManager.queueDownload('item.silver.key', './assets/sprites/items/SilverKey.png');
@@ -71,7 +77,7 @@ function startGame() {
     GAME.assetManager.queueDownload('item.hp', './assets/sprites/items/HealthPotion.png');
     GAME.assetManager.queueDownload('item.soul.jar', './assets/sprites/items/SoulJar.png');
     GAME.assetManager.downloadAll(function () {
-        GAME.levelManager.load(new Level1A(GAME))
+        GAME.levelManager.load(new Level1B(GAME))
 
         GAME.init();
         GAME.start();

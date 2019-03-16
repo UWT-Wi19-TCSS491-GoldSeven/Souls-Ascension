@@ -31,8 +31,7 @@ class Sorcerer extends HostileEntity {
 
         if (!this.alive) {
             if (this.animDeath && this.animation == this.animDeath) {
-                this.life -= this.game.clockTick;
-                if (this.life <= 0) this.destroyed = true;
+                if (this.animDeath.isDone()) this.destroyed = true;
             } else {
                 this.destroyed = true;
             }

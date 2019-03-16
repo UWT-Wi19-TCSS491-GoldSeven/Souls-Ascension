@@ -11,7 +11,7 @@ class Slime extends HostileEntity {
         this.animWalkRight = new Animation(this.game.assetManager.getAsset('slime.walk.right'), 0, 0, 80, 80, 0.1, 8, true, false);
         this.animAttackLeft = new Animation(this.game.assetManager.getAsset('slime.attack.left'), 0, 0, 80, 80, 0.1, 10, true, false);
         this.animAttackRight = new Animation(this.game.assetManager.getAsset('slime.attack.right'), 0, 0, 80, 80, 0.1, 10, true, false);
-        this.animDeath = new Animation(this.game.assetManager.getAsset('slime.animDeath'), 0, 0, 80, 80, 0.1, 8, false, false);
+        this.animDeath = new Animation(this.game.assetManager.getAsset('slime.death'), 0, 0, 80, 80, 0.1, 8, false, false);
         this.animation = this.animIdle;
         this.boundingBox = new BoundingBox(x, y, 35, 20, 13, 18);
         this.isMovingWest = false;

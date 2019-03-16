@@ -6,14 +6,14 @@ class Skeleton extends HostileEntity {
     constructor(game, x, y) {
         super(game, x, y);
         this.boundingBox = new BoundingBox(x, y, 30, 50, 0, 7.5);
+        this.animIdleLeft = new Animation(this.game.assetManager.getAsset('skeleton.idle.left'), 0, 0, 48, 64, 0.2, 1, true, false);
+        this.animIdleRight = new Animation(this.game.assetManager.getAsset('skeleton.idle.right'), 0, 0, 48, 64, 0.3, 1, true, false);
         this.animWalkLeft = new Animation(this.game.assetManager.getAsset('skeleton.walk.left'), 0, 0, 60, 64, 0.3, 4, true, false);
         this.animWalkRight = new Animation(this.game.assetManager.getAsset('skeleton.walk.right'), 0, 0, 60, 64, 0.3, 4, true, false);
-		this.animAttackRight = new Animation(this.game.assetManager.getAsset('skeleton.Attack.right'), 0, 0, 136, 74, 0.3, 6, true, false);
-        this.animAttackLeft = new Animation(this.game.assetManager.getAsset('skeleton.Attack.Left'), 0, 0, 136, 74, 0.2, 6, true, false);
-        this.animDeath = new Animation(this.game.assetManager.getAsset('skeleton.Death'), 0, 0, 80, 64, 0.2, 3, true, false);
-		this.animIdleRight = new Animation(this.game.assetManager.getAsset('skeleton.Idle.right'), 0, 0, 60, 64, 0.3, 4, true, false);
-        this.animIdleLeft = new Animation(this.game.assetManager.getAsset('skeleton.Idle.Left'), 0, 0, 80, 64, 0.2, 3, true, false);
-        this.animation = this.animWalkRight;
+        this.animAttackLeft = new Animation(this.game.assetManager.getAsset('skeleton.attack.left'), 0, 0, 136, 74, 0.2, 6, false, false, -42, -10);
+		this.animAttackRight = new Animation(this.game.assetManager.getAsset('skeleton.attack.right'), 0, 0, 136, 74, 0.3, 6, false, false, -46, -10);
+        this.animDeath = new Animation(this.game.assetManager.getAsset('skeleton.death'), 0, 0, 80, 64, 0.2, 3, false, false);
+        this.animation = this.animIdleRight;
         this.cooldown = 0;
         this.moveSpeed = 70;
         this.attackDamage = 20;
@@ -31,8 +31,7 @@ class Skeleton extends HostileEntity {
 
         if (!this.alive) {
             if (this.animDeath && this.animation == this.animDeath) {
-                this.life -= this.game.clockTick;
-                if (this.life <= 0) this.destroyed = true;
+                if (this.animDeath.isDone()) this.destroyed = true;
             } else {
                 this.destroyed = true;
             }
@@ -53,41 +52,64 @@ class Skeleton extends HostileEntity {
             let distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
 
             if (distance > this.detectRange || !this.checkSight(player.boundingBox)) {
+                this.setIdle();
                 return;
             }
 
-            if (this.attackRange <= distance && distance <= this.followRange) {
-                this.xMot = this.game.clockTick * (this.moveSpeed * xDiff) / distance;
-                this.yMot = this.game.clockTick * (this.moveSpeed * yDiff) / distance;
-            }
-
-            this.updatePosition(this.boundingBox);
-
-            if (distance <= this.attackRange) {
-                this.attack(xDiff, yDiff, distance, xOrigS, yOrigS);
-            } else {
-                if (this.direction == 'left') {
-                    this.animation = this.animWalkLeft;
-                } else {
-                    this.animation = this.animWalkRight;
+            if (distance <= this.followRange) {
+                if (this.attackRange <= distance) {
+                    this.xMot = this.game.clockTick * (this.moveSpeed * xDiff) / distance;
+                    this.yMot = this.game.clockTick * (this.moveSpeed * yDiff) / distance;
                 }
+
+                this.updatePosition(this.boundingBox);
+
+                if (distance <= this.attackRange) {
+                    this.attack(xDiff, yDiff, distance, xOrigS, yOrigS);
+                } else if (this.xMot != 0 || this.yMot != 0) {
+                    if (this.direction == 'left') {
+                        this.animation = this.animWalkLeft;
+                    } else {
+                        this.animation = this.animWalkRight;
+                    }
+                }
+            } else {
+                this.setIdle();
             }
+        } else {
+            this.setIdle();
+        }
+    }
+
+    setIdle() {
+        if (this.direction == 'left') {
+            this.animation = this.animIdleLeft;
+        } else {
+            this.animation = this.animIdleRight;
         }
     }
 
     attack() {
         if (this.cooldown == 0) {
-            let player = this.game.level.getEntityWithTag('Player');
-
             if (this.direction == 'left') {
                 this.animation = this.animAttackLeft;
             } else {
                 this.animation = this.animAttackRight;
             }
 
-            player.damage(this.attackDamage);
+            if (this.animation.isDone()) {
+                let player = this.game.level.getEntityWithTag('Player');
 
-            this.cooldown = this.attackInterval;
+                player.damage(this.attackDamage);
+
+                this.cooldown = this.attackInterval;
+
+                this.animation.reset();
+
+                this.setIdle();
+            }
+        } else {
+            this.setIdle();
         }
     }
 

@@ -267,8 +267,6 @@ class Level {
         for (let i = 0; i < this.entities.length; i++) {
             let entity = this.entities[i];
 
-
-
             if (!entity.update)
                 continue;
 
